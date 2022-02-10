@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: BunueloLight;
+  src: url("./assets/BunueloCleanPro-Light.woff");
+}
+
+@font-face {
+  font-family: BunueloBold;
+  src: url("./assets/BunueloCleanPro-SemiBold.woff");
+}
+
+body {
+  font-family: Asap
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: BunueloLight
+}
