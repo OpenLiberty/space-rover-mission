@@ -1,9 +1,17 @@
 import React from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Layout from "components/Layout";
+import HomePage from "pages/HomePage";
 
 const App = () => {
   return (
-    <div className="App">
-    </div>
+    <BrowserRouter>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+        </Routes>
+      </Layout>
+    </BrowserRouter>
   );
 };
 
