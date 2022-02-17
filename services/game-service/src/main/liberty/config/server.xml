@@ -1,0 +1,13 @@
+<server description="game-service">
+    <featureManager>
+        <feature>jaxrs-2.1</feature>
+        <feature>mpMetrics-3.0</feature>
+    </featureManager>
+
+    <httpEndpoint httpPort="${default.http.port}"
+        httpsPort="${default.https.port}" id="defaultHttpEndpoint"
+        host="*" />
+
+    <webApplication location="game-service.war"
+        contextRoot="${app.context.root}" />
+</server>
