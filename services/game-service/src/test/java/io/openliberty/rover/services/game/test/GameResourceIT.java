@@ -1,19 +1,32 @@
+/*******************************************************************************
+ * Copyright (c) 2022 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package io.openliberty.rover.services.game.test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
+import static io.openliberty.rover.services.game.Constants.PATH_GAME;
+import static io.openliberty.rover.services.game.Constants.PATH_GAME_NEW;
+import static io.openliberty.rover.services.game.Constants.PATH_GAME_END;
+import static io.openliberty.rover.services.game.Constants.PATH_GAME_RESULT;
 
 import org.junit.jupiter.api.Test;
 
 import io.openliberty.rover.services.game.model.User;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Response;
 
 public class GameResourceIT {
     
@@ -24,26 +37,18 @@ public class GameResourceIT {
     private static final String PLAYER_ID = "player1";
     
     @Test
-    public void testNewGame() {
+    public void testGame() {
 
         Client client = ClientBuilder.newClient();
 
-        WebTarget target = client.target(url + "game/new");
+        WebTarget target = client.target(url + PATH_GAME + "/" + PATH_GAME_NEW);
         Response response = target.request().post(Entity.text(PLAYER_ID));
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus(),
                      "Incorrect response code from " + url);
 
-        response.close();
-    }
-    
-    @Test
-    public void testEndGame() {
-
-        Client client = ClientBuilder.newClient();
-
-        WebTarget target = client.target(url + "game/end");
-        Response response = target.request().post(null);
+        target = client.target(url + PATH_GAME + "/" + PATH_GAME_END);
+        response = target.request().post(Entity.text(""));
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus(),
                      "Incorrect response code from " + url);
@@ -56,7 +61,7 @@ public class GameResourceIT {
 
         Client client = ClientBuilder.newClient();
 
-        WebTarget target = client.target(url + "game/result");
+        WebTarget target = client.target(url + PATH_GAME + "/" + PATH_GAME_RESULT);
         Response response = target.request().get();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus(),

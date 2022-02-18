@@ -10,10 +10,11 @@
  *******************************************************************************/
 package io.openliberty.rover.services.game;
 
-import jakarta.ws.rs.ApplicationPath;
-import jakarta.ws.rs.core.Application;
+public class Constants {
 
-@ApplicationPath("/")
-public class GameApplication extends Application {
+    public static final String PATH_GAME = "game";
+    public static final String PATH_GAME_NEW = "new";
+    public static final String PATH_GAME_END = "end";
+    public static final String PATH_GAME_RESULT = "result";
 
 }
