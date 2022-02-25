@@ -18,7 +18,7 @@ import jakarta.websocket.server.ServerEndpoint;
 
 @ApplicationScoped
 @ServerEndpoint(value = "/roversocket")
-public class RoverSocket implements GameEventListener {
+public class GameSocket implements GameEventListener {
 
 	Game currentGame = null;
 	Session lastSession = null;

@@ -8,13 +8,13 @@ import org.junit.jupiter.api.Test;
 
 import jakarta.websocket.DeploymentException;
 
-public class RoverSocketTest {
+public class GameSocketTest {
 	private static final String port = System.getProperty("http.port", "9080");
 //	private static final String context = System.getProperty("context.root", "");
 	private static final String url = "ws://spacesentry1.fyre.ibm.com:" + port;
 //	private static final String url = "ws://localhost:" + port;
 	private static final String PLAYER_ID = "player1";
-	public static final String END_GAME = "stopShip";
+	public static final String END_GAME = "endGame";
 	public static final String START_GAME = "startGame";
 	public static final String SOCKET_MESSAGE_DATA_DELIMITER = "|";
 
