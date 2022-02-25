@@ -8,23 +8,5 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Layout from "components/Layout";
-import HomePage from "pages/HomePage";
-import PlayPage from "pages/PlayPage";
-
-const App = () => {
-  return (
-    <BrowserRouter>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/play" element={<PlayPage />} />
-        </Routes>
-      </Layout>
-    </BrowserRouter>
-  );
-};
-
-export default App;
+export const gameSocketURL = process.env.REACT_APP_GAME_SOCKET_URL ?? "wss://localhost:3001";
+export const gameDurationSeconds = process.env.REACT_APP_GAME_DURATION_SECONDS ? parseInt(process.env.REACT_APP_GAME_DURATION_SECONDS) : 300;

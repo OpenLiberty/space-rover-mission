@@ -9,22 +9,22 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Layout from "components/Layout";
-import HomePage from "pages/HomePage";
-import PlayPage from "pages/PlayPage";
 
-const App = () => {
+type Props = {
+  health: number;
+};
+
+const HealthBar = ({ health }: Props) => {
   return (
-    <BrowserRouter>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/play" element={<PlayPage />} />
-        </Routes>
-      </Layout>
-    </BrowserRouter>
+    <div>
+      <h3 className="text-gray-300 text-2xl">Health</h3>
+      <div className="bg-gray-200">
+        <div className="py-5 bg-green" style={{ width: `${health}%` }}>
+          <p className="px-5 text-xl">{health}%</p>
+        </div>
+      </div>
+    </div>
   );
 };
 
-export default App;
+export default HealthBar;
