@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.spacerover.game.websocket.test;
+package io.openliberty.spacerover.game.websocket.client;
 
 
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class WebsocketClientEndpoint {
 
 
     Session userSession = null;
-    private MessageHandler messageHandler;
+    private io.openliberty.spacerover.game.websocket.server.MessageHandler messageHandler;
 
     public WebsocketClientEndpoint(URI endpointURI) {
         try {
@@ -82,15 +82,6 @@ public class WebsocketClientEndpoint {
 
 
     /**
-     * register message handler
-     *
-     * @param msgHandler
-     */
-    public void addMessageHandler(MessageHandler msgHandler) {
-        this.messageHandler = msgHandler;
-    }
-
-    /**
      * Send a message.
      *
      * @param message
@@ -99,14 +90,15 @@ public class WebsocketClientEndpoint {
     public void sendMessage(String message) throws IOException {
         this.userSession.getAsyncRemote().sendText(message);
     }
+
     
     /**
-     * Message handler.
+     * register message handler
      *
-     * @author Jiji_Sasidharan
+     * @param msgHandler
      */
-    public static interface MessageHandler {
+    public void addMessageHandler(io.openliberty.spacerover.game.websocket.server.MessageHandler msgHandler) {
+        this.messageHandler = msgHandler;
+    }
 
-        public void handleMessage(String message);
-}
 }

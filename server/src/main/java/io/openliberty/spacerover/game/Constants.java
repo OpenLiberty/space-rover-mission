@@ -14,4 +14,9 @@ public class Constants {
 	public static final String END_GAME = "endGame";
 	public static final String START_GAME = "startGame";
 	public static final String SOCKET_MESSAGE_DATA_DELIMITER = "|";
+	public static final Object RIGHT = "right";
+	public static final Object LEFT = "left";
+	public static final Object FORWARD = "forward";
+	public static final Object BACKWARD = "back";
+	public static final Object STOP = "stop";
 }

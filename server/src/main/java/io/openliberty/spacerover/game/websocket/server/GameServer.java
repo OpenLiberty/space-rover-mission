@@ -8,14 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.spacerover.game.websocket;
+package io.openliberty.spacerover.game.websocket.server;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import io.openliberty.spacerover.game.Constants;
 import io.openliberty.spacerover.game.Game;
 import io.openliberty.spacerover.game.GameEvent;
 import io.openliberty.spacerover.game.GameEventListener;
+import io.openliberty.spacerover.game.websocket.client.WebsocketClientEndpoint;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.OnClose;
@@ -28,10 +31,12 @@ import jakarta.websocket.server.ServerEndpoint;
 
 @ApplicationScoped
 @ServerEndpoint(value = "/roversocket")
-public class GameSocket implements GameEventListener {
+public class GameServer implements GameEventListener, io.openliberty.spacerover.game.websocket.server.MessageHandler {
 
 	Game currentGame = null;
 	Session lastSession = null;
+	WebsocketClientEndpoint roverClient = null;
+	WebsocketClientEndpoint boardClient = null;
 
 	@OnOpen
 	public void onOpen(Session session, @PathParam("path") String path) throws Exception {
@@ -71,23 +76,31 @@ public class GameSocket implements GameEventListener {
 	public void receiveMessage(String message, Session session) throws Exception {
 		// Called when a message is received.
 		System.out.println("Got a message: '" + message + "'");
-
-		String[] parsedMsg = message.split("\\" + Constants.SOCKET_MESSAGE_DATA_DELIMITER);
-		String msgID = parsedMsg[0];
-
-		if (msgID.equals(Constants.START_GAME)) {
-			System.out.println("Start Game received for player ID: " + parsedMsg[1]);
-			this.currentGame.startGameSession(parsedMsg[1]);
-			this.currentGame.getEventManager().subscribe(GameEvent.HP, this);
-			this.currentGame.getEventManager().subscribe(GameEvent.SCORE, this);
-		} else if (msgID.equals(Constants.END_GAME)) {
-			System.out.println("Stop Game received");
-			this.currentGame.endGameSession();
-			// TODO update leaderboard here
-		}
+		this.handleMessage(message);
 		if (!session.equals(this.lastSession)) {
 			this.lastSession = session;
 		}
+	}
+
+	private WebsocketClientEndpoint connectRoverClient() {
+		String roverIP = System.getProperty("io.openliberty.spacerover.ip", "192.168.0.111");
+		String roverPort = System.getProperty("io.openliberty.spacerover.port", "5045");
+		WebsocketClientEndpoint client = null;
+		try {
+			URI uri = new URI("ws://" + roverIP + ":" + roverPort);
+			client = new WebsocketClientEndpoint(uri);
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		client.addMessageHandler(this);
+		return client;
+	}
+
+	private void startGame(String[] parsedMsg) {
+		this.currentGame.startGameSession(parsedMsg[1]);
+		this.currentGame.getEventManager().subscribe(GameEvent.HP, this);
+		this.currentGame.getEventManager().subscribe(GameEvent.SCORE, this);
 	}
 
 	@OnError
@@ -108,6 +121,50 @@ public class GameSocket implements GameEventListener {
 
 		} else {
 			System.out.println("update game event failed because session is closed");
+		}
+	}
+
+	@Override
+	public void handleMessage(String message) {
+		String[] parsedMsg = message.split("\\" + Constants.SOCKET_MESSAGE_DATA_DELIMITER);
+		String msgID = parsedMsg[0];
+
+		try {
+		if (msgID.equals(Constants.START_GAME)) {
+			System.out.println("Start Game received for player ID: " + parsedMsg[1]);
+			startGame(parsedMsg);
+			this.roverClient = connectRoverClient();
+//			connectToGameBoard();
+		} else if (msgID.equals(Constants.END_GAME)) {
+			System.out.println("Stop Game received");
+			this.currentGame.endGameSession();
+			// TODO update leaderboard here
+		}
+		else if (msgID.equals(Constants.FORWARD))
+		{
+			this.roverClient.sendMessage("F");
+			this.roverClient.sendMessage("S");
+			
+		}
+		else if (msgID.equals(Constants.BACKWARD))
+		{
+			this.roverClient.sendMessage("B");
+			this.roverClient.sendMessage("S");
+		}
+		else if (msgID.equals(Constants.LEFT))
+		{
+			this.roverClient.sendMessage("L");
+			this.roverClient.sendMessage("S");
+		}
+		else if (msgID.equals(Constants.RIGHT))
+		{
+			this.roverClient.sendMessage("R");
+			this.roverClient.sendMessage("S");
+		}}
+		catch (IOException ioe)
+		{
+			ioe.printStackTrace();
+			// inform gui something went wrong
 		}
 	}
 

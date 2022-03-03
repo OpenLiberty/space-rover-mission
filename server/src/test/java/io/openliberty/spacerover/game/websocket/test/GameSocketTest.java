@@ -43,6 +43,11 @@ public class GameSocketTest {
 		});
 
 		endpoint.sendMessage(START_GAME + SOCKET_MESSAGE_DATA_DELIMITER + PLAYER_ID);
+		endpoint.sendMessage("forward");
+		endpoint.sendMessage("backward");
+		endpoint.sendMessage("left");
+		endpoint.sendMessage("right");
+		
 		endpoint.sendMessage(END_GAME);
 
 	}
