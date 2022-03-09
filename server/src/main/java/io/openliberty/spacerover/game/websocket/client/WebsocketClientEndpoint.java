@@ -29,7 +29,7 @@ public class WebsocketClientEndpoint {
 
 
     Session userSession = null;
-    private io.openliberty.spacerover.game.websocket.server.MessageHandler messageHandler;
+    private io.openliberty.spacerover.game.websocket.client.MessageHandler messageHandler;
 
     public WebsocketClientEndpoint(URI endpointURI) {
         try {
@@ -89,6 +89,7 @@ public class WebsocketClientEndpoint {
      */
     public void sendMessage(String message) throws IOException {
         this.userSession.getAsyncRemote().sendText(message);
+        System.out.println("Sent Message "+ message);
     }
 
     
@@ -97,8 +98,12 @@ public class WebsocketClientEndpoint {
      *
      * @param msgHandler
      */
-    public void addMessageHandler(io.openliberty.spacerover.game.websocket.server.MessageHandler msgHandler) {
+    public void addMessageHandler(io.openliberty.spacerover.game.websocket.client.MessageHandler msgHandler) {
         this.messageHandler = msgHandler;
     }
 
+    public void disconnect() throws IOException
+    {
+    	this.userSession.close();
+    }
 }

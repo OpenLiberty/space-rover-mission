@@ -1,0 +1,6 @@
+package io.openliberty.spacerover.game.websocket.server;
+
+public enum GameServerState {
+	SERVER_STARTED, GUI_CONNECTED, GESTURE_CONNECTED, GUI_AND_GESTURE_CONNECTED, ROVER_CONNECTED, GAMEBOARD_CONNECTED,
+	ALL_CONNECTED, GAME_STARTED, GAME_ENDED;
+}

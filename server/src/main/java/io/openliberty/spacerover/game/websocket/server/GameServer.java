@@ -13,11 +13,13 @@ package io.openliberty.spacerover.game.websocket.server;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 
 import io.openliberty.spacerover.game.Constants;
 import io.openliberty.spacerover.game.Game;
 import io.openliberty.spacerover.game.GameEvent;
 import io.openliberty.spacerover.game.GameEventListener;
+import io.openliberty.spacerover.game.GameSession;
 import io.openliberty.spacerover.game.websocket.client.WebsocketClientEndpoint;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.websocket.CloseReason;
@@ -31,55 +33,74 @@ import jakarta.websocket.server.ServerEndpoint;
 
 @ApplicationScoped
 @ServerEndpoint(value = "/roversocket")
-public class GameServer implements GameEventListener, io.openliberty.spacerover.game.websocket.server.MessageHandler {
+public class GameServer implements GameEventListener, io.openliberty.spacerover.game.websocket.client.MessageHandler {
 
-	Game currentGame = null;
-	Session lastSession = null;
+	Game currentGame = GameHolder.INSTANCE;
+	GameServerStateMachine stateMachine = new GameServerStateMachine();
+	Session guiSession = null;
+	Session gestureSession = null;
 	WebsocketClientEndpoint roverClient = null;
 	WebsocketClientEndpoint boardClient = null;
 
 	@OnOpen
-	public void onOpen(Session session, @PathParam("path") String path) throws Exception {
+	public void onOpen(Session session, @PathParam("path") String path) {
 		// (lifecycle) Called when the connection is opened
 		System.out.println("Websocket open! client: " + session.getId() + " connected on path " + path + " timeout: "
 				+ session.getMaxIdleTimeout());
 		session.getAsyncRemote().sendText("Welcome space explorer!");
-		if (this.currentGame == null) {
-			this.currentGame = new Game();
-		} else {
-			System.out.println("Websocket opened while a game is running, opening socket for game with player ID: "
-					+ this.currentGame.getPlayerId());
-		}
 	}
 
 	@OnClose
 	public void onClose(Session session, CloseReason reason) throws IOException {
 		// (lifecycle) Called when the connection is closed
-		System.out.println("Websocket closed! " + session.getId() + " reason: " + reason.toString() + " "
-				+ reason.getReasonPhrase());
+		String sessionID = session.getId();
+		System.out.println(
+				"Websocket closed! " + sessionID + " reason: " + reason.toString() + " " + reason.getReasonPhrase());
 
+		GameSession sessionName = getGameSession(session);
 		if (this.currentGame.isInProgress()) {
-			try {
-				this.currentGame.endGameSession();
-				System.out.println("Forcively ended game on socket close!");
-			} catch (IllegalStateException ise) {
-				// intentionally empty
-				System.out.println(ise);
+			if (sessionName == GameSession.GUI || sessionName == GameSession.GESTURE) {
+				waitForSessionsToReconnect();
+				if (!this.guiSession.isOpen() || !this.gestureSession.isOpen()) {
+					System.out.println("ending game after waiting for reconnect");
+					this.currentGame.endGameSession();
+				}
 			}
 		}
+		System.out.println("Lost connection with " + sessionName);
+	}
 
-		this.currentGame = null;
-		this.lastSession = null;
+	private void waitForSessionsToReconnect() {
+		for (int i = 0; i < 5; i++) {
+			if (!this.guiSession.isOpen() || !this.gestureSession.isOpen()) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	private GameSession getGameSession(Session session) {
+		String sessionID = session.getId();
+		GameSession detectedSession = GameSession.UNKNOWN;
+		// TODO Auto-generated method stub
+		if (sessionID == guiSession.getId()) {
+			detectedSession = GameSession.GUI;
+
+		} else if (sessionID == gestureSession.getId()) {
+			detectedSession = GameSession.GESTURE;
+
+		}
+		return detectedSession;
 	}
 
 	@OnMessage
 	public void receiveMessage(String message, Session session) throws Exception {
 		// Called when a message is received.
-		System.out.println("Got a message: '" + message + "'");
-		this.handleMessage(message);
-		if (!session.equals(this.lastSession)) {
-			this.lastSession = session;
-		}
+		this.handleMessage(message, session);
 	}
 
 	private WebsocketClientEndpoint connectRoverClient() {
@@ -89,11 +110,12 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		try {
 			URI uri = new URI("ws://" + roverIP + ":" + roverPort);
 			client = new WebsocketClientEndpoint(uri);
+			client.addMessageHandler(this);
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		client.addMessageHandler(this);
+		this.stateMachine.attachRover();
 		return client;
 	}
 
@@ -111,9 +133,9 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 	@Override
 	public void update(GameEvent eventType, long value) {
-		if (this.lastSession.isOpen()) {
+		if (this.guiSession.isOpen()) {
 			try {
-				this.lastSession.getBasicRemote()
+				this.guiSession.getBasicRemote()
 						.sendText(eventType.toString() + Constants.SOCKET_MESSAGE_DATA_DELIMITER + value);
 			} catch (IOException ioe) {
 				System.out.println(ioe);
@@ -126,46 +148,72 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 	@Override
 	public void handleMessage(String message) {
+		handleMessage(message, null);
+	}
+
+	public void handleMessage(String message, Session session) {
+		System.out.println("Message received! " + message);
 		String[] parsedMsg = message.split("\\" + Constants.SOCKET_MESSAGE_DATA_DELIMITER);
 		String msgID = parsedMsg[0];
 
-		try {
-		if (msgID.equals(Constants.START_GAME)) {
-			System.out.println("Start Game received for player ID: " + parsedMsg[1]);
-			startGame(parsedMsg);
-			this.roverClient = connectRoverClient();
-//			connectToGameBoard();
-		} else if (msgID.equals(Constants.END_GAME)) {
-			System.out.println("Stop Game received");
-			this.currentGame.endGameSession();
-			// TODO update leaderboard here
+		if (this.stateMachine.isValidState(msgID)) {
+			try {
+				if (msgID.equals(Constants.CONNECT_GUI)) {
+					this.guiSession = session;
+				} else if (msgID.equals(Constants.CONNECT_GESTURE)) {
+					this.gestureSession = session;
+				} else if (msgID.equals(Constants.START_GAME)) {
+					System.out.println("Start Game received for player ID: " + parsedMsg[1]);
+					startGame(parsedMsg);
+					this.roverClient.sendMessage(Constants.START_GAME);
+					this.guiSession.getAsyncRemote().sendText("Game Started!");
+				} else if (msgID.equals(Constants.END_GAME)) {
+					System.out.println("Stop Game received");
+					this.currentGame.endGameSession();
+					this.roverClient.sendMessage(Constants.END_GAME);
+//					this.roverClient.disconnect(); TODO we dont really want to disconnect from the rover and board here do we? We can leave them on but let them know the game's over.
+					// TODO update leaderboard here
+				}
+				else if (isDirection(msgID)) {
+					this.sendRoverDirection(msgID);
+				}
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+				// TODO inform gui something went wrong
+			}
+			this.stateMachine.incrementState(msgID);
+
+			if (this.stateMachine.isReadyToConnectGamePieces()) {
+				this.roverClient = connectRoverClient();
+				this.boardClient = connectBoardClient();
+				connectLeaderboard();
+				this.guiSession.getAsyncRemote().sendText(Constants.SERVER_READY);
+			}
 		}
-		else if (msgID.equals(Constants.FORWARD))
-		{
-			this.roverClient.sendMessage("F");
-			this.roverClient.sendMessage("S");
-			
-		}
-		else if (msgID.equals(Constants.BACKWARD))
-		{
-			this.roverClient.sendMessage("B");
-			this.roverClient.sendMessage("S");
-		}
-		else if (msgID.equals(Constants.LEFT))
-		{
-			this.roverClient.sendMessage("L");
-			this.roverClient.sendMessage("S");
-		}
-		else if (msgID.equals(Constants.RIGHT))
-		{
-			this.roverClient.sendMessage("R");
-			this.roverClient.sendMessage("S");
-		}}
-		catch (IOException ioe)
-		{
-			ioe.printStackTrace();
-			// inform gui something went wrong
-		}
+	}
+
+	private void connectLeaderboard() {
+
+		// connect to leaderboard here
+		this.stateMachine.attachLeaderboard();
+	}
+
+	private WebsocketClientEndpoint connectBoardClient() {
+		// TODO add logic for connecting the board
+		this.stateMachine.attachGameBoard();
+		return null;
+	}
+
+	public static boolean isDirection(String msgID) {
+		return Arrays.asList(Constants.DIRECTIONS).contains(msgID);
+	}
+
+	private void sendRoverDirection(String direction) throws IOException {
+		this.roverClient.sendMessage(direction);
+	}
+
+	private static class GameHolder {
+		static final Game INSTANCE = new Game();
 	}
 
 }

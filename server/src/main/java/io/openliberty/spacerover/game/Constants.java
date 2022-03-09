@@ -11,12 +11,18 @@
 package io.openliberty.spacerover.game;
 
 public class Constants {
-	public static final String END_GAME = "endGame";
+
+	public static final String CONNECT_GUI = "connectGUI";
+	public static final String CONNECT_GESTURE = "connectGesture";
+	public static final String SERVER_READY = "serverReady";	
+ 	public static final String END_GAME = "endGame";
 	public static final String START_GAME = "startGame";
 	public static final String SOCKET_MESSAGE_DATA_DELIMITER = "|";
-	public static final Object RIGHT = "right";
-	public static final Object LEFT = "left";
-	public static final Object FORWARD = "forward";
-	public static final Object BACKWARD = "back";
-	public static final Object STOP = "stop";
+	public static final String RIGHT = "R";
+	public static final String LEFT = "L";
+	public static final String FORWARD = "F";
+	public static final String BACKWARD = "B";
+	public static final String STOP = "S";
+	public static final String[] DIRECTIONS = {FORWARD,BACKWARD,LEFT,RIGHT,STOP};
+			
 }
