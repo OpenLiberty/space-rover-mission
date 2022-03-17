@@ -18,25 +18,28 @@ import java.nio.ByteBuffer;
 import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.ContainerProvider;
+import jakarta.websocket.DeploymentException;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
 import jakarta.websocket.WebSocketContainer;
+import java.util.logging.Logger;
+
 
 @ClientEndpoint
 public class WebsocketClientEndpoint {
 
-
+    private static final Logger LOGGER = Logger.getLogger(WebsocketClientEndpoint.class.getName());
     Session userSession = null;
     private io.openliberty.spacerover.game.websocket.client.MessageHandler messageHandler;
 
-    public WebsocketClientEndpoint(URI endpointURI) {
+    public WebsocketClientEndpoint(URI endpointURI) throws IOException {
         try {
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             container.connectToServer(this, endpointURI);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (DeploymentException e) {
+            throw new IOException(e);
         }
     }
 
@@ -47,7 +50,6 @@ public class WebsocketClientEndpoint {
      */
     @OnOpen
     public void onOpen(Session userSession) {
-        System.out.println("opening websocket");
         this.userSession = userSession;
     }
 
@@ -59,7 +61,6 @@ public class WebsocketClientEndpoint {
      */
     @OnClose
     public void onClose(Session userSession, CloseReason reason) {
-        System.out.println("closing websocket");
         this.userSession = null;
     }
 
@@ -77,7 +78,6 @@ public class WebsocketClientEndpoint {
 
    @OnMessage
    public void onMessage(ByteBuffer bytes) {
-        System.out.println("Handle byte buffer");
     }
 
 
@@ -89,8 +89,9 @@ public class WebsocketClientEndpoint {
      */
     public void sendMessage(String message) throws IOException {
         this.userSession.getAsyncRemote().sendText(message);
-        System.out.println("Sent Message "+ message);
+        LOGGER.info("Sent Message "+ message);
     }
+    
 
     
     /**

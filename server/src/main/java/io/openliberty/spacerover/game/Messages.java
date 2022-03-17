@@ -10,7 +10,7 @@
  *******************************************************************************/
 package io.openliberty.spacerover.game;
 
-public class Constants {
+public class Messages {
 
 	public static final String CONNECT_GUI = "connectGUI";
 	public static final String CONNECT_GESTURE = "connectGesture";
@@ -24,5 +24,12 @@ public class Constants {
 	public static final String BACKWARD = "B";
 	public static final String STOP = "S";
 	public static final String[] DIRECTIONS = {FORWARD,BACKWARD,LEFT,RIGHT,STOP};
+	public static final String ROVER_TEST = "roverTest";
+	public static final String ROVER_ACK = "roverAck";
+	public static final String GAMEBOARD_TEST = "gameboardTest";
+	public static final String GAMEBOARD_ACK = "gameboardAck";
+	public static final String ROVER_CONNECTION_FAILED = "roverConnectionFailed";
+	public static final String ERROR_MESSAGE = "error";
+	
 			
 }
