@@ -9,8 +9,8 @@ RUN chown -R mongodb:mongodb /home/mongodb
 
 # Copy the configuration and setup files from
 # the host machine to the image.
-COPY assets/mongodb.conf /home/mongodb
-COPY assets/index.js /home/mongodb
+COPY mongodb.conf /home/mongodb
+COPY index.js /home/mongodb
 
 # Run MongodDB daemon and execute the setup script.
 RUN mongod \
