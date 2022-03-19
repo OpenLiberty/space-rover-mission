@@ -28,7 +28,7 @@ import jakarta.inject.Inject;
 public class MongoProducer {
 
 	@Inject
-	@ConfigProperty(name = "mongo.hostname", defaultValue = "localhost")
+	@ConfigProperty(name = "mongo.hostname", defaultValue = "mongo")
 	String hostname;
 
 	@Inject
