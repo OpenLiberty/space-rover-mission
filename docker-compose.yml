@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+        mongo:
+                build: ./leaderboard/assets
+                ports:
+                        - "27017:27017"
+        leaderboard:
+                build: ./leaderboard
+                ports:
+                        - "9080:9080"
+        server:
+                build: ./server
+                ports:
+                        - "9070:9080"
+
