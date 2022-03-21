@@ -8,9 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.spacerover.game;
+package io.openliberty.spacerover.game.models;
 
-public class Messages {
+public class SocketMessages {
 
 	public static final String CONNECT_GUI = "connectGUI";
 	public static final String CONNECT_GESTURE = "connectGesture";

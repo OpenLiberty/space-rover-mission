@@ -17,6 +17,8 @@ import org.bson.Document;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
+import io.openliberty.spacerover.leaderboard.models.LeaderboardEntry;
+
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -79,9 +81,9 @@ public class Leaderboard {
 		MongoCollection<Document> document = db.getCollection(LEADERBOARD_COLLECTION_NAME);
 
 		Document newLeaderboardEntry = new Document();
-		newLeaderboardEntry.put("Player", entry.getPlayer());
-		newLeaderboardEntry.put("Score", entry.getScore());
-		newLeaderboardEntry.put("Time", entry.getTime());
+		newLeaderboardEntry.put("player", entry.getPlayer());
+		newLeaderboardEntry.put("score", entry.getScore());
+		newLeaderboardEntry.put("time", entry.getTime());
 
 		document.insertOne(newLeaderboardEntry);
 
@@ -89,7 +91,6 @@ public class Leaderboard {
 	}
 
 	@Produces(MediaType.APPLICATION_JSON)
-
 	@APIResponse(responseCode = "200", description = "Successfully listed the leaderboard.")
 	@APIResponse(responseCode = "500", description = "Failed to list the leaderboard.")
 	@Operation(summary = "List the leaderboard from the database.")

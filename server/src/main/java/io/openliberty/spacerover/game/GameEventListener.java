@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.spacerover.game;
 
+import io.openliberty.spacerover.game.models.GameEvent;
+
 public interface GameEventListener {
     void update(GameEvent eventType, long value);
 }

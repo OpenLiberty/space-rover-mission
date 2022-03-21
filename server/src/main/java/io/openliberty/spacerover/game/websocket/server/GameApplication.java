@@ -8,8 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.spacerover.game;
+package io.openliberty.spacerover.game.websocket.server;
 
-public enum GameEvent {
-	HP, SCORE
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.core.Application;
+
+@ApplicationPath("/gameapp")
+public class GameApplication extends Application {
+
 }

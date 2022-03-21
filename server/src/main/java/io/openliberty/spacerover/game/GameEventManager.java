@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.openliberty.spacerover.game.models.GameEvent;
+
 public class GameEventManager {
 
 	 Map<GameEvent, List<GameEventListener>> listeners = new HashMap<>();

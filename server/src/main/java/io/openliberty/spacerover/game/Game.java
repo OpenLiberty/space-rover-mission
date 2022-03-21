@@ -10,6 +10,7 @@
  *******************************************************************************/
 package io.openliberty.spacerover.game;
 
+import io.openliberty.spacerover.game.models.GameEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped

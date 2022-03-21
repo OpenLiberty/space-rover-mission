@@ -8,14 +8,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.spacerover.leaderboard.rest;
+package io.openliberty.spacerover.leaderboard.models;
 
+import jakarta.json.bind.annotation.JsonbProperty;
 import jakarta.validation.constraints.NotEmpty;
 
 public class LeaderboardEntry {
 
+    @JsonbProperty("player")
 	private String player;
+	@JsonbProperty("score")
 	private int score;
+	@JsonbProperty("time")
 	private int time;
 
 	@NotEmpty(message = "All players must have a player ID!")
