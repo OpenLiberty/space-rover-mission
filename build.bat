@@ -1,5 +1,5 @@
 cd server
-call mvnw install -DskipTests=true 
+call mvnw install -DskipTests=true -B
 cd ..\leaderboard
 call mvnw install -B
 cd ..

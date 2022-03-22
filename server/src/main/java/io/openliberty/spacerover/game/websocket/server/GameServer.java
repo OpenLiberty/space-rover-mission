@@ -199,11 +199,9 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 					case SocketMessages.CONNECT_GESTURE:
 						this.gestureSession = session;
 						break;
-					case SocketMessages.ROVER_TEST:
-						this.roverClient.sendMessage(SocketMessages.ROVER_ACK);
+					case SocketMessages.ROVER_ACK:
 						break;
-					case SocketMessages.GAMEBOARD_TEST:
-						this.boardClient.sendMessage((SocketMessages.GAMEBOARD_ACK));
+					case SocketMessages.GAMEBOARD_ACK:
 						break;
 					case SocketMessages.START_GAME:
 						LOGGER.log(Level.INFO, "Start Game received for player ID: {}", parsedMsg[1]);

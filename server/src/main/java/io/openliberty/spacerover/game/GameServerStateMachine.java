@@ -30,34 +30,20 @@ public class GameServerStateMachine {
 			}
 			break;
 
-		case SocketMessages.ROVER_TEST:
+		case SocketMessages.ROVER_ACK:
 			this.currentState = GameServerState.ROVER_CONNECTED;
 			break;
-		case SocketMessages.GAMEBOARD_TEST:
-			this.currentState = GameServerState.GAMEBOARD_CONNECTED;
+		case SocketMessages.GAMEBOARD_ACK:
+			this.currentState = GameServerState.ALL_CONNECTED;
 			break;
 		case SocketMessages.START_GAME:
 			this.currentState = GameServerState.GAME_STARTED;
 			break;
 		case SocketMessages.END_GAME:
-			this.currentState = GameServerState.SERVER_STARTED;
+			this.currentState = GameServerState.GUI_AND_GESTURE_CONNECTED;
 			break;
 		default:
 			LOGGER.severe("Unexpected msgID " + msgID + " during state " + beforeState);
-		}
-
-		if (msgID.equals(SocketMessages.CONNECT_GUI)) {
-
-		} else if (msgID.equals(SocketMessages.CONNECT_GESTURE)) {
-
-		} else if (msgID.equals(SocketMessages.ROVER_TEST)) {
-			this.currentState = GameServerState.ROVER_CONNECTED;
-		} else if (msgID.equals(SocketMessages.GAMEBOARD_TEST)) {
-			this.currentState = GameServerState.GAMEBOARD_CONNECTED;
-		} else if (msgID.equals(SocketMessages.START_GAME)) {
-			this.currentState = GameServerState.GAME_STARTED;
-		} else if (msgID.equals(SocketMessages.END_GAME)) {
-			this.currentState = GameServerState.SERVER_STARTED;
 		}
 		LOGGER.info("Change state from " + beforeState + " to " + this.currentState);
 	}
@@ -74,12 +60,18 @@ public class GameServerStateMachine {
 					&& this.currentState != GameServerState.GUI_CONNECTED) {
 				isValid = false;
 			}
-		} else if (msgID.equals(SocketMessages.ROVER_TEST)) {
+		} else if (msgID.equals(SocketMessages.ROVER_ACK)) {
 			if (this.currentState != GameServerState.ROVER_CONNECT_TEST) {
 				isValid = false;
 			}
+			
+		} else if (msgID.equals(SocketMessages.GAMEBOARD_ACK)) {
+			if (this.currentState != GameServerState.GAMEBOARD_CONNECT_TEST) {
+				isValid = false;
+			}
+			
 		} else if (msgID.equals(SocketMessages.START_GAME)) {
-			if (this.currentState != GameServerState.ALL_CONNECTED || this.currentState != GameServerState.GAME_ENDED) {
+			if (this.currentState != GameServerState.ALL_CONNECTED && this.currentState != GameServerState.GAME_ENDED) {
 				isValid = false;
 			}
 		} else if (msgID.equals(SocketMessages.END_GAME)) {
@@ -109,7 +101,7 @@ public class GameServerStateMachine {
 		if (this.currentState != GameServerState.ROVER_CONNECTED) {
 			throw new RuntimeException("attachGameBoard recieved during invalid server state " + this.currentState);
 		}
-		this.currentState = GameServerState.ALL_CONNECTED;
+		this.currentState = GameServerState.GAMEBOARD_CONNECT_TEST;
 	}
 
 	protected void attachLeaderboard() {
