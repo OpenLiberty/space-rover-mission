@@ -14,8 +14,8 @@ public class SocketMessages {
 
 	public static final String CONNECT_GUI = "connectGUI";
 	public static final String CONNECT_GESTURE = "connectGesture";
-	public static final String SERVER_READY = "serverReady";	
- 	public static final String END_GAME = "endGame";
+	public static final String SERVER_READY = "serverReady";
+	public static final String END_GAME = "endGame";
 	public static final String START_GAME = "startGame";
 	public static final String SOCKET_MESSAGE_DATA_DELIMITER = "|";
 	public static final String RIGHT = "R";
@@ -23,13 +23,10 @@ public class SocketMessages {
 	public static final String FORWARD = "F";
 	public static final String BACKWARD = "B";
 	public static final String STOP = "S";
-	public static final String[] DIRECTIONS = {FORWARD,BACKWARD,LEFT,RIGHT,STOP};
-	public static final String ROVER_TEST = "roverTest";
+	public static final String[] DIRECTIONS = { FORWARD, BACKWARD, LEFT, RIGHT, STOP };
 	public static final String ROVER_ACK = "roverAck";
-	public static final String GAMEBOARD_TEST = "gameboardTest";
 	public static final String GAMEBOARD_ACK = "gameboardAck";
 	public static final String ROVER_CONNECTION_FAILED = "roverConnectionFailed";
 	public static final String ERROR_MESSAGE = "error";
-	
-			
+
 }

@@ -140,7 +140,6 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			final URI uri = new URI("ws://" + roverIP + ":" + roverPort);
 			client = new WebsocketClientEndpoint(uri);
 			client.addMessageHandler(this);
-			client.sendMessage(SocketMessages.ROVER_TEST);
 			this.stateMachine.attachRover();
 		} catch (URISyntaxException | IOException e) {
 			LOGGER.log(Level.SEVERE, "Failed to connect to rover", e);
@@ -244,8 +243,6 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		}
 	}
 
-
-
 	private void testLeaderboard() {
 		GameLeaderboard leaderboard = new GameLeaderboard(this.leaderboardHost, this.leaderboardPort);
 		leaderboard.testLeaderboard();
@@ -268,8 +265,5 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	private static class GameHolder {
 		static final Game INSTANCE = new Game();
 	}
-
-
-
 
 }
