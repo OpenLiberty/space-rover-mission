@@ -14,16 +14,20 @@ import useTimer from "./useTimer";
 export enum GameState {
   Connecting,
   Error,
+  Waiting,
   NotStarted,
   InGame,
   GameEnded,
 }
 
 enum Event {
+  ConnectGUI = "connectGUI",
+  ServerReady = "serverReady",
   Start = "startGame",
   Health = "hp",
   Score = "score",
   End = "endGame",
+  Error = "error"
 }
 
 const MSG_DELMITER = "|";
@@ -41,6 +45,8 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
   const [health, setHealth] = useState(100);
   const [score, setScore] = useState(0);
 
+  const [error, setError] = useState("");
+
   const {
     timeRemaining,
     formattedTime,
@@ -51,17 +57,23 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
   useEffect(() => {
     const ws = new WebSocket(gameSocketURL);
     ws.onopen = (ev) => {
-      setGameState(GameState.NotStarted);
+      sendMessage(Event.ConnectGUI);
+      setGameState(GameState.Waiting);
     };
     ws.onerror = (ev) => {
+      setError("Failed to connect to game service.")
       setGameState(GameState.Error);
     };
     ws.onmessage = (ev) => {
       const [event, data] = ev.data.split(MSG_DELMITER);
 
       switch (event) {
+        case Event.ConnectGUI:
         case Event.Start:
-          // do nothing; start is client initiated
+          // do nothing; these are client events
+          break;
+        case Event.ServerReady:
+          setGameState(GameState.NotStarted);
           break;
         case Event.Health:
           setHealth(parseInt(data));
@@ -71,6 +83,10 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
           break;
         case Event.End:
           endGame();
+          break;
+        case Event.Error:
+          setError(data);
+          setGameState(GameState.Error);
           break;
         default:
           console.log(`Received unknown event: ${event}`);
@@ -118,6 +134,7 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
     score,
     startGame,
     endGame,
+    error,
   };
 };
 

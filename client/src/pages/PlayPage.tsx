@@ -12,6 +12,7 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 import PlayerForm from "components/PlayerForm";
 import GameScreen from "components/GameScreen";
+import GameStateMessage from "components/GameStateMessage";
 import useGame, { GameState } from "hooks/useGame";
 import { gameSocketURL, gameDurationSeconds } from "lib/config";
 
@@ -24,18 +25,25 @@ const PlayPage = () => {
     score,
     startGame,
     endGame,
+    error,
   } = useGame(gameSocketURL, gameDurationSeconds);
 
   switch (gameState) {
     case GameState.Connecting:
     case GameState.Error:
+    case GameState.Waiting:
     case GameState.NotStarted:
       return (
-        <PlayerForm
-          isConnecting={gameState === GameState.Connecting}
-          isError={gameState === GameState.Error}
-          onSubmit={startGame}
-        />
+        <div className="flex flex-col gap-7 justify-center h-full">
+          <PlayerForm
+            isDisabled={gameState !== GameState.NotStarted}
+            onSubmit={startGame}
+          />
+          <GameStateMessage
+            state={gameState}
+            errorMessage={error}
+          />
+        </div>
       );
     case GameState.InGame:
       return (

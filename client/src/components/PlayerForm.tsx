@@ -13,17 +13,16 @@ import { Link } from "react-router-dom";
 import { ReactComponent as Combomark } from "assets/openliberty_combomark.svg";
 
 type Props = {
-  isConnecting: boolean;
-  isError: boolean;
+  isDisabled: boolean;
   onSubmit: (playerName: string) => void;
 };
 
-const PlayerForm = ({ isConnecting, isError, onSubmit }: Props) => {
+const PlayerForm = ({ isDisabled, onSubmit }: Props) => {
   const [playerName, setPlayerName] = useState("");
   
   return (
     <form
-      className="max-w-screen-md flex flex-col gap-5 justify-center mx-auto h-full text-xl"
+      className="max-w-screen-md flex flex-col gap-5 mx-auto text-xl"
       onSubmit={(e) => {
         e.preventDefault();
         onSubmit(playerName);
@@ -53,16 +52,11 @@ const PlayerForm = ({ isConnecting, isError, onSubmit }: Props) => {
           Go back
         </Link>
         <input
-          className="w-2/3 hover:cursor-pointer bg-green hover:bg-green-light disabled:bg-green-dark disabled:cursor-not-allowed px-5 py-5 rounded-lg"
+          className="w-2/3 hover:cursor-pointer bg-green hover:bg-green-light disabled:bg-gray-500 disabled:cursor-not-allowed px-5 py-5 rounded-lg"
           type="submit"
-          disabled={isConnecting || isError}
+          disabled={isDisabled}
           value="Begin mission"
         />
-      </div>
-      <div className="text-center my-5">
-        {isConnecting && <p className="text-yellow-500">● Connecting to game service.</p>}
-        {isError && <p className="text-red-600">● Issue connecting to game service.</p>}
-        {!isConnecting && !isError && <p className="text-green-600">● Connected to game service.</p>}
       </div>
     </form>
   );
