@@ -9,22 +9,19 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Layout from "components/Layout";
-import HomePage from "pages/HomePage";
-import PlayPage from "pages/PlayPage";
 
-const App = () => {
+type Props = {
+  title: string;
+  value: string | number;
+};
+
+const Stat = ({ title, value }: Props) => {
   return (
-    <BrowserRouter>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/play" element={<PlayPage />} />
-        </Routes>
-      </Layout>
-    </BrowserRouter>
+    <div className="text-center w-full">
+      <h3 className="text-gray-300 text-2xl">{title}</h3>
+      <p className="text-gray-50 text-8xl font-semibold">{value}</p>
+    </div>
   );
 };
 
-export default App;
+export default Stat;
