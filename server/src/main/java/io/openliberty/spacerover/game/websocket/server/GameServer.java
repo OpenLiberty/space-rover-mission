@@ -48,7 +48,6 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	Session gestureSession = null;
 	WebsocketClientEndpoint roverClient = null;
 	WebsocketClientEndpoint boardClient = null;
-	GameLeaderboard leaderboard = null;
 
 	@Inject
 	@ConfigProperty(name = "leaderboard.hostname", defaultValue = "leaderboard")
@@ -79,7 +78,8 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		// (lifecycle) Called when the connection is opened
 		LOGGER.log(Level.INFO, "Websocket open! client {0} connected on path {1} timeout: {2}, params{3}",
 				new Object[] { session.getId(), path, session.getMaxIdleTimeout(), session.getRequestParameterMap() });
-		session.getAsyncRemote().sendText("Welcome space explorer!");
+				String welcomeText = "Welcome space explorer!";
+		session.getAsyncRemote().sendText(welcomeText);
 		LOGGER.log(Level.WARNING,
 				"roverIP = {0}, roverPort = {1}, gameboardIP = {2}, gameboardPort = {3}, leaderboardHost = {4}, leaderboardPort = {5}",
 				new Object[] { roverIP, roverPort, gameboardIP, gameboardPort, leaderboardHost, leaderboardPort });
@@ -92,28 +92,29 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 				new Object[] { session.getId(), reason, reason.getReasonPhrase() });
 
 		final GameSession sessionName = getGameSession(session);
-		if (this.currentGame.isInProgress() && (sessionName == GameSession.GUI || sessionName == GameSession.GESTURE)) {
-			waitForSessionsToReconnect();
-			if (!this.guiSession.isOpen() || !this.gestureSession.isOpen()) {
-				LOGGER.info("Ending game after waiting for reconnect");
-				this.currentGame.endGameSession();
-			}
-		}
+		// if (this.currentGame.isInProgress() && (sessionName == GameSession.GUI ||
+		// sessionName == GameSession.GESTURE)) {
+		// waitForSessionsToReconnect();
+		// if (!this.guiSession.isOpen() || !this.gestureSession.isOpen()) {
+		// LOGGER.info("Ending game after waiting for reconnect");
+		// this.currentGame.endGameSession();
+		// }
+		// }
 
 		LOGGER.log(Level.INFO, "Lost connection with {0}", sessionName);
 	}
 
-	private void waitForSessionsToReconnect() {
-		for (int i = 0; i < 5; i++) {
-			if (!this.guiSession.isOpen() || !this.gestureSession.isOpen()) {
-				try {
-					Thread.sleep(1000);
-				} catch (final InterruptedException e) {
-					LOGGER.log(Level.SEVERE, "Failed to wait for reconnection", e);
-				}
-			}
-		}
-	}
+	// private void waitForSessionsToReconnect() {
+	// for (int i = 0; i < 5; i++) {
+	// if (!this.guiSession.isOpen() || !this.gestureSession.isOpen()) {
+	// try {
+	// Thread.sleep(1000);
+	// } catch (final InterruptedException e) {
+	// LOGGER.log(Level.SEVERE, "Failed to wait for reconnection", e);
+	// }
+	// }
+	// }
+	// }
 
 	private GameSession getGameSession(final Session session) {
 		final String sessionID = session.getId();
@@ -143,8 +144,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			this.stateMachine.attachRover();
 		} catch (URISyntaxException | IOException e) {
 			LOGGER.log(Level.SEVERE, "Failed to connect to rover", e);
-			this.guiSession.getAsyncRemote().sendText(getErrorMessage("Failed to connect to rover."));
-			this.stateMachine.setErrorState();
+			this.setErrorStateAndSendError("Failed to connect to rover.");
 		}
 		return client;
 	}
@@ -162,7 +162,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	@OnError
 	public void onError(final Throwable t) {
 		// (lifecycle) Called if/when an error occurs and the connection is disrupted
-		LOGGER.log(Level.SEVERE, "Error received {0}", t);
+		LOGGER.log(Level.SEVERE, "Error received", t);
 	}
 
 	@Override
@@ -203,10 +203,11 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 					case SocketMessages.GAMEBOARD_ACK:
 						break;
 					case SocketMessages.START_GAME:
-						LOGGER.log(Level.INFO, "Start Game received for player ID: {}", parsedMsg[1]);
+						LOGGER.log(Level.INFO, "Start Game received for player ID: {0}", parsedMsg[1]);
 						startGame(parsedMsg);
 						this.roverClient.sendMessage(SocketMessages.START_GAME);
-						this.guiSession.getAsyncRemote().sendText("Game Started!");
+						String gameStarted = "Game Started!";
+						sendTextToGuiSocket(gameStarted);
 						break;
 					case SocketMessages.END_GAME:
 						LOGGER.info("Stop Game received");
@@ -214,6 +215,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 						this.roverClient.sendMessage(SocketMessages.END_GAME);
 						this.roverClient.disconnect();
 						this.boardClient.disconnect();
+						this.getLeaderboard().updateLeaderboard(this.currentGame.getGameLeaderboardStat());
 						break;
 					case SocketMessages.BACKWARD:
 					case SocketMessages.FORWARD:
@@ -223,29 +225,51 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 						this.sendRoverDirection(msgID);
 						break;
 					default:
-						LOGGER.log(Level.INFO, "Unknown Message received <{}>", msgID);
+						LOGGER.log(Level.INFO, "Unknown Message received <{0}>", msgID);
 						break;
 				}
+				this.stateMachine.incrementState(msgID);
 			}
 		} catch (final IOException ioe) {
 			LOGGER.log(Level.SEVERE, "Failed in message handler", ioe);
+			this.stateMachine.setErrorState();
 		}
-
-		this.stateMachine.incrementState(msgID);
 
 		if (this.stateMachine.isReadyToConnectGamePieces()) {
 			testLeaderboard();
-			this.roverClient = connectRoverClient();
-			this.boardClient = connectBoardClient();
 			if (!this.stateMachine.hasErrorOccurred()) {
-				this.guiSession.getAsyncRemote().sendText(SocketMessages.SERVER_READY);
+				this.roverClient = connectRoverClient();
+			}
+			if (!this.stateMachine.hasErrorOccurred()) {
+				this.boardClient = connectBoardClient();
+			}
+			if (this.stateMachine.isAllConnected()) {
+				this.sendTextToGuiSocket(SocketMessages.SERVER_READY);
 			}
 		}
 	}
 
+	private void sendTextToGuiSocket(String text) {
+		LOGGER.log(Level.INFO, "Sent message to GUI <{0}>", text);
+		this.guiSession.getAsyncRemote().sendText(text);
+	}
+
+	private GameLeaderboard getLeaderboard() {
+		return new GameLeaderboard(this.leaderboardHost, this.leaderboardPort);
+	}
+
 	private void testLeaderboard() {
-		GameLeaderboard leaderboard = new GameLeaderboard(this.leaderboardHost, this.leaderboardPort);
-		leaderboard.testLeaderboard();
+		GameLeaderboard board = getLeaderboard();
+		if (board.testLeaderboard()) {
+			this.stateMachine.attachLeaderboard();
+		} else {
+			setErrorStateAndSendError("Failed to connect to leaderboard");
+		}
+	}
+
+	private void setErrorStateAndSendError(String errMsg) {
+		this.stateMachine.setErrorState();
+		this.sendTextToGuiSocket(this.getErrorMessage(errMsg));
 	}
 
 	private WebsocketClientEndpoint connectBoardClient() {

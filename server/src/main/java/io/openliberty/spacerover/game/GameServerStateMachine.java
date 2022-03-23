@@ -3,9 +3,11 @@ package io.openliberty.spacerover.game;
 import io.openliberty.spacerover.game.models.SocketMessages;
 import io.openliberty.spacerover.game.websocket.server.GameServer;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
 public class GameServerStateMachine {
-    private static final Logger LOGGER = Logger.getLogger(GameServerStateMachine.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(GameServerStateMachine.class.getName());
 	GameServerState currentState;
 
 	public GameServerStateMachine() {
@@ -15,61 +17,65 @@ public class GameServerStateMachine {
 	public void incrementState(String msgID) {
 		GameServerState beforeState = this.currentState;
 		switch (msgID) {
-		case SocketMessages.CONNECT_GUI:
-			if (this.currentState == GameServerState.SERVER_STARTED) {
-				this.currentState = GameServerState.GUI_CONNECTED;
-			} else {
-				this.currentState = GameServerState.GUI_AND_GESTURE_CONNECTED;
-			}
-			break;
-		case SocketMessages.CONNECT_GESTURE:
-			if (this.currentState == GameServerState.SERVER_STARTED) {
-				this.currentState = GameServerState.GESTURE_CONNECTED;
-			} else {
-				this.currentState = GameServerState.GUI_AND_GESTURE_CONNECTED;
-			}
-			break;
+			case SocketMessages.CONNECT_GUI:
+				if (this.currentState == GameServerState.SERVER_STARTED
+						|| this.currentState == GameServerState.ERROR_OCCURRED) {
+					this.currentState = GameServerState.GUI_CONNECTED;
+				} else {
+					this.currentState = GameServerState.GUI_AND_GESTURE_CONNECTED;
+				}
+				break;
+			case SocketMessages.CONNECT_GESTURE:
+				if (this.currentState == GameServerState.SERVER_STARTED
+						|| this.currentState == GameServerState.ERROR_OCCURRED) {
+					this.currentState = GameServerState.GESTURE_CONNECTED;
+				} else {
+					this.currentState = GameServerState.GUI_AND_GESTURE_CONNECTED;
+				}
+				break;
 
-		case SocketMessages.ROVER_ACK:
-			this.currentState = GameServerState.ROVER_CONNECTED;
-			break;
-		case SocketMessages.GAMEBOARD_ACK:
-			this.currentState = GameServerState.ALL_CONNECTED;
-			break;
-		case SocketMessages.START_GAME:
-			this.currentState = GameServerState.GAME_STARTED;
-			break;
-		case SocketMessages.END_GAME:
-			this.currentState = GameServerState.GUI_AND_GESTURE_CONNECTED;
-			break;
-		default:
-			LOGGER.severe("Unexpected msgID " + msgID + " during state " + beforeState);
+			case SocketMessages.ROVER_ACK:
+				this.currentState = GameServerState.ROVER_CONNECTED;
+				break;
+			case SocketMessages.GAMEBOARD_ACK:
+				this.currentState = GameServerState.ALL_CONNECTED;
+				break;
+			case SocketMessages.START_GAME:
+				this.currentState = GameServerState.GAME_STARTED;
+				break;
+			case SocketMessages.END_GAME:
+				this.currentState = GameServerState.GUI_AND_GESTURE_CONNECTED;
+				break;
+			default:
+				break;
 		}
-		LOGGER.info("Change state from " + beforeState + " to " + this.currentState);
+		logStateChange(beforeState, this.currentState);
 	}
 
 	public boolean isValidState(String msgID) {
 		boolean isValid = true;
 		if (msgID.equals(SocketMessages.CONNECT_GUI)) {
 			if (this.currentState != GameServerState.SERVER_STARTED
-					&& this.currentState != GameServerState.GESTURE_CONNECTED) {
+					&& this.currentState != GameServerState.GESTURE_CONNECTED
+					&& this.currentState != GameServerState.ERROR_OCCURRED) {
 				isValid = false;
 			}
 		} else if (msgID.equals(SocketMessages.CONNECT_GESTURE)) {
 			if (this.currentState != GameServerState.SERVER_STARTED
-					&& this.currentState != GameServerState.GUI_CONNECTED) {
+					&& this.currentState != GameServerState.GUI_CONNECTED
+					&& this.currentState != GameServerState.ERROR_OCCURRED) {
 				isValid = false;
 			}
 		} else if (msgID.equals(SocketMessages.ROVER_ACK)) {
 			if (this.currentState != GameServerState.ROVER_CONNECT_TEST) {
 				isValid = false;
 			}
-			
+
 		} else if (msgID.equals(SocketMessages.GAMEBOARD_ACK)) {
 			if (this.currentState != GameServerState.GAMEBOARD_CONNECT_TEST) {
 				isValid = false;
 			}
-			
+
 		} else if (msgID.equals(SocketMessages.START_GAME)) {
 			if (this.currentState != GameServerState.ALL_CONNECTED && this.currentState != GameServerState.GAME_ENDED) {
 				isValid = false;
@@ -78,14 +84,13 @@ public class GameServerStateMachine {
 			if (this.currentState != GameServerState.GAME_STARTED) {
 				isValid = false;
 			}
-		} else if (GameServer.isDirection(msgID)) {
-			if (this.currentState != GameServerState.GAME_STARTED) {
+		} else if (GameServer.isDirection(msgID) && this.currentState != GameServerState.GAME_STARTED) {
 				isValid = false;
-			}
 		}
 
 		if (!isValid) {
-			LOGGER.severe(msgID + " recieved during invalid server state " + this.currentState);
+			LOGGER.log(Level.SEVERE, "{0} recieved during invalid server state {1}",
+					new Object[] { msgID, this.currentState });
 		}
 		return isValid;
 	}
@@ -95,6 +100,7 @@ public class GameServerStateMachine {
 			throw new RuntimeException("AttachRover recieved during invalid server state " + this.currentState);
 		}
 		this.currentState = GameServerState.ROVER_CONNECT_TEST;
+		logStateChange(GameServerState.LEADERBOARD_CONNECTED, this.currentState);
 	}
 
 	public void attachGameBoard() {
@@ -102,13 +108,15 @@ public class GameServerStateMachine {
 			throw new RuntimeException("attachGameBoard recieved during invalid server state " + this.currentState);
 		}
 		this.currentState = GameServerState.GAMEBOARD_CONNECT_TEST;
+		logStateChange(GameServerState.ROVER_CONNECTED, this.currentState);
 	}
 
-	protected void attachLeaderboard() {
+	public void attachLeaderboard() {
 		if (this.currentState != GameServerState.GUI_AND_GESTURE_CONNECTED) {
 			throw new RuntimeException("attachLeaderboard recieved during invalid server state " + this.currentState);
 		}
 		this.currentState = GameServerState.LEADERBOARD_CONNECTED;
+		logStateChange(GameServerState.GUI_AND_GESTURE_CONNECTED, this.currentState);
 	}
 
 	public GameServerState getCurrentState() {
@@ -120,10 +128,21 @@ public class GameServerStateMachine {
 	}
 
 	public void setErrorState() {
-		this.currentState= GameServerState.ERROR_OCCURRED;
+		GameServerState oldState = this.currentState;
+		this.currentState = GameServerState.ERROR_OCCURRED;
+		logStateChange(oldState, this.currentState);
+
 	}
-	public boolean hasErrorOccurred()
-	{
+
+	private void logStateChange(GameServerState oldState, GameServerState newState) {
+		LOGGER.log(Level.INFO, "STATECHANGE: From {0} to {1}", new Object[] { oldState, newState });
+	}
+
+	public boolean hasErrorOccurred() {
 		return this.currentState == GameServerState.ERROR_OCCURRED;
+	}
+
+	public boolean isAllConnected() {
+		return this.currentState == GameServerState.ALL_CONNECTED;
 	}
 }

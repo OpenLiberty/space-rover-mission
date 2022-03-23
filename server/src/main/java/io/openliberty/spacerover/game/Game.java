@@ -10,15 +10,19 @@
  *******************************************************************************/
 package io.openliberty.spacerover.game;
 
+import java.time.Duration;
+import java.time.Instant;
+
 import io.openliberty.spacerover.game.models.GameEvent;
+import io.openliberty.spacerover.game.models.GameScore;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class Game {
 
 	private String playerId;
-	private long startTime;
-	private long endTime;
+	private Instant startTime;
+	private Instant endTime;
 	private boolean inProgress = false;
 	private long score;
 	private long health;
@@ -30,7 +34,7 @@ public class Game {
 
 	public void startGameSession(String playerId, long maxHP) {
 		this.playerId = playerId;
-		startTime = System.currentTimeMillis();
+		startTime = Instant.now();
 		inProgress = true;
 		this.score = 0;
 		this.health = maxHP;
@@ -59,7 +63,7 @@ public class Game {
 
 	public void endGameSession() throws IllegalStateException {
 		if (inProgress) {
-			endTime = System.currentTimeMillis();
+			endTime = Instant.now();
 			inProgress = false;
 		} else {
 			throw new IllegalStateException("Game was not started");
@@ -67,15 +71,7 @@ public class Game {
 	}
 
 	public long getGameDuration() {
-		if (startTime > 0) {
-			if (endTime > 0) {
-				return endTime - startTime;
-			} else {
-				return System.currentTimeMillis() - startTime;
-			}
-		} else {
-			return 0;
-		}
+		return Duration.between(startTime, endTime).toSeconds();
 	}
 
 	public String getPlayerId() {
@@ -85,5 +81,13 @@ public class Game {
 	public boolean isInProgress() {
 		return inProgress;
 	}
+
+    public GameScore getGameLeaderboardStat() {
+        GameScore currScore = new GameScore();
+		currScore.setPlayer(this.playerId);
+		currScore.setScore(this.score);
+		currScore.setTime(getGameDuration());
+		return currScore;
+    }
 
 }

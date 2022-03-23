@@ -8,10 +8,10 @@ public class GameScore {
     private String player;
 
     @JsonbProperty("score")
-	private int score;
+	private long score;
 
     @JsonbProperty("time")
-	private int time;
+	private long time;
 
     @NotEmpty(message = "All players must have a player ID!")
 	public String getPlayer() {
@@ -22,19 +22,19 @@ public class GameScore {
 		this.player = player;
 	}
 
-	public int getScore() {
+	public long getScore() {
 		return score;
 	}
 
-	public void setScore(int score) {
+	public void setScore(long score) {
 		this.score = score;
 	}
 
-	public int getTime() {
+	public long getTime() {
 		return time;
 	}
 
-	public void setTime(int time) {
+	public void setTime(long time) {
 		this.time = time;
 	}
 
