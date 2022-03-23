@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 
 import org.junit.jupiter.api.Test;
 
+import io.openliberty.spacerover.game.websocket.server.GameServerConstants;
 import jakarta.websocket.DeploymentException;
 
 public class GameSocketTest {
@@ -31,7 +32,7 @@ public class GameSocketTest {
 	@Test
 	public void testSocket() throws DeploymentException, IOException, URISyntaxException, InterruptedException {
 
-		URI uri = new URI(url + "/" + "roversocket");
+		URI uri = new URI(url + "/" + GameServerConstants.WEBSOCKET_ENDPOINT);
 		System.out.println("Attempting socket connection to: " + uri);
 		WebsocketClientEndpoint endpoint = new WebsocketClientEndpoint(uri);
 

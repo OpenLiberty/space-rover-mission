@@ -85,7 +85,7 @@ public class GameServerStateMachine {
 				isValid = false;
 			}
 		} else if (GameServer.isDirection(msgID) && this.currentState != GameServerState.GAME_STARTED) {
-				isValid = false;
+			isValid = false;
 		}
 
 		if (!isValid) {
@@ -135,7 +135,9 @@ public class GameServerStateMachine {
 	}
 
 	private void logStateChange(GameServerState oldState, GameServerState newState) {
-		LOGGER.log(Level.INFO, "STATECHANGE: From {0} to {1}", new Object[] { oldState, newState });
+		if (oldState != newState) {
+			LOGGER.log(Level.INFO, "STATECHANGE: From {0} to {1}", new Object[] { oldState, newState });
+		}
 	}
 
 	public boolean hasErrorOccurred() {

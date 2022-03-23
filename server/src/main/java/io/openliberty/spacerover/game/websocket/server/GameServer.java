@@ -39,7 +39,7 @@ import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
 
 @ApplicationScoped
-@ServerEndpoint(value = "/roversocket")
+@ServerEndpoint(value = "/" + GameServerConstants.WEBSOCKET_ENDPOINT)
 public class GameServer implements GameEventListener, io.openliberty.spacerover.game.websocket.client.MessageHandler {
 	private static final Logger LOGGER = Logger.getLogger(GameServer.class.getName());
 	Game currentGame = GameHolder.INSTANCE;
@@ -50,11 +50,11 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	WebsocketClientEndpoint boardClient = null;
 
 	@Inject
-	@ConfigProperty(name = "leaderboard.hostname", defaultValue = "leaderboard")
+	@ConfigProperty(name = "io.openliberty.leaderboard.hostname", defaultValue = "leaderboard")
 	String leaderboardHost;
 
 	@Inject
-	@ConfigProperty(name = "leaderboard.port", defaultValue = "9080")
+	@ConfigProperty(name = "io.openliberty.leaderboard.port", defaultValue = "9080")
 	int leaderboardPort;
 
 	@Inject
@@ -224,9 +224,11 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 					case SocketMessages.STOP:
 						this.sendRoverDirection(msgID);
 						break;
+					case SocketMessages.GAME_HEALTH_TEST:
+						session.getAsyncRemote().sendText(SocketMessages.GAME_HEALTH_ACK);
+						break;
 					default:
 						LOGGER.log(Level.INFO, "Unknown Message received <{0}>", msgID);
-						break;
 				}
 				this.stateMachine.incrementState(msgID);
 			}

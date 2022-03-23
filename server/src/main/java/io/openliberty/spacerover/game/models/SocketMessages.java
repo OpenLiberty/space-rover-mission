@@ -28,5 +28,7 @@ public class SocketMessages {
 	public static final String GAMEBOARD_ACK = "gameboardAck";
 	public static final String ROVER_CONNECTION_FAILED = "roverConnectionFailed";
 	public static final String ERROR_MESSAGE = "error";
+	public static final String GAME_HEALTH_TEST = "healthCheck";
+	public static final String GAME_HEALTH_ACK = "healthAck";
 
 }
