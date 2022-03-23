@@ -10,6 +10,7 @@
  *******************************************************************************/
 import { useState, useEffect, useRef } from "react";
 import useTimer from "./useTimer";
+import useKeyboardControls from "./useKeyboardControls";
 
 export enum GameState {
   Connecting,
@@ -22,6 +23,7 @@ export enum GameState {
 
 enum Event {
   ConnectGUI = "connectGUI",
+  ConnectGesture = "connectGesture",
   ServerReady = "serverReady",
   Start = "startGame",
   Health = "hp",
@@ -54,10 +56,13 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
     stopTimer,
   } = useTimer(durationInSeconds);
 
+  useKeyboardControls(socket.current);
+
   useEffect(() => {
     const ws = new WebSocket(gameSocketURL);
     ws.onopen = (ev) => {
       sendMessage(Event.ConnectGUI);
+      sendMessage(Event.ConnectGesture);
       setGameState(GameState.Waiting);
     };
     ws.onerror = (ev) => {
@@ -69,6 +74,7 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
 
       switch (event) {
         case Event.ConnectGUI:
+        case Event.ConnectGesture:
         case Event.Start:
           // do nothing; these are client events
           break;
