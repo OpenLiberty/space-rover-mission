@@ -12,6 +12,8 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.Liveness;
+import org.eclipse.microprofile.metrics.annotation.SimplyTimed;
+
 import io.openliberty.spacerover.game.models.SocketMessages;
 import io.openliberty.spacerover.game.websocket.client.WebsocketClientEndpoint;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -37,17 +39,17 @@ public class GameServerHealth implements HealthCheck {
         HealthCheckResponse resp;
         if (!isHealthy()) {
             resp = HealthCheckResponse.named(GameServerHealth.class.getSimpleName())
-                    .withData("GameHealth", "not available").down()
+                    .withData("GameServerHealth", "not available").down()
                     .build();
             LOGGER.warning("GameHealth check failed.");
         } else {
             resp = HealthCheckResponse.named(GameServerHealth.class.getSimpleName())
-                    .withData("GameHealth", "available").up().build();
+                    .withData("GameServerHealth", "available").up().build();
             LOGGER.info("GameHealth check passed.");
         }
         return resp;
     }
-
+    @SimplyTimed(name="heartbeat", displayName = "Heartbeat", description = "provides a heart beat latency timer")
     private boolean isHealthy() {
         boolean isHealthy = false;
         try {
