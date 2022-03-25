@@ -23,16 +23,15 @@ const Layout = ({ children }: PropsWithChildren<{}>) => {
   return (
     <div className="font-orbitron flex flex-col h-screen bg-gradient-to-b from-black to-blue-dark">
       <Header />
-      <main className="flex-grow">
-        {children}
-        <img className="absolute top-[40%] right-[10%] animate-blink-3s" src={stars1} />
-        <img className="absolute top-[15%] right-[40%] animate-blink-4s" src={stars2} />
-        <img className="absolute top-[10%] right-[70%] animate-blink-5s" src={stars3} />
-        <img className="absolute top-[55%] right-[85%] animate-blink-6s" src={stars4} />
-        <img className="absolute top-[30%] right-[80%] animate-blink-7s" src={stars5} />
-        <Spaceship className="absolute top-[55%] right-[15%]" />
-      </main>
+      <main className="flex-grow z-10">{children}</main>
       <Footer />
+      
+      <img className="absolute top-[40%] right-[10%] animate-blink-3s" src={stars1} />
+      <img className="absolute top-[15%] right-[40%] animate-blink-4s" src={stars2} />
+      <img className="absolute top-[10%] right-[70%] animate-blink-5s" src={stars3} />
+      <img className="absolute top-[55%] right-[85%] animate-blink-6s" src={stars4} />
+      <img className="absolute top-[30%] right-[80%] animate-blink-7s" src={stars5} />
+      <Spaceship className="absolute top-[55%] right-[15%]" />
     </div>
   );
 };
