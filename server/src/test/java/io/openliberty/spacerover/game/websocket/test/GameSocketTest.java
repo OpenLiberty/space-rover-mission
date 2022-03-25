@@ -29,27 +29,27 @@ public class GameSocketTest {
 	public static final String START_GAME = "startGame";
 	public static final String SOCKET_MESSAGE_DATA_DELIMITER = "|";
 
-	@Test
-	public void testSocket() throws DeploymentException, IOException, URISyntaxException, InterruptedException {
-
-		URI uri = new URI(url + "/" + GameServerConstants.WEBSOCKET_ENDPOINT);
-		System.out.println("Attempting socket connection to: " + uri);
-		WebsocketClientEndpoint endpoint = new WebsocketClientEndpoint(uri);
-
-		// add listener
-		endpoint.addMessageHandler(new WebsocketClientEndpoint.MessageHandler() {
-			public void handleMessage(String message) {
-				System.out.println(message);
-			}
-		});
-		Thread.sleep(10000);
-		endpoint.sendMessage(START_GAME + SOCKET_MESSAGE_DATA_DELIMITER + PLAYER_ID);
-		endpoint.sendMessage("forward");
-		endpoint.sendMessage("backward");
-		endpoint.sendMessage("left");
-		endpoint.sendMessage("right");
-		
-		endpoint.sendMessage(END_GAME);
-
-	}
+//	@Test
+//	public void testSocket() throws DeploymentException, IOException, URISyntaxException, InterruptedException {
+//
+//		URI uri = new URI(url + "/" + GameServerConstants.WEBSOCKET_ENDPOINT);
+//		System.out.println("Attempting socket connection to: " + uri);
+//		WebsocketClientEndpoint endpoint = new WebsocketClientEndpoint(uri);
+//
+//		// add listener
+//		endpoint.addMessageHandler(new WebsocketClientEndpoint.MessageHandler() {
+//			public void handleMessage(String message) {
+//				System.out.println(message);
+//			}
+//		});
+//		Thread.sleep(10000);
+//		endpoint.sendMessage(START_GAME + SOCKET_MESSAGE_DATA_DELIMITER + PLAYER_ID);
+//		endpoint.sendMessage("forward");
+//		endpoint.sendMessage("backward");
+//		endpoint.sendMessage("left");
+//		endpoint.sendMessage("right");
+//		
+//		endpoint.sendMessage(END_GAME);
+//
+//	}
 }

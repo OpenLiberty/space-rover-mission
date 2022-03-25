@@ -103,7 +103,7 @@ public class Leaderboard {
 			MongoCollection<Document> collection = db.getCollection(LEADERBOARD_COLLECTION_NAME);
 			sb.append("[");
 			boolean first = true;
-			FindIterable<Document> docs = collection.find().sort(descending("Score"));
+			FindIterable<Document> docs = collection.find().sort(descending("score"));
 			for (Document d : docs) {
 				if (!first)
 					sb.append(",");

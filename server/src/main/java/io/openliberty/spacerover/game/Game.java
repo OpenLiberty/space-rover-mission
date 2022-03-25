@@ -76,14 +76,16 @@ public class Game {
 	}
 
 	public long getGameDuration() {
+		long durationInSeconds;
 		if(startTime != null && endTime != null)
 		{
-			return Duration.between(startTime, endTime).toSeconds();
+			durationInSeconds= Duration.between(startTime, endTime).toSeconds();
 		}
 		else
 		{
-			return Duration.between(startTime, Instant.now()).toSeconds();
+			durationInSeconds= Duration.between(startTime, Instant.now()).toSeconds();
 		}
+		return Math.min(durationInSeconds, MAX_GAME_TIME_SECONDS);
 	}
 
 	public String getPlayerId() {

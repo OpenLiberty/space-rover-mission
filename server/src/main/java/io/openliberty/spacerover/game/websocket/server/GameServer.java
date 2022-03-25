@@ -130,8 +130,8 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		WebsocketClientEndpoint client = null;
 		try {
 			final URI uri = new URI("ws://" + roverIP + ":" + roverPort);
-			client = new WebsocketClientEndpoint(uri);
-			client.addMessageHandler(this);
+			client = new WebsocketClientEndpoint(uri, this);
+//			client.addMessageHandler(this);
 			this.stateMachine.attachRover();
 		} catch (URISyntaxException | IOException e) {
 			LOGGER.log(Level.SEVERE, "Failed to connect to rover", e);
@@ -163,7 +163,8 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			if (eventType == GameEvent.GAME_OVER) {
 //					endGameFromServer();
 			} else {
-				this.sendTextToGuiSocket(eventType.toString().toLowerCase() + SocketMessages.SOCKET_MESSAGE_DATA_DELIMITER + value);
+				this.sendTextToGuiSocket(
+						eventType.toString().toLowerCase() + SocketMessages.SOCKET_MESSAGE_DATA_DELIMITER + value);
 			}
 		} else {
 			LOGGER.info("update game event failed because session is closed");
@@ -180,7 +181,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		handleMessage(message, null);
 	}
 
-	public void handleMessage(final String message, final Session session) {
+	public synchronized void handleMessage(final String message, final Session session) {
 		LOGGER.log(Level.INFO, "Message received: <{0}>", message);
 		final String[] parsedMsg = message.split("\\" + SocketMessages.SOCKET_MESSAGE_DATA_DELIMITER);
 		final String msgID = parsedMsg[0];
@@ -206,11 +207,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 					sendTextToGuiSocket(gameStarted);
 					break;
 				case SocketMessages.END_GAME:
-					LOGGER.info("Stop Game received");
-					this.currentGame.endGameSession();
-					this.disconnectBoard();
-					this.disconnectRover();
-					this.getLeaderboard().updateLeaderboard(this.currentGame.getGameLeaderboardStat());
+					endGame();
 					break;
 				case SocketMessages.BACKWARD:
 				case SocketMessages.FORWARD:
@@ -253,7 +250,19 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			this.sendTextToGuiSocket(SocketMessages.SERVER_READY);
 		}
 		if (this.currentGame.isGameOver()) {
-			this.sendTextToGuiSocket(SocketMessages.END_GAME);
+			this.endGame();
+		}
+	}
+
+	private void endGame() {
+		LOGGER.info("Stop Game received");
+		try {
+			this.currentGame.endGameSession();
+			this.disconnectBoard();
+			this.disconnectRover();
+			this.getLeaderboard().updateLeaderboard(this.currentGame.getGameLeaderboardStat());
+		} catch (IOException ioe) {
+			LOGGER.log(Level.SEVERE, "failed to end game", ioe);
 		}
 	}
 
@@ -303,8 +312,8 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		WebsocketClientEndpoint client = null;
 		try {
 			final URI uri = new URI("ws://" + gameboardIP + ":" + gameboardPort);
-			client = new WebsocketClientEndpoint(uri);
-			client.addMessageHandler(this);
+			client = new WebsocketClientEndpoint(uri, this);
+//			client.addMessageHandler(this); // TODO add message handler to constructor
 			this.stateMachine.attachGameBoard();
 			LOGGER.log(Level.WARNING, "connected to board");
 

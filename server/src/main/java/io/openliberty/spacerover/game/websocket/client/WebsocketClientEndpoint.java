@@ -24,6 +24,8 @@ import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
 import jakarta.websocket.WebSocketContainer;
+
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -36,6 +38,17 @@ public class WebsocketClientEndpoint {
 
     public WebsocketClientEndpoint(URI endpointURI) throws IOException {
         try {
+            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+            container.connectToServer(this, endpointURI);
+        } catch (DeploymentException e) {
+            throw new IOException(e);
+        }
+    }
+    
+    public WebsocketClientEndpoint(URI endpointURI,io.openliberty.spacerover.game.websocket.client.MessageHandler handler) throws IOException
+    {
+        try {
+        	this.messageHandler = handler;
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             container.connectToServer(this, endpointURI);
         } catch (DeploymentException e) {
@@ -61,6 +74,11 @@ public class WebsocketClientEndpoint {
      */
     @OnClose
     public void onClose(Session userSession, CloseReason reason) {
+    	try {
+			this.disconnect();
+		} catch (IOException e) {
+			LOGGER.log(Level.SEVERE, "failed to disconnect during onClose()");
+		} 
         this.userSession = null;
     }
 
@@ -74,10 +92,15 @@ public class WebsocketClientEndpoint {
         if (this.messageHandler != null) {
             this.messageHandler.handleMessage(message);
         }
+        else
+        {
+        	LOGGER.log(Level.WARNING, "message handler is null");
+        }
     }
 
    @OnMessage
    public void onMessage(ByteBuffer bytes) {
+	   LOGGER.log(Level.WARNING, "got a byte buffer message");
     }
 
 
@@ -105,6 +128,9 @@ public class WebsocketClientEndpoint {
 
     public void disconnect() throws IOException
     {
-    	this.userSession.close();
+    	if(this.userSession.isOpen())
+    	{
+    		this.userSession.close();
+    	}
     }
 }

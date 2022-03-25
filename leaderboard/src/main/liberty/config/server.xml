@@ -4,6 +4,7 @@
 		<feature>ssl-1.0</feature>
 		<feature>passwordUtilities-1.0</feature>
 		<feature>mpConfig-3.0</feature>
+		<feature>restfulWS-3.0</feature>
 	</featureManager>
 
 	<variable name="default.http.port" defaultValue="9080" />
@@ -20,4 +21,8 @@
 		password="mongodb" type="PKCS12" />
 	<ssl id="outboundSSLContext" keyStoreRef="defaultKeyStore"
 		trustStoreRef="outboundTrustStore" sslProtocol="TLS" />
+
+	<cors domain="/mongo/leaderboard"
+		allowedOrigins="*"
+		allowedMethods="GET, POST" />
 </server>
