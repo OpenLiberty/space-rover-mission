@@ -52,6 +52,10 @@ public class GameServerStateMachine {
 		logStateChange(beforeState, this.currentState);
 	}
 
+	public void setAllConnected()
+	{
+		this.currentState = GameServerState.ALL_CONNECTED;
+	}
 	public boolean isValidState(String msgID) {
 		boolean isValid = true;
 		if (msgID.equals(SocketMessages.CONNECT_GUI)) {
@@ -146,5 +150,10 @@ public class GameServerStateMachine {
 
 	public boolean isAllConnected() {
 		return this.currentState == GameServerState.ALL_CONNECTED;
+	}
+
+	public boolean isReadyToConnectBoard() {
+
+		return this.currentState == GameServerState.ROVER_CONNECTED;
 	}
 }

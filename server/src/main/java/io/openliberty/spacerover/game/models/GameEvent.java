@@ -11,5 +11,5 @@
 package io.openliberty.spacerover.game.models;
 
 public enum GameEvent {
-	HP, SCORE
+	HP, SCORE, GAME_OVER //TODO create get name
 }

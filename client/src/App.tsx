@@ -10,20 +10,26 @@
  *******************************************************************************/
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { QueryClientProvider } from "react-query";
+import queryClient from "lib/react-query";
 import Layout from "components/Layout";
 import HomePage from "pages/HomePage";
 import PlayPage from "pages/PlayPage";
+import LeaderboardPage from "pages/LeaderboardPage";
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/play" element={<PlayPage />} />
-        </Routes>
-      </Layout>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/play" element={<PlayPage />} />
+            <Route path="/leaderboard" element={<LeaderboardPage />} />
+          </Routes>
+        </Layout>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 };
 

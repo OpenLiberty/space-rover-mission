@@ -56,7 +56,7 @@ const PlayPage = () => {
         />
       );
     case GameState.GameEnded:
-      return <Navigate to={`/leaderboard?name=${playerName}`} />;
+      return <Navigate to={`/leaderboard?player=${playerName}`} />;
     default:
       return null;
   }

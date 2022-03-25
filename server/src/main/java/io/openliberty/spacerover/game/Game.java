@@ -15,11 +15,16 @@ import java.time.Instant;
 
 import io.openliberty.spacerover.game.models.GameEvent;
 import io.openliberty.spacerover.game.models.GameScore;
+import io.openliberty.spacerover.game.models.SocketMessages;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class Game {
 
+	private static final int MAX_GAME_TIME_MINUTES = 5;
+	private static final int SCORE_INCREMENT = 10;
+	private static final int OBSTACLE_DMG = 10;
+	private static final long MAX_GAME_TIME_SECONDS = 60 * MAX_GAME_TIME_MINUTES;
 	private String playerId;
 	private Instant startTime;
 	private Instant endTime;
@@ -38,7 +43,7 @@ public class Game {
 		inProgress = true;
 		this.score = 0;
 		this.health = maxHP;
-		this.eventManager = new GameEventManager(GameEvent.HP, GameEvent.SCORE);
+		this.eventManager = new GameEventManager(GameEvent.HP, GameEvent.SCORE, GameEvent.GAME_OVER);
 
 	}
 
@@ -71,7 +76,14 @@ public class Game {
 	}
 
 	public long getGameDuration() {
-		return Duration.between(startTime, endTime).toSeconds();
+		if(startTime != null && endTime != null)
+		{
+			return Duration.between(startTime, endTime).toSeconds();
+		}
+		else
+		{
+			return Duration.between(startTime, Instant.now()).toSeconds();
+		}
 	}
 
 	public String getPlayerId() {
@@ -82,12 +94,37 @@ public class Game {
 		return inProgress;
 	}
 
-    public GameScore getGameLeaderboardStat() {
-        GameScore currScore = new GameScore();
+	public GameScore getGameLeaderboardStat() {
+		GameScore currScore = new GameScore();
 		currScore.setPlayer(this.playerId);
 		currScore.setScore(this.score);
 		currScore.setTime(getGameDuration());
 		return currScore;
-    }
+	}
+
+	public void processColour(String msgID) {
+		if (msgID.equals(SocketMessages.COLOUR_RED)) {
+			this.decrementHP(OBSTACLE_DMG);
+		} else {
+			this.incrementScore(SCORE_INCREMENT);
+		}
+	}
+
+	@Override
+	public String toString() {
+		return "Game [playerId=" + playerId + ", score=" + score + ", health=" + health + ", eventManager="
+				+ eventManager + ", duration=" + this.getGameDuration() + "]";
+	}
+
+	public boolean isGameOver() {
+		boolean isOver = false;
+		if (isInProgress()) {
+			if (this.health <= 0 || this.getGameDuration() >= MAX_GAME_TIME_SECONDS) {
+				isOver = true;
+			}
+			
+		}
+		return isOver;
+	}
 
 }
