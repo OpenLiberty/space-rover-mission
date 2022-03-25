@@ -9,16 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 import { useState, useEffect } from "react";
-
-const formatTime = (timeRemaining: number) => {
-  const seconds = timeRemaining % 60;
-  const minutes = Math.floor(timeRemaining / 60);
-
-  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-  const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
-
-  return `${formattedMinutes}:${formattedSeconds}`;
-};
+import { formatTime } from "lib/utils";
 
 const useTimer = (totalTimeInSeconds: number) => {
   const [timeRemaining, setTimeRemaining] = useState(totalTimeInSeconds);
