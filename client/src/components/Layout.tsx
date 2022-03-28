@@ -21,9 +21,11 @@ import { ReactComponent as Spaceship } from "assets/spaceship.svg";
 
 const Layout = ({ children }: PropsWithChildren<{}>) => {
   return (
-    <div className="font-orbitron flex flex-col h-screen bg-gradient-to-b from-black to-blue-dark">
+    <div className="font-orbitron flex flex-col min-h-screen bg-gradient-to-b from-black to-blue-dark">
       <Header />
-      <main className="flex-grow z-10">{children}</main>
+      <main className="flex-grow z-10 py-10">
+        {children}
+      </main>
       <Footer />
       
       <img className="absolute top-[40%] right-[10%] animate-blink-3s" src={stars1} />
