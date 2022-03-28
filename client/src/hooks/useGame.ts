@@ -106,10 +106,10 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
   }, [gameSocketURL]);
 
   useEffect(() => {
-    if (timeRemaining === 0 || health === 0) {
+    if (timeRemaining === 0) {
       endGame();
     }
-  }, [timeRemaining, health]);
+  }, [timeRemaining]);
 
   function startGame(playerName: string) {
     if (gameState === GameState.NotStarted) {
