@@ -96,12 +96,13 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 				new Object[] { session.getId(), reason, reason.getReasonPhrase() });
 
 		final GameSession sessionName = getGameSession(session);
-
-		try {
-			disconnectBoard();
-			disconnectRover();
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, "Failed to disconnect clients", e);
+		if (sessionName == GameSession.GUI) {
+			try {
+				disconnectBoard();
+				disconnectRover();
+			} catch (IOException e) {
+				LOGGER.log(Level.SEVERE, "Failed to disconnect clients", e);
+			}
 		}
 
 		LOGGER.log(Level.INFO, "Lost connection with {0}", sessionName);
@@ -126,12 +127,11 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		this.handleMessage(message, session);
 	}
 
-	private WebsocketClientEndpoint connectRoverClient() {
+	private synchronized WebsocketClientEndpoint connectRoverClient() {
 		WebsocketClientEndpoint client = null;
 		try {
 			final URI uri = new URI("ws://" + roverIP + ":" + roverPort);
 			client = new WebsocketClientEndpoint(uri, this);
-//			client.addMessageHandler(this);
 			this.stateMachine.attachRover();
 		} catch (URISyntaxException | IOException e) {
 			LOGGER.log(Level.SEVERE, "Failed to connect to rover", e);
@@ -153,7 +153,6 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 	@OnError
 	public void onError(final Throwable t) {
-		// (lifecycle) Called if/when an error occurs and the connection is disrupted
 		LOGGER.log(Level.SEVERE, "Error received", t);
 	}
 
@@ -161,7 +160,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	public void update(final GameEvent eventType, final long value) {
 		if (this.guiSession.isOpen()) {
 			if (eventType == GameEvent.GAME_OVER) {
-//					endGameFromServer();
+					endGameFromServer();
 			} else {
 				this.sendTextToGuiSocket(
 						eventType.toString().toLowerCase() + SocketMessages.SOCKET_MESSAGE_DATA_DELIMITER + value);
@@ -307,13 +306,12 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		this.sendTextToGuiSocket(this.getErrorMessage(errMsg));
 	}
 
-	private WebsocketClientEndpoint connectBoardClient() {
+	private synchronized WebsocketClientEndpoint connectBoardClient() {
 		LOGGER.log(Level.WARNING, "connecting to board: {0} {1}", new Object[] { gameboardIP, gameboardPort });
 		WebsocketClientEndpoint client = null;
 		try {
 			final URI uri = new URI("ws://" + gameboardIP + ":" + gameboardPort);
 			client = new WebsocketClientEndpoint(uri, this);
-//			client.addMessageHandler(this); // TODO add message handler to constructor
 			this.stateMachine.attachGameBoard();
 			LOGGER.log(Level.WARNING, "connected to board");
 

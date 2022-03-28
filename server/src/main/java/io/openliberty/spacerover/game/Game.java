@@ -12,6 +12,8 @@ package io.openliberty.spacerover.game;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 import io.openliberty.spacerover.game.models.GameEvent;
 import io.openliberty.spacerover.game.models.GameScore;
@@ -32,6 +34,7 @@ public class Game {
 	private long score;
 	private long health;
 	private GameEventManager eventManager = null;
+	private Set<String> coloursVisited; 
 
 	public void startGameSession(String playerId) {
 		this.startGameSession(playerId, 100);
@@ -44,7 +47,7 @@ public class Game {
 		this.score = 0;
 		this.health = maxHP;
 		this.eventManager = new GameEventManager(GameEvent.HP, GameEvent.SCORE, GameEvent.GAME_OVER);
-
+		this.coloursVisited = new HashSet<>();
 	}
 
 	public GameEventManager getEventManager() {
@@ -108,7 +111,11 @@ public class Game {
 		if (msgID.equals(SocketMessages.COLOUR_RED)) {
 			this.decrementHP(OBSTACLE_DMG);
 		} else {
-			this.incrementScore(SCORE_INCREMENT);
+			if(!this.coloursVisited.contains(msgID))
+			{
+				this.coloursVisited.add(msgID);
+				this.incrementScore(SCORE_INCREMENT);
+			}
 		}
 	}
 
