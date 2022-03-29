@@ -27,20 +27,28 @@ import jakarta.websocket.WebSocketContainer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import io.openliberty.spacerover.game.GameEventManager;
+import io.openliberty.spacerover.game.models.GameEvent;
+
 @ClientEndpoint
 public class WebsocketClientEndpoint {
 
 	private static final Logger LOGGER = Logger.getLogger(WebsocketClientEndpoint.class.getName());
 	Session userSession = null;
 	private io.openliberty.spacerover.game.websocket.client.MessageHandler messageHandler;
-
+	private GameEventManager manager;
 	public WebsocketClientEndpoint(URI endpointURI) throws IOException {
 		try {
 			WebSocketContainer container = ContainerProvider.getWebSocketContainer();
 			container.connectToServer(this, endpointURI);
+			manager = new GameEventManager(GameEvent.SOCKET_DISCONNECT);
 		} catch (DeploymentException e) {
 			throw new IOException(e);
 		}
+	}
+
+	public GameEventManager getEventManager() {
+		return manager;
 	}
 
 	public WebsocketClientEndpoint(URI endpointURI,
@@ -72,6 +80,7 @@ public class WebsocketClientEndpoint {
 	 */
 	@OnClose
 	public void onClose(Session userSession, CloseReason reason) {
+		this.manager.notify(GameEvent.SOCKET_DISCONNECT, reason.getCloseCode().getCode());
 		this.userSession = null;
 	}
 

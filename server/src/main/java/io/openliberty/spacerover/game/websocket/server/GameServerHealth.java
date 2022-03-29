@@ -35,6 +35,7 @@ public class GameServerHealth implements HealthCheck {
     String serverHost;
 
     @Override
+    @SimplyTimed(name="heartbeat", displayName = "Heartbeat", description = "provides a heart beat latency timer")
     public HealthCheckResponse call() {
         HealthCheckResponse resp;
         if (!isHealthy()) {
@@ -49,7 +50,7 @@ public class GameServerHealth implements HealthCheck {
         }
         return resp;
     }
-    @SimplyTimed(name="heartbeat", displayName = "Heartbeat", description = "provides a heart beat latency timer")
+    
     private boolean isHealthy() {
         boolean isHealthy = false;
         try {

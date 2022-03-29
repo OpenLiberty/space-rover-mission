@@ -21,6 +21,8 @@ public class LeaderboardEntry {
 	private int score;
 	@JsonbProperty("time")
 	private int time;
+	@JsonbProperty("health")
+	private int health;
 
 	@NotEmpty(message = "All players must have a player ID!")
 	public String getPlayer() {
@@ -45,6 +47,14 @@ public class LeaderboardEntry {
 
 	public void setTime(int time) {
 		this.time = time;
+	}
+
+	public int getHealth() {
+		return health;
+	}
+
+	public void setHealth(int health) {
+		this.health = health;
 	}
 
 }

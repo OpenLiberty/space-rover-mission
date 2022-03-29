@@ -37,10 +37,10 @@ public class GameEventManager {
 	        users.remove(listener);
 	    }
 
-	    public void notify(GameEvent eventType, long file) {
+	    public void notify(GameEvent eventType, int details) {
 	        List<GameEventListener> users = listeners.get(eventType);
 	        for (GameEventListener listener : users) {
-	            listener.update(eventType, file);
+	            listener.update(eventType, details);
 	        }
 	    }
 	    

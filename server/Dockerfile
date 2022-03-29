@@ -2,9 +2,13 @@ FROM maven AS builder
 
 WORKDIR /usr/src/app
 
-COPY . .
+COPY pom.xml .
 
-RUN mvn clean package
+RUN mvn org.apache.maven.plugins:maven-dependency-plugin:3.3.0:go-offline
+
+COPY src src
+
+RUN mvn -o package -DskipTests
 
 FROM icr.io/appcafe/open-liberty:kernel-slim-java11-openj9-ubi
 

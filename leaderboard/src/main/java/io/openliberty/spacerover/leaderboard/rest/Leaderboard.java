@@ -84,6 +84,7 @@ public class Leaderboard {
 		newLeaderboardEntry.put("player", entry.getPlayer());
 		newLeaderboardEntry.put("score", entry.getScore());
 		newLeaderboardEntry.put("time", entry.getTime());
+		newLeaderboardEntry.put("health", entry.getHealth());
 
 		document.insertOne(newLeaderboardEntry);
 

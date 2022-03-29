@@ -11,7 +11,11 @@ public class GameServerStateMachine {
 	GameServerState currentState;
 
 	public GameServerStateMachine() {
-		this.currentState = GameServerState.SERVER_STARTED;
+		this(GameServerState.SERVER_STARTED);
+	}
+	
+	public GameServerStateMachine(GameServerState startingPoint) {
+		this.currentState = startingPoint;
 	}
 
 	public void incrementState(String msgID) {
@@ -52,10 +56,6 @@ public class GameServerStateMachine {
 		logStateChange(beforeState, this.currentState);
 	}
 
-	public void setAllConnected()
-	{
-		this.currentState = GameServerState.ALL_CONNECTED;
-	}
 	public boolean isValidState(String msgID) {
 		boolean isValid = true;
 		if (msgID.equals(SocketMessages.CONNECT_GUI)) {
@@ -155,5 +155,9 @@ public class GameServerStateMachine {
 	public boolean isReadyToConnectBoard() {
 
 		return this.currentState == GameServerState.ROVER_CONNECTED;
+	}
+
+	public boolean isReadyToConnectRover() {
+		return this.currentState == GameServerState.LEADERBOARD_CONNECTED;
 	}
 }

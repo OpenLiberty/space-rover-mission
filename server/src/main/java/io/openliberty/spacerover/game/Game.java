@@ -14,6 +14,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import io.openliberty.spacerover.game.models.GameEvent;
 import io.openliberty.spacerover.game.models.GameScore;
@@ -22,25 +24,26 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class Game {
+	private static final Logger LOGGER = Logger.getLogger(Game.class.getName());
 
 	private static final int MAX_GAME_TIME_MINUTES = 5;
 	private static final int SCORE_INCREMENT = 10;
 	private static final int OBSTACLE_DMG = 10;
-	private static final long MAX_GAME_TIME_SECONDS = 60 * MAX_GAME_TIME_MINUTES;
+	private static final int MAX_GAME_TIME_SECONDS = 60 * MAX_GAME_TIME_MINUTES;
 	private String playerId;
 	private Instant startTime;
 	private Instant endTime;
 	private boolean inProgress = false;
-	private long score;
-	private long health;
+	private int score;
+	private int health;
 	private GameEventManager eventManager = null;
-	private Set<String> coloursVisited; 
+	private Set<String> coloursVisited;
 
 	public void startGameSession(String playerId) {
 		this.startGameSession(playerId, 100);
 	}
 
-	public void startGameSession(String playerId, long maxHP) {
+	public void startGameSession(String playerId, int maxHP) {
 		this.playerId = playerId;
 		startTime = Instant.now();
 		inProgress = true;
@@ -54,17 +57,17 @@ public class Game {
 		return eventManager;
 	}
 
-	public void decrementHP(long amount) {
+	public void decrementHP(int amount) {
 		this.health = Math.max(this.health - amount, 0);
 		getEventManager().notify(GameEvent.HP, this.health);
 	}
 
-	public void decrementScore(long amount) {
+	public void decrementScore(int amount) {
 		this.score = Math.max(this.score - amount, 0);
 		getEventManager().notify(GameEvent.SCORE, this.score);
 	}
 
-	public void incrementScore(long amount) {
+	public void incrementScore(int amount) {
 		this.score += amount;
 		getEventManager().notify(GameEvent.SCORE, this.score);
 	}
@@ -80,13 +83,14 @@ public class Game {
 
 	public long getGameDuration() {
 		long durationInSeconds;
-		if(startTime != null && endTime != null)
-		{
-			durationInSeconds= Duration.between(startTime, endTime).toSeconds();
-		}
-		else
-		{
-			durationInSeconds= Duration.between(startTime, Instant.now()).toSeconds();
+		if (startTime != null && endTime != null) {
+			durationInSeconds = Duration.between(startTime, endTime).toSeconds();
+		} else {
+			if (this.isInProgress()) {
+				durationInSeconds = Duration.between(startTime, Instant.now()).toSeconds();
+			} else {
+				durationInSeconds = 0;
+			}
 		}
 		return Math.min(durationInSeconds, MAX_GAME_TIME_SECONDS);
 	}
@@ -104,6 +108,7 @@ public class Game {
 		currScore.setPlayer(this.playerId);
 		currScore.setScore(this.score);
 		currScore.setTime(getGameDuration());
+		currScore.setHealth(this.health);
 		return currScore;
 	}
 
@@ -111,8 +116,8 @@ public class Game {
 		if (msgID.equals(SocketMessages.COLOUR_RED)) {
 			this.decrementHP(OBSTACLE_DMG);
 		} else {
-			if(!this.coloursVisited.contains(msgID))
-			{
+			if (!this.coloursVisited.contains(msgID)) {
+				LOGGER.log(Level.INFO, "New colour visited: {0}", msgID);
 				this.coloursVisited.add(msgID);
 				this.incrementScore(SCORE_INCREMENT);
 			}
@@ -125,13 +130,13 @@ public class Game {
 				+ eventManager + ", duration=" + this.getGameDuration() + "]";
 	}
 
-	public boolean isGameOver() {
+	public boolean isInProgressGameOver() {
 		boolean isOver = false;
 		if (isInProgress()) {
-			if (this.health <= 0 || this.getGameDuration() >= MAX_GAME_TIME_SECONDS) {
+			if (this.health <= 0 || this.getGameDuration() >= MAX_GAME_TIME_SECONDS || this.coloursVisited.size() == 4) {
 				isOver = true;
 			}
-			
+
 		}
 		return isOver;
 	}
