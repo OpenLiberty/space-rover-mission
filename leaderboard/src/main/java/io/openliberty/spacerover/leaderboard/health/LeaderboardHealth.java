@@ -3,9 +3,13 @@ import java.util.logging.Logger;
 
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
+import org.eclipse.microprofile.health.Liveness;
 
 import io.openliberty.spacerover.leaderboard.rest.Leaderboard;
+import jakarta.enterprise.context.ApplicationScoped;
 
+@Liveness
+@ApplicationScoped
 public class LeaderboardHealth implements HealthCheck{
     private static final Logger LOGGER = Logger.getLogger(LeaderboardHealth.class.getName());
 
