@@ -16,6 +16,7 @@ export type LeaderboardEntry = {
   rank: number;
   player: string;
   time: number;
+  health: number;
   score: number;
 };
 

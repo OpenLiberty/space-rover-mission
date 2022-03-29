@@ -31,6 +31,7 @@ const LeaderboardTable = ({ data }: Props) => {
             <th className="p-3">RANK</th>
             <th className="p-3">PLAYER</th>
             <th className="p-3">TIME</th>
+            <th className="p-3">HEALTH</th>
             <th className="p-3">SCORE</th>
           </tr>
         </thead>
@@ -40,6 +41,7 @@ const LeaderboardTable = ({ data }: Props) => {
               <td className="p-3">{entry.rank}</td>
               <td className="p-3">{entry.player}</td>
               <td className="p-3">{formatTime(entry.time)}</td>
+              <td className="p-3">{entry.health}%</td>
               <td className="p-3">{entry.score}</td>
             </tr>
           ))}

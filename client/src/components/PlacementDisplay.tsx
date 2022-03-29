@@ -15,7 +15,7 @@ import { formatTime } from "lib/utils";
 
 type Props = LeaderboardEntry;
 
-const PlacementDisplay = ({ rank, player, time, score }: Props) => {
+const PlacementDisplay = ({ rank, player, time, health, score }: Props) => {
   return (
     <div className="text-gray-50 text-center pt-5 pb-10">
       <h1 className="text-green text-5xl">Mission completed</h1>
@@ -27,6 +27,10 @@ const PlacementDisplay = ({ rank, player, time, score }: Props) => {
         <div>
           <p className="text-gray-400">Time</p>
           <p className="text-7xl text-semibold">{formatTime(time)}</p>
+        </div>
+        <div>
+          <p className="text-gray-400">Health</p>
+          <p className="text-7xl text-semibold">{health}%</p>
         </div>
         <div>
           <p className="text-gray-400">Score</p>
