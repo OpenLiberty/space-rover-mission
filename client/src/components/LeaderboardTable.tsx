@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2022 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 import React from "react";
 import { LeaderboardEntry } from "hooks/useLeaderboard";
 import { formatTime } from "lib/utils";
@@ -21,6 +31,7 @@ const LeaderboardTable = ({ data }: Props) => {
             <th className="p-3">RANK</th>
             <th className="p-3">PLAYER</th>
             <th className="p-3">TIME</th>
+            <th className="p-3">HEALTH</th>
             <th className="p-3">SCORE</th>
           </tr>
         </thead>
@@ -30,6 +41,7 @@ const LeaderboardTable = ({ data }: Props) => {
               <td className="p-3">{entry.rank}</td>
               <td className="p-3">{entry.player}</td>
               <td className="p-3">{formatTime(entry.time)}</td>
+              <td className="p-3">{entry.health}%</td>
               <td className="p-3">{entry.score}</td>
             </tr>
           ))}

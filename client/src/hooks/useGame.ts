@@ -50,7 +50,6 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
   const [error, setError] = useState("");
 
   const {
-    timeRemaining,
     formattedTime,
     startTimer,
     stopTimer,
@@ -88,7 +87,8 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
           setScore(parseInt(data));
           break;
         case Event.End:
-          endGame();
+          stopTimer();
+          setGameState(GameState.GameEnded);
           break;
         case Event.Error:
           setError(data);
@@ -104,12 +104,6 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
     return () => ws.close();
   }, [gameSocketURL]);
 
-  useEffect(() => {
-    if (timeRemaining === 0 || health === 0) {
-      endGame();
-    }
-  }, [timeRemaining, health]);
-
   function startGame(playerName: string) {
     if (gameState === GameState.NotStarted) {
       setPlayerName(playerName);
@@ -121,9 +115,7 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
 
   function endGame() {
     if (gameState === GameState.InGame) {
-      stopTimer();
       sendMessage(Event.End);
-      setGameState(GameState.GameEnded);
     }
   }
 
