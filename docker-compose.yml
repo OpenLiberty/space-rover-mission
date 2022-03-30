@@ -1,9 +1,16 @@
 version: "3.9"
 services:
         mongo:
-                build: ./leaderboard/assets
+                image: mongo:latest
+                environment:
+                    - MONGO_INITDB_ROOT_USERNAME=root
+                    - MONGO_INITDB_ROOT_PASSWORD=openliberty
                 ports:
-                        - "27017:27017"
+                    - "27017:27017"
+                volumes:
+                    - ~/mongo/data:/data/db
+                    - "./assets/:/docker-entrypoint-initdb.d/"
+                command: mongod
         leaderboard:
                 build: ./leaderboard
                 ports:
