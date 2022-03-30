@@ -23,38 +23,48 @@ public class LeaderboardEntry {
 	private int time;
 	@JsonbProperty("health")
 	private int health;
+	@JsonbProperty ("timestamp")
+	private long timestamp;
+
+	public int getHealth() {
+		return health;
+	}
 
 	@NotEmpty(message = "All players must have a player ID!")
 	public String getPlayer() {
 		return player;
 	}
 
-	public void setPlayer(String player) {
-		this.player = player;
-	}
-
 	public int getScore() {
 		return score;
-	}
-
-	public void setScore(int score) {
-		this.score = score;
 	}
 
 	public int getTime() {
 		return time;
 	}
 
-	public void setTime(int time) {
-		this.time = time;
-	}
-
-	public int getHealth() {
-		return health;
+	public long getTimestamp() {
+		return timestamp;
 	}
 
 	public void setHealth(int health) {
 		this.health = health;
+	}
+
+	public void setPlayer(String player) {
+		this.player = player;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	public void setTime(int time) {
+		this.time = time;
+	}
+
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
 	}
 
 }

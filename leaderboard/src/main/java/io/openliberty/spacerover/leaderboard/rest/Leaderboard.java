@@ -85,6 +85,7 @@ public class Leaderboard {
 		newLeaderboardEntry.put("score", entry.getScore());
 		newLeaderboardEntry.put("time", entry.getTime());
 		newLeaderboardEntry.put("health", entry.getHealth());
+		newLeaderboardEntry.put("timestamp", System.currentTimeMillis());
 
 		document.insertOne(newLeaderboardEntry);
 
