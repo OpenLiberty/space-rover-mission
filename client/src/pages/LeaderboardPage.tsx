@@ -22,7 +22,9 @@ const LeaderboardPage = () => {
 
   let placement;
   if (player && leaderboard) {
-    placement = leaderboard.filter((entry) => entry.player === player)[0];
+    placement = leaderboard
+      .filter((entry) => entry.player === player)
+      .sort((a, b) => a.timestamp - b.timestamp)[0];
   }
 
   return (
