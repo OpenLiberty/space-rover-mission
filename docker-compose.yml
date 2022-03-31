@@ -9,7 +9,7 @@ services:
                     - "27017:27017"
                 volumes:
                     - ~/mongo/data:/data/db
-                    - "./assets/:/docker-entrypoint-initdb.d/"
+                    - "./leaderboard/assets/:/docker-entrypoint-initdb.d/"
                 command: mongod
         leaderboard:
                 build: ./leaderboard
@@ -23,4 +23,8 @@ services:
                 build: ./client
                 ports:
                         - "3000:3000"
+                environment:
+                        - REACT_APP_GAME_SOCKET_URL=ws://localhost:9070/roversocket
+                        - REACT_APP_GAME_DURATION_SECONDS=25
+                        - REACT_APP_LEADERBOARD_URL=http://localhost:9080/mongo/leaderboard
 

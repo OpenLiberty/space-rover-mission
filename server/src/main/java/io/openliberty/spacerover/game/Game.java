@@ -78,8 +78,8 @@ public class Game {
 	}
 	public void endGameSession(String gameLengthInMillis)
 	{
-		long millis = Long.parseLong(gameLengthInMillis);
-		this.endGameSession(this.startTime.plus(millis, ChronoUnit.MILLIS));
+		long seconds = Long.parseLong(gameLengthInMillis);
+		this.endGameSession(this.startTime.plus(seconds, ChronoUnit.SECONDS));
 	}
 
 	public long getGameDuration() {

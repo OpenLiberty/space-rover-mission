@@ -57,6 +57,7 @@ public class WebsocketClientEndpoint {
 			this.messageHandler = handler;
 			WebSocketContainer container = ContainerProvider.getWebSocketContainer();
 			container.connectToServer(this, endpointURI);
+			manager = new GameEventManager(GameEvent.SOCKET_DISCONNECT);
 		} catch (DeploymentException e) {
 			throw new IOException(e);
 		}
@@ -80,6 +81,7 @@ public class WebsocketClientEndpoint {
 	 */
 	@OnClose
 	public void onClose(Session userSession, CloseReason reason) {
+		LOGGER.info("Socket disconnect event");
 		this.manager.notify(GameEvent.SOCKET_DISCONNECT, reason.getCloseCode().getCode());
 		this.userSession = null;
 	}

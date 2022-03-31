@@ -13,7 +13,7 @@ public class GameScore {
     @JsonbProperty("time")
 	private long time;
     
-    @JsonbProperty("heatlh")
+    @JsonbProperty("health")
     private int health;
 
     @NotEmpty(message = "All players must have a player ID!")

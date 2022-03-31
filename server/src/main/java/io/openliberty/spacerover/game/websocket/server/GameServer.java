@@ -156,7 +156,9 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	@Override
 	public void update(final GameEvent eventType, final long value) {
 		if (eventType == GameEvent.SOCKET_DISCONNECT) {
-			endGameFromServer(true);
+			if (!this.currentGame.isInProgress()) {
+				endGameFromServer(true);
+			}
 		} else if (eventType == GameEvent.GAME_OVER) {
 			LOGGER.log(Level.WARNING, "Ending game from event type {0}", eventType);
 			endGameFromServer(false);
@@ -167,18 +169,16 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	}
 
 	private void endGameFromServer(boolean isEndOnError) {
-		if (this.currentGame.isInProgress()) {
-			this.currentGame.endGameSession();
-		}
+
 		if (isEndOnError) {
-			LOGGER.log(Level.WARNING, "Ending ended from server side due to error. {0}", this.currentGame);
+			LOGGER.log(Level.WARNING, "Server ended from server side due to error. {0}", this.currentGame);
 			this.setErrorStateAndSendError("Game ended unexpectedly");
 		} else {
-			LOGGER.log(Level.INFO, "Ending ended from server side. {0}", this.currentGame);
+			this.currentGame.endGameSession();
+			LOGGER.log(Level.INFO, "Ending game from server side. {0}", this.currentGame);
 			this.getLeaderboard().updateLeaderboard(this.currentGame.getGameLeaderboardStat());
 			this.sendTextToGuiSocket(SocketMessages.END_GAME);
 		}
-		LOGGER.log(Level.INFO, "Game ended from server side.");
 	}
 
 	@Override
@@ -248,7 +248,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 	}
 
-	private void connectGamePieces() {
+	private synchronized void connectGamePieces() {
 		if (this.stateMachine.isReadyToConnectGamePieces()) {
 			testLeaderboard();
 		}
@@ -322,9 +322,10 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	}
 
 	private void setErrorStateAndSendError(String errMsg) {
+		LOGGER.log(Level.SEVERE, "setErrorStateAndSendError called");
 		this.stateMachine.setErrorState();
 		this.sendTextToGuiSocket(this.getErrorMessage(errMsg));
-		this.reInit(false);
+//		this.reInit(false);
 	}
 
 	private synchronized WebsocketClientEndpoint connectBoardClient() {
