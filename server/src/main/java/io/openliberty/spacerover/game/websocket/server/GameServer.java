@@ -156,7 +156,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	@Override
 	public void update(final GameEvent eventType, final long value) {
 		if (eventType == GameEvent.SOCKET_DISCONNECT) {
-			if (!this.currentGame.isInProgress()) {
+			if (this.currentGame.isInProgress()) {
 				endGameFromServer(true);
 			}
 		} else if (eventType == GameEvent.GAME_OVER) {
