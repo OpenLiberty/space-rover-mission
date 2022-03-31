@@ -36,5 +36,6 @@ public class SocketMessages {
 	public static final String COLOUR_YELLOW = "YW";
 	public static final String COLOUR_PURPLE = "PUR";
 	public static final String[] COLOURS = { COLOUR_RED, COLOUR_BLUE, COLOUR_GREEN, COLOUR_YELLOW, COLOUR_PURPLE };
+	public static final String INIT_GAME = "1";
 
 }

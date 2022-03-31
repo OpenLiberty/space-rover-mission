@@ -12,6 +12,7 @@ package io.openliberty.spacerover.game;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -73,12 +74,12 @@ public class Game {
 	}
 
 	public void endGameSession() throws IllegalStateException {
-		if (inProgress) {
-			endTime = Instant.now();
-			inProgress = false;
-		} else {
-			throw new IllegalStateException("Game was not started");
-		}
+		this.endGameSession(Instant.now());
+	}
+	public void endGameSession(String gameLengthInMillis)
+	{
+		long millis = Long.parseLong(gameLengthInMillis);
+		this.endGameSession(this.startTime.plus(millis, ChronoUnit.MILLIS));
 	}
 
 	public long getGameDuration() {
@@ -122,6 +123,9 @@ public class Game {
 				this.incrementScore(SCORE_INCREMENT);
 			}
 		}
+		if (this.isInProgressGameOver()) {
+			this.endGameSession();
+		}
 	}
 
 	@Override
@@ -132,13 +136,20 @@ public class Game {
 
 	public boolean isInProgressGameOver() {
 		boolean isOver = false;
-		if (isInProgress()) {
-			if (this.health <= 0 || this.getGameDuration() >= MAX_GAME_TIME_SECONDS || this.coloursVisited.size() == 4) {
-				isOver = true;
-			}
-
+		if (this.health <= 0 || this.coloursVisited.size() == 4) {
+			isOver = true;
 		}
 		return isOver;
+	}
+
+	public void endGameSession(Instant inputEndTime) {
+		if (inProgress) {
+			this.endTime = inputEndTime;
+			inProgress = false;
+			getEventManager().notify(GameEvent.GAME_OVER, 0);
+		} else {
+			throw new IllegalStateException("Game was not started");
+		}
 	}
 
 }
