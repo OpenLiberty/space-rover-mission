@@ -11,9 +11,9 @@
 import { useState, useEffect, useRef } from "react";
 
 import useSound from "use-sound";
-import crashSound from "assets/sounds/crash.wav";
-import scoreSound from "assets/sounds/score.mp3";
-import timerSound from "assets/sounds/timer.mp3";
+import crashSoundFile from "assets/sounds/crash.wav";
+import scoreSoundFile from "assets/sounds/score.mp3";
+import timerSoundFile from "assets/sounds/timer.mp3";
 
 import useTimer from "./useTimer";
 import useKeyboardControls from "./useKeyboardControls";
@@ -35,7 +35,7 @@ enum Event {
   Health = "hp",
   Score = "score",
   End = "endGame",
-  Error = "error"
+  Error = "error",
 }
 
 const MSG_DELMITER = "|";
@@ -55,12 +55,12 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
 
   const [error, setError] = useState("");
 
-  const [playCrash] = useSound(crashSound, {
+  const [, { sound: crashSound }] = useSound(crashSoundFile, {
     volume: 0.5,
     playbackRate: 1.5,
   });
-  const [playScore] = useSound(scoreSound);
-  const [playTimer, { stop: stopTimerSound }] = useSound(timerSound);
+  const [, { sound: scoreSound }] = useSound(scoreSoundFile);
+  const [, { sound: timerSound }] = useSound(timerSoundFile);
 
   const {
     formattedTime,
@@ -72,17 +72,23 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
   useKeyboardControls(socket.current);
 
   useEffect(() => {
-    const ws = new WebSocket(gameSocketURL);
-    ws.onopen = (ev) => {
+    if (!crashSound || !scoreSound || !timerSound) {
+      return;
+    }
+    
+    if (!socket.current) {
+      socket.current = new WebSocket(gameSocketURL);
+    }
+    socket.current.onopen = (ev) => {
       sendMessage(Event.ConnectGUI);
       sendMessage(Event.ConnectGesture);
       setGameState(GameState.Waiting);
     };
-    ws.onerror = (ev) => {
-      setError("Failed to connect to game service.")
+    socket.current.onerror = (ev) => {
+      setError("Failed to connect to game service.");
       setGameState(GameState.Error);
     };
-    ws.onmessage = (ev) => {
+    socket.current.onmessage = (ev) => {
       const [event, data] = ev.data.split(MSG_DELMITER);
 
       switch (event) {
@@ -95,16 +101,16 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
           setGameState(GameState.NotStarted);
           break;
         case Event.Health:
-          playCrash();
+          crashSound.play();
           setHealth(parseInt(data));
           break;
         case Event.Score:
-          playScore();
+          scoreSound.play();
           setScore(parseInt(data));
           break;
         case Event.End:
           stopTimer();
-          stopTimerSound();
+          timerSound.stop();
           setGameState(GameState.GameEnded);
           break;
         case Event.Error:
@@ -116,19 +122,20 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
       }
     };
 
-    socket.current = ws;
-
-    return () => ws.close();
-  }, [gameSocketURL]);
+    return () => {
+      socket.current?.close();
+      socket.current = null;
+    };
+  }, [gameSocketURL, crashSound, scoreSound, timerSound]);
 
   useEffect(() => {
     if (timeRemaining === 10) {
-      playTimer();
+      timerSound?.play();
     }
     if (timeRemaining === 0) {
       endGame();
     }
-  }, [timeRemaining]);
+  }, [timeRemaining, timerSound]);
 
   function startGame(playerName: string) {
     if (gameState === GameState.NotStarted) {

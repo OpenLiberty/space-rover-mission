@@ -10,12 +10,10 @@ COPY src src
 
 RUN mvn -o package
 
-FROM icr.io/appcafe/open-liberty:kernel-slim-java11-openj9-ubi
-
-COPY --chown=1001:0 --from=builder /usr/src/app/src/main/liberty/config /config
-
-RUN features.sh
+FROM open-liberty:22.0.0.3-full-java11-openj9
 
 COPY --chown=1001:0 --from=builder /usr/src/app/target/*.war /config/apps
+
+COPY --chown=1001:0 --from=builder /usr/src/app/src/main/liberty/config/server.xml /config/
 
 RUN configure.sh

@@ -165,7 +165,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 	@Override
 	public void update(final GameEvent eventType, final long value) {
-		if (eventType == GameEvent.SOCKET_DISCONNECT) {
+		if (eventType == GameEvent.SOCKET_DISCONNECT && !this.stateMachine.hasErrorOccurred()) {
 			this.setErrorStateAndSendError("Socket disconnected");
 		} else if (eventType == GameEvent.GAME_OVER) {
 			LOGGER.log(Level.WARNING, "Ending game from event type {0}", eventType);
@@ -251,26 +251,29 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			LOGGER.log(Level.SEVERE, "Failed in message handler", ioe);
 			this.setErrorStateAndSendError("Communication failure with server while processing msg: " + message);
 		}
-
 		connectGamePieces();
-
 	}
 
 	private synchronized void connectGamePieces() {
+		LOGGER.warning("enter connectGamePieces");
 		if (this.stateMachine.isReadyToConnectGamePieces()) {
 			testLeaderboard();
 		}
 		if (this.stateMachine.isReadyToConnectRover() && !this.stateMachine.hasErrorOccurred()) {
 			disconnectRover();
 			this.roverClient = connectRoverClient();
-		} else if (this.stateMachine.isReadyToConnectBoard() && !this.stateMachine.hasErrorOccurred()) {
+		}
+		if (this.stateMachine.isReadyToConnectBoard() && !this.stateMachine.hasErrorOccurred()) {
 			disconnectBoard();
 			this.boardClient = connectBoardClient();
-		} else if (this.stateMachine.isAllConnected()) {
+		}
+		if (this.stateMachine.isAllConnected()) {
 			this.sendTextToGuiSocket(SocketMessages.SERVER_READY);
-		} else if (this.stateMachine.hasErrorOccurred()) {
+		}
+		if (this.stateMachine.hasErrorOccurred()) {
 			this.endGameFromServer(true);
 		}
+		LOGGER.warning("exit connectGamePieces");
 	}
 
 	private void sendBoardColour(String colour) throws IOException {
@@ -279,7 +282,6 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 	private synchronized void disconnectRover() {
 		if (this.roverClient != null) {
-			this.roverClient.getEventManager().unsubscribe(GameEvent.SOCKET_DISCONNECT, this);
 			try {
 				this.roverClient.disconnect();
 				LOGGER.log(Level.WARNING, "Disconnected rover");
@@ -292,7 +294,6 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 	private synchronized void disconnectBoard() {
 		if (this.boardClient != null) {
-			this.boardClient.getEventManager().unsubscribe(GameEvent.SOCKET_DISCONNECT, this);
 			try {
 				this.boardClient.disconnect();
 				LOGGER.log(Level.WARNING, "Disconnected board");

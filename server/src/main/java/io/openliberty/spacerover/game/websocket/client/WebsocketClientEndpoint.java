@@ -39,9 +39,9 @@ public class WebsocketClientEndpoint {
 	private GameEventManager manager;
 	public WebsocketClientEndpoint(URI endpointURI) throws IOException {
 		try {
+			manager = new GameEventManager(GameEvent.SOCKET_DISCONNECT);
 			WebSocketContainer container = ContainerProvider.getWebSocketContainer();
 			container.connectToServer(this, endpointURI);
-			manager = new GameEventManager(GameEvent.SOCKET_DISCONNECT);
 		} catch (DeploymentException e) {
 			throw new IOException(e);
 		}
@@ -53,11 +53,12 @@ public class WebsocketClientEndpoint {
 
 	public WebsocketClientEndpoint(URI endpointURI,
 			io.openliberty.spacerover.game.websocket.client.MessageHandler handler) throws IOException {
+		LOGGER.log(Level.WARNING, "Creating websocket client on URI {0}", endpointURI);
 		try {
+			manager = new GameEventManager(GameEvent.SOCKET_DISCONNECT);
 			this.messageHandler = handler;
 			WebSocketContainer container = ContainerProvider.getWebSocketContainer();
 			container.connectToServer(this, endpointURI);
-			manager = new GameEventManager(GameEvent.SOCKET_DISCONNECT);
 		} catch (DeploymentException e) {
 			throw new IOException(e);
 		}
@@ -71,7 +72,7 @@ public class WebsocketClientEndpoint {
 	@OnOpen
 	public void onOpen(Session userSession) {
 		this.userSession = userSession;
-	}
+	}  	
 
 	/**
 	 * Callback hook for Connection close events.
