@@ -64,11 +64,12 @@ public class GameServerHealth implements HealthCheck {
                     latch.countDown();
                 }
             });
-
+            client.connect();
             client.sendMessage(SocketMessages.GAME_HEALTH_TEST);
             isHealthy = latch.await(HEALTH_CHECK_TIMEOUT_SECONDS, TimeUnit.SECONDS);
         } catch ( IOException | InterruptedException | NumberFormatException | URISyntaxException e) {
             LOGGER.log(Level.SEVERE, "isHealthy() failed.", e);
+            Thread.currentThread().interrupt();
         }
         return isHealthy;
     }

@@ -38,38 +38,40 @@ public class WebsocketClientEndpoint {
 	Session userSession = null;
 	private io.openliberty.spacerover.game.websocket.client.MessageHandler messageHandler;
 	private GameEventManager manager;
+	private String uri;
 
-	public WebsocketClientEndpoint(URI endpointURI) throws IOException {
+	public WebsocketClientEndpoint(String uri) {
 		manager = new GameEventManager(GameEvent.SOCKET_DISCONNECT);
-		connect(endpointURI);
+		this.messageHandler= null;
+		this.uri = uri;
 	}
 
+	public WebsocketClientEndpoint(URI uri)
+	{
+		this(uri.toString());
+	}
+
+
+	public WebsocketClientEndpoint(io.openliberty.spacerover.game.websocket.client.MessageHandler handler, String uriStr) {
+		manager = new GameEventManager(GameEvent.SOCKET_DISCONNECT);
+		this.messageHandler = handler;
+		this.uri = uriStr;
+	}
+	
 	public GameEventManager getEventManager() {
 		return manager;
 	}
 
-	public WebsocketClientEndpoint(io.openliberty.spacerover.game.websocket.client.MessageHandler handler) {
-		manager = new GameEventManager(GameEvent.SOCKET_DISCONNECT);
-		this.messageHandler = handler;
-	}
-
-	public void connect(URI roverConnectionURI) throws IOException {
-		LOGGER.log(Level.WARNING, "Connecting to websocket client on URI {0}", roverConnectionURI);
+	public void connect() throws IOException {
+		LOGGER.log(Level.WARNING, "Connecting to websocket client on URI {0}", this.uri);
 		WebSocketContainer container = ContainerProvider.getWebSocketContainer();
 		try {
-			container.connectToServer(this, roverConnectionURI);
-		} catch (DeploymentException e) {
+			container.connectToServer(this, new URI(this.uri));
+		} catch (DeploymentException | URISyntaxException e) {
 			throw new IOException(e);
 		}
 	}
 
-	public void connect(String roverConnectionString) throws IOException {
-		try {
-			this.connect(new URI(roverConnectionString));
-		} catch (URISyntaxException e) {
-			throw new IOException(e);
-		}
-	}
 
 	/**
 	 * Callback hook for Connection open events.

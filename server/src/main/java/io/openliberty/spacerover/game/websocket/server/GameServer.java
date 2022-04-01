@@ -41,9 +41,7 @@ import jakarta.websocket.server.ServerEndpoint;
 @ApplicationScoped
 @ServerEndpoint(value = "/" + GameServerConstants.WEBSOCKET_ENDPOINT)
 public class GameServer implements GameEventListener, io.openliberty.spacerover.game.websocket.client.MessageHandler {
-	/**
-	 *
-	 */
+	private static final String COLON = ":";
 	private static final String WEBSOCKET_PROTOCOL = "ws://";
 	private static final Logger LOGGER = Logger.getLogger(GameServer.class.getName());
 	Game currentGame = GameHolder.INSTANCE;
@@ -253,10 +251,10 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 	private void connectBoard() {
 		disconnectBoard();
-		this.boardClient = new WebsocketClientEndpoint(this);
-		String boardConnectionString = WEBSOCKET_PROTOCOL + gameboardIP + ":" + gameboardPort;
+		String boardConnectionString = WEBSOCKET_PROTOCOL + gameboardIP + COLON + gameboardPort;
+		this.boardClient = new WebsocketClientEndpoint(this, boardConnectionString);
 		try {
-			this.boardClient.connect(boardConnectionString);
+			this.boardClient.connect();
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, "Failed to connect to board", e);
 			this.setErrorStateAndSendError("Failed to connect to board.");
@@ -265,10 +263,11 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 	private void connectRover() {
 		disconnectRover();
-		this.roverClient = new WebsocketClientEndpoint(this);
-		String roverConnectionString = WEBSOCKET_PROTOCOL + roverIP + ":" + roverPort;
+		String roverConnectionString = WEBSOCKET_PROTOCOL + roverIP + COLON + roverPort;
+
+		this.roverClient = new WebsocketClientEndpoint(this,roverConnectionString);
 		try {
-			this.roverClient.connect(roverConnectionString);
+			this.roverClient.connect();
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, "Failed to connect to rover", e);
 			this.setErrorStateAndSendError("Failed to connect to rover.");
