@@ -51,6 +51,7 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
 
   const {
     formattedTime,
+    timeRemaining,
     startTimer,
     stopTimer,
   } = useTimer(durationInSeconds);
@@ -104,6 +105,12 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
     return () => ws.close();
   }, [gameSocketURL]);
 
+  useEffect(() => {
+    if (timeRemaining === 0) {
+      endGame();
+    }
+  }, [timeRemaining])
+
   function startGame(playerName: string) {
     if (gameState === GameState.NotStarted) {
       setPlayerName(playerName);
@@ -115,7 +122,7 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
 
   function endGame() {
     if (gameState === GameState.InGame) {
-      sendMessage(Event.End);
+      sendMessage(Event.End, String(durationInSeconds - timeRemaining));
     }
   }
 
