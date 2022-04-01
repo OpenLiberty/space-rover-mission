@@ -234,7 +234,6 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	}
 
 	private synchronized void connectGamePieces() {
-		LOGGER.warning("enter connectGamePieces");
 		if (this.stateMachine.isReadyToConnectGamePieces()) {
 			testLeaderboard();
 		}
@@ -250,7 +249,6 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		if (this.stateMachine.hasErrorOccurred()) {
 			this.endGameFromServer(true);
 		}
-		LOGGER.warning("exit connectGamePieces");
 	}
 
 	private void connectBoard() {

@@ -67,7 +67,7 @@ public class GameServerHealth implements HealthCheck {
 
             client.sendMessage(SocketMessages.GAME_HEALTH_TEST);
             isHealthy = latch.await(HEALTH_CHECK_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-        } catch (InterruptedException | IOException | URISyntaxException e) {
+        } catch ( IOException | InterruptedException | NumberFormatException | URISyntaxException e) {
             LOGGER.log(Level.SEVERE, "isHealthy() failed.", e);
         }
         return isHealthy;
