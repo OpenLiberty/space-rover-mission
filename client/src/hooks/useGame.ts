@@ -9,6 +9,12 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 import { useState, useEffect, useRef } from "react";
+
+import useSound from "use-sound";
+import crashSound from "assets/sounds/crash.wav";
+import scoreSound from "assets/sounds/score.mp3";
+import timerSound from "assets/sounds/timer.mp3";
+
 import useTimer from "./useTimer";
 import useKeyboardControls from "./useKeyboardControls";
 
@@ -49,6 +55,13 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
 
   const [error, setError] = useState("");
 
+  const [playCrash] = useSound(crashSound, {
+    volume: 0.5,
+    playbackRate: 1.5,
+  });
+  const [playScore] = useSound(scoreSound);
+  const [playTimer, { stop: stopTimerSound }] = useSound(timerSound);
+
   const {
     formattedTime,
     timeRemaining,
@@ -82,13 +95,16 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
           setGameState(GameState.NotStarted);
           break;
         case Event.Health:
+          playCrash();
           setHealth(parseInt(data));
           break;
         case Event.Score:
+          playScore();
           setScore(parseInt(data));
           break;
         case Event.End:
           stopTimer();
+          stopTimerSound();
           setGameState(GameState.GameEnded);
           break;
         case Event.Error:
@@ -103,7 +119,16 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
     socket.current = ws;
 
     return () => ws.close();
-  }, [gameSocketURL]);
+  }, [gameSocketURL, playCrash, playScore, stopTimer, stopTimerSound]);
+
+  useEffect(() => {
+    if (timeRemaining === 10) {
+      playTimer();
+    }
+    if (timeRemaining === 0) {
+      endGame();
+    }
+  }, [timeRemaining]);
 
   useEffect(() => {
     if (timeRemaining === 0) {
