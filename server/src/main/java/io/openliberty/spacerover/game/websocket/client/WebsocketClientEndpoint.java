@@ -12,6 +12,7 @@ package io.openliberty.spacerover.game.websocket.client;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 
 import jakarta.websocket.ClientEndpoint;
@@ -37,29 +38,35 @@ public class WebsocketClientEndpoint {
 	Session userSession = null;
 	private io.openliberty.spacerover.game.websocket.client.MessageHandler messageHandler;
 	private GameEventManager manager;
+
 	public WebsocketClientEndpoint(URI endpointURI) throws IOException {
-		try {
-			manager = new GameEventManager(GameEvent.SOCKET_DISCONNECT);
-			WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-			container.connectToServer(this, endpointURI);
-		} catch (DeploymentException e) {
-			throw new IOException(e);
-		}
+		manager = new GameEventManager(GameEvent.SOCKET_DISCONNECT);
+		connect(endpointURI);
 	}
 
 	public GameEventManager getEventManager() {
 		return manager;
 	}
 
-	public WebsocketClientEndpoint(URI endpointURI,
-			io.openliberty.spacerover.game.websocket.client.MessageHandler handler) throws IOException {
-		LOGGER.log(Level.WARNING, "Creating websocket client on URI {0}", endpointURI);
+	public WebsocketClientEndpoint(io.openliberty.spacerover.game.websocket.client.MessageHandler handler) {
+		manager = new GameEventManager(GameEvent.SOCKET_DISCONNECT);
+		this.messageHandler = handler;
+	}
+
+	public void connect(URI roverConnectionURI) throws IOException {
+		LOGGER.log(Level.WARNING, "Connecting to websocket client on URI {0}", roverConnectionURI);
+		WebSocketContainer container = ContainerProvider.getWebSocketContainer();
 		try {
-			manager = new GameEventManager(GameEvent.SOCKET_DISCONNECT);
-			this.messageHandler = handler;
-			WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-			container.connectToServer(this, endpointURI);
+			container.connectToServer(this, roverConnectionURI);
 		} catch (DeploymentException e) {
+			throw new IOException(e);
+		}
+	}
+
+	public void connect(String roverConnectionString) throws IOException {
+		try {
+			this.connect(new URI(roverConnectionString));
+		} catch (URISyntaxException e) {
 			throw new IOException(e);
 		}
 	}
@@ -72,7 +79,7 @@ public class WebsocketClientEndpoint {
 	@OnOpen
 	public void onOpen(Session userSession) {
 		this.userSession = userSession;
-	}  	
+	}
 
 	/**
 	 * Callback hook for Connection close events.
@@ -113,11 +120,10 @@ public class WebsocketClientEndpoint {
 	 * @param message
 	 * @throws IOException
 	 */
-	public void sendMessage(String message) throws IOException {
-		if (this.userSession != null && this.userSession.isOpen())
-		{
+	public void sendMessage(String message){
+		if (this.userSession != null && this.userSession.isOpen()) {
 			this.userSession.getAsyncRemote().sendText(message);
-			LOGGER.info("Sent Message " + message);
+			LOGGER.log(Level.INFO, "Sent Message {0}", message);
 		}
 
 	}
