@@ -119,7 +119,7 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
     socket.current = ws;
 
     return () => ws.close();
-  }, [gameSocketURL, playCrash, playScore, stopTimer, stopTimerSound]);
+  }, [gameSocketURL]);
 
   useEffect(() => {
     if (timeRemaining === 10) {

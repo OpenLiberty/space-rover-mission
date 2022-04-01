@@ -24,7 +24,7 @@ const LeaderboardPage = () => {
   if (player && leaderboard) {
     placement = leaderboard
       .filter((entry) => entry.player === player)
-      .sort((a, b) => a.timestamp - b.timestamp)[0];
+      .sort((a, b) => Number(b.timestamp) - Number(a.timestamp))[0];
   }
 
   return (

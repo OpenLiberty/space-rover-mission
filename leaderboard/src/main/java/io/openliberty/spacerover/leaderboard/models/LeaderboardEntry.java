@@ -24,7 +24,7 @@ public class LeaderboardEntry {
 	@JsonbProperty("health")
 	private int health;
 	@JsonbProperty ("timestamp")
-	private long timestamp;
+	private String timestamp;
 
 	public int getHealth() {
 		return health;
@@ -43,7 +43,7 @@ public class LeaderboardEntry {
 		return time;
 	}
 
-	public long getTimestamp() {
+	public String getTimestamp() {
 		return timestamp;
 	}
 
@@ -63,7 +63,7 @@ public class LeaderboardEntry {
 		this.time = time;
 	}
 
-	public void setTimestamp(long timestamp) {
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 

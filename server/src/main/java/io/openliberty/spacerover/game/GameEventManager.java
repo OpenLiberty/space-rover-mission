@@ -14,12 +14,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import io.openliberty.spacerover.game.models.GameEvent;
 
 public class GameEventManager {
 
-	 Map<GameEvent, List<GameEventListener>> listeners = new HashMap<>();
+	 Map<GameEvent, List<GameEventListener>> listeners = new ConcurrentHashMap<>();
 
 	    public GameEventManager(GameEvent... operations) {
 	        for (GameEvent operation : operations) {
