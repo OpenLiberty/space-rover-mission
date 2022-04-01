@@ -130,12 +130,6 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
     }
   }, [timeRemaining]);
 
-  useEffect(() => {
-    if (timeRemaining === 0) {
-      endGame();
-    }
-  }, [timeRemaining])
-
   function startGame(playerName: string) {
     if (gameState === GameState.NotStarted) {
       setPlayerName(playerName);
