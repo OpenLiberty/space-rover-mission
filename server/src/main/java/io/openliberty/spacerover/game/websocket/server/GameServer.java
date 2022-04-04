@@ -96,10 +96,10 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 		final GameSession sessionName = getGameSession(session);
 		if (sessionName == GameSession.GUI) {
-			reInit(true);
+			LOGGER.log(Level.INFO, "Lost connection with {0}", sessionName);
+			reInit();
 		}
 
-		LOGGER.log(Level.INFO, "Lost connection with {0}", sessionName);
 	}
 
 	private GameSession getGameSession(final Session session) {
@@ -144,9 +144,12 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 	@Override
 	public void update(final GameEvent eventType, final long value) {
-		if (eventType == GameEvent.SOCKET_DISCONNECT && !this.stateMachine.hasErrorOccurred()) {
-			this.setErrorStateAndSendError("Socket disconnected");
-		} else if (eventType == GameEvent.GAME_OVER) {
+		if (eventType == GameEvent.SOCKET_DISCONNECT) {
+			if (!this.stateMachine.hasErrorOccurred()) {
+				this.setErrorStateAndSendError("Socket disconnected");
+			}
+		} else if (eventType == GameEvent.GAME_OVER)
+		{
 			LOGGER.log(Level.WARNING, "Ending game from event type {0}", eventType);
 			endGameFromServer(false);
 		} else {
@@ -157,7 +160,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 	private void endGameFromServer(boolean isEndOnError) {
 		if (isEndOnError) {
-			LOGGER.log(Level.WARNING, "Server ended from server side due to error. {0}", this.currentGame);
+			LOGGER.log(Level.WARNING, "Game ended from server side due to error. {0}", this.currentGame);
 			this.setErrorStateAndSendError("Game ended unexpectedly");
 		} else {
 			LOGGER.log(Level.INFO, "Ending game from server side. {0}", this.currentGame);
@@ -178,52 +181,52 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 		if (this.stateMachine.isValidState(msgID)) {
 			switch (msgID) {
-				case SocketMessages.CONNECT_GUI:
-					this.guiSession = session;
-					break;
-				case SocketMessages.CONNECT_GESTURE:
-					this.gestureSession = session;
-					break;
-				case SocketMessages.ROVER_ACK:
-					this.roverClient.getEventManager().subscribe(GameEvent.SOCKET_DISCONNECT, this);
-					break;
-				case SocketMessages.GAMEBOARD_ACK:
-					this.boardClient.getEventManager().subscribe(GameEvent.SOCKET_DISCONNECT, this);
-					break;
-				case SocketMessages.START_GAME:
-					assert (parsedMsg.length == 2);
-					startGame(parsedMsg);
-					this.roverClient.sendMessage(SocketMessages.INIT_GAME);
-					this.boardClient.sendMessage(SocketMessages.INIT_GAME);
-					break;
-				case SocketMessages.END_GAME:
-					if (parsedMsg.length == 2) {
-						// timeout
-						this.currentGame.endGameSession(parsedMsg[1]);
-					} else {
-						this.currentGame.endGameSession();
-					}
-					break;
-				case SocketMessages.BACKWARD:
-				case SocketMessages.FORWARD:
-				case SocketMessages.LEFT:
-				case SocketMessages.RIGHT:
-				case SocketMessages.STOP:
-					this.sendRoverDirection(msgID);
-					break;
-				case SocketMessages.COLOUR_RED:
-				case SocketMessages.COLOUR_BLUE:
-				case SocketMessages.COLOUR_GREEN:
-				case SocketMessages.COLOUR_PURPLE:
-				case SocketMessages.COLOUR_YELLOW:
-					this.currentGame.processColour(msgID);
-					this.sendBoardColour(msgID);
-					break;
-				case SocketMessages.GAME_HEALTH_TEST:
-					session.getAsyncRemote().sendText(SocketMessages.GAME_HEALTH_ACK);
-					break;
-				default:
-					LOGGER.log(Level.INFO, "Unknown Message received <{0}>", msgID);
+			case SocketMessages.CONNECT_GUI:
+				this.guiSession = session;
+				break;
+			case SocketMessages.CONNECT_GESTURE:
+				this.gestureSession = session;
+				break;
+			case SocketMessages.ROVER_ACK:
+				this.roverClient.getEventManager().subscribe(GameEvent.SOCKET_DISCONNECT, this);
+				break;
+			case SocketMessages.GAMEBOARD_ACK:
+				this.boardClient.getEventManager().subscribe(GameEvent.SOCKET_DISCONNECT, this);
+				break;
+			case SocketMessages.START_GAME:
+				assert (parsedMsg.length == 2);
+				startGame(parsedMsg);
+				this.roverClient.sendMessage(SocketMessages.INIT_GAME);
+				this.boardClient.sendMessage(SocketMessages.INIT_GAME);
+				break;
+			case SocketMessages.END_GAME:
+				if (parsedMsg.length == 2) {
+					// timeout
+					this.currentGame.endGameSession(parsedMsg[1]);
+				} else {
+					this.currentGame.endGameSession();
+				}
+				break;
+			case SocketMessages.BACKWARD:
+			case SocketMessages.FORWARD:
+			case SocketMessages.LEFT:
+			case SocketMessages.RIGHT:
+			case SocketMessages.STOP:
+				this.sendRoverDirection(msgID);
+				break;
+			case SocketMessages.COLOUR_RED:
+			case SocketMessages.COLOUR_BLUE:
+			case SocketMessages.COLOUR_GREEN:
+			case SocketMessages.COLOUR_PURPLE:
+			case SocketMessages.COLOUR_YELLOW:
+				this.currentGame.processColour(msgID);
+				this.sendBoardColour(msgID);
+				break;
+			case SocketMessages.GAME_HEALTH_TEST:
+				session.getAsyncRemote().sendText(SocketMessages.GAME_HEALTH_ACK);
+				break;
+			default:
+				LOGGER.log(Level.INFO, "Unknown Message received <{0}>", msgID);
 			}
 			this.stateMachine.incrementState(msgID);
 		}
@@ -237,14 +240,11 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		}
 		if (this.stateMachine.isReadyToConnectRover() && !this.stateMachine.hasErrorOccurred()) {
 			connectRover();
-		}
-		if (this.stateMachine.isReadyToConnectBoard() && !this.stateMachine.hasErrorOccurred()) {
+		} else if (this.stateMachine.isReadyToConnectBoard() && !this.stateMachine.hasErrorOccurred()) {
 			connectBoard();
-		}
-		if (this.stateMachine.isAllConnected()) {
+		} else if (this.stateMachine.isAllConnected()) {
 			this.sendTextToGuiSocket(SocketMessages.SERVER_READY);
-		}
-		if (this.stateMachine.hasErrorOccurred()) {
+		} else if (this.stateMachine.hasErrorOccurred()) {
 			this.endGameFromServer(true);
 		}
 	}
@@ -266,7 +266,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		disconnectRover();
 		String roverConnectionString = WEBSOCKET_PROTOCOL + roverIP + COLON + roverPort;
 		this.stateMachine.attachRover();
-		this.roverClient = new WebsocketClientEndpoint(this,roverConnectionString);
+		this.roverClient = new WebsocketClientEndpoint(this, roverConnectionString);
 		try {
 			this.roverClient.connect();
 		} catch (IOException e) {
@@ -333,7 +333,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		LOGGER.log(Level.SEVERE, "setErrorStateAndSendError called: {0}", errMsg);
 		this.stateMachine.setErrorState();
 		this.sendTextToGuiSocket(this.getErrorMessage(errMsg));
-		this.reInit(true);
+		this.reInit();
 	}
 
 	public static boolean isDirection(final String msgID) {
@@ -348,36 +348,35 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		static final Game INSTANCE = new Game();
 	}
 
-	private synchronized void reInit(boolean isFullReinit) {
-		GameServerState state = (isFullReinit ? GameServerState.SERVER_STARTED
-				: GameServerState.GUI_AND_GESTURE_CONNECTED);
-		LOGGER.log(Level.WARNING, "ReInit called, resetting state to: {0}", state);
+	private synchronized void reInit() {
+		GameServerState state = GameServerState.SERVER_STARTED;
+		LOGGER.log(Level.WARNING, "ReInit called, resetting state to: {0}",
+				new Object[] { state });
 
-		this.stateMachine = new GameServerStateMachine(state);
-		this.currentGame = new Game();
-
-		if (state == GameServerState.SERVER_STARTED) {
-			if (this.guiSession != null) {
-				try {
-					this.guiSession.close();
-				} catch (IOException ioe) {
-					LOGGER.log(Level.WARNING, "failure during reInit", ioe);
-				}
-			}
-			if (this.gestureSession != null) {
-				try {
-					this.gestureSession.close();
-
-				} catch (IOException ioe) {
-					LOGGER.log(Level.WARNING, "failure during reInit", ioe);
-				}
-			}
-			disconnectRover();
-			disconnectBoard();
-		} else {
-			connectGamePieces();
+		if (!this.stateMachine.hasErrorOccurred()) {
+			this.roverClient.getEventManager().unsubscribe(GameEvent.SOCKET_DISCONNECT, this);
+			this.boardClient.getEventManager().unsubscribe(GameEvent.SOCKET_DISCONNECT, this);
 		}
 
+		if (this.guiSession != null) {
+			try {
+				this.guiSession.close();
+			} catch (IOException ioe) {
+				LOGGER.log(Level.WARNING, "failure during reInit", ioe);
+			}
+		}
+		if (this.gestureSession != null) {
+			try {
+				this.gestureSession.close();
+
+			} catch (IOException ioe) {
+				LOGGER.log(Level.WARNING, "failure during reInit", ioe);
+			}
+		}
+		disconnectRover();
+		disconnectBoard();
+		this.stateMachine = new GameServerStateMachine(state);
+		this.currentGame = new Game();
 	}
 
 }

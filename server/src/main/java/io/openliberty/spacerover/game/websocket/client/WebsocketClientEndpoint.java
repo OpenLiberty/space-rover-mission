@@ -91,7 +91,6 @@ public class WebsocketClientEndpoint {
 	 */
 	@OnClose
 	public void onClose(Session userSession, CloseReason reason) {
-		LOGGER.info("Socket disconnect event");
 		this.manager.notify(GameEvent.SOCKET_DISCONNECT, reason.getCloseCode().getCode());
 		this.userSession = null;
 	}
@@ -124,8 +123,12 @@ public class WebsocketClientEndpoint {
 	 */
 	public void sendMessage(String message){
 		if (this.userSession != null && this.userSession.isOpen()) {
-			this.userSession.getAsyncRemote().sendText(message);
-			LOGGER.log(Level.INFO, "Sent Message {0}", message);
+			try {
+				this.userSession.getBasicRemote().sendText(message);
+				LOGGER.log(Level.INFO, "Sent Message {0}", message);
+			} catch (IOException e) {
+				LOGGER.log(Level.SEVERE, "failed to send message {0}", message);
+			}
 		}
 
 	}

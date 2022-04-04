@@ -62,23 +62,27 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
   const [, { sound: scoreSound }] = useSound(scoreSoundFile);
   const [, { sound: timerSound }] = useSound(timerSoundFile);
 
-  const {
-    formattedTime,
-    timeRemaining,
-    startTimer,
-    stopTimer,
-  } = useTimer(durationInSeconds);
+  const { formattedTime, timeRemaining, startTimer, stopTimer } =
+    useTimer(durationInSeconds);
 
   useKeyboardControls(socket.current);
 
+  // setup socket
   useEffect(() => {
-    if (!crashSound || !scoreSound || !timerSound) {
+    socket.current = new WebSocket(gameSocketURL);
+
+    return () => {
+      socket.current?.close();
+      socket.current = null;
+    };
+  }, [gameSocketURL]);
+
+  // update socket handlers
+  useEffect(() => {
+    if (!socket.current) {
       return;
     }
-    
-    if (!socket.current) {
-      socket.current = new WebSocket(gameSocketURL);
-    }
+
     socket.current.onopen = (ev) => {
       sendMessage(Event.ConnectGUI);
       sendMessage(Event.ConnectGesture);
@@ -101,12 +105,18 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
           setGameState(GameState.NotStarted);
           break;
         case Event.Health:
-          crashSound.play();
-          setHealth(parseInt(data));
+          const newHealth = parseInt(data);
+          if (newHealth < health) {
+            crashSound.play();
+          }
+          setHealth(newHealth);
           break;
         case Event.Score:
-          scoreSound.play();
-          setScore(parseInt(data));
+          const newScore = parseInt(data);
+          if (newScore > score) {
+            scoreSound.play();
+          }
+          setScore(newScore);
           break;
         case Event.End:
           stopTimer();
@@ -121,12 +131,7 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
           console.log(`Received unknown event: ${event}`);
       }
     };
-
-    return () => {
-      socket.current?.close();
-      socket.current = null;
-    };
-  }, [gameSocketURL, crashSound, scoreSound, timerSound]);
+  }, [socket, crashSound, scoreSound, timerSound, health, score]);
 
   useEffect(() => {
     if (timeRemaining === 10) {
