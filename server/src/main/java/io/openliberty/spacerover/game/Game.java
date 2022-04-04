@@ -64,7 +64,7 @@ public class Game {
 	}
 
 	public void decrementScore(int amount) {
-		this.score = Math.max(this.score - amount, 0);
+//		this.score = Math.max(this.score - amount, 0); TODO
 		getEventManager().notify(GameEvent.SCORE, this.score);
 	}
 
