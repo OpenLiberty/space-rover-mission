@@ -305,7 +305,11 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 	private void sendTextToGuiSocket(String text) {
 		if (this.guiSession != null && this.guiSession.isOpen()) {
-			this.guiSession.getAsyncRemote().sendText(text);
+			try {
+				this.guiSession.getBasicRemote().sendText(text);
+			} catch (IOException e) {
+				LOGGER.log(Level.SEVERE, "Failed to send message to GUI <{0}>", text);
+			}
 			LOGGER.log(Level.INFO, "Sent message to GUI <{0}>", text);
 		} else {
 			LOGGER.log(Level.WARNING, "Failed to send message to GUI <{0}>", text);
