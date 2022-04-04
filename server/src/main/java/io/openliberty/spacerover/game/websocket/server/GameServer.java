@@ -252,6 +252,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	private void connectBoard() {
 		disconnectBoard();
 		String boardConnectionString = WEBSOCKET_PROTOCOL + gameboardIP + COLON + gameboardPort;
+		this.stateMachine.attachGameBoard();
 		this.boardClient = new WebsocketClientEndpoint(this, boardConnectionString);
 		try {
 			this.boardClient.connect();
@@ -264,7 +265,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	private void connectRover() {
 		disconnectRover();
 		String roverConnectionString = WEBSOCKET_PROTOCOL + roverIP + COLON + roverPort;
-
+		this.stateMachine.attachRover();
 		this.roverClient = new WebsocketClientEndpoint(this,roverConnectionString);
 		try {
 			this.roverClient.connect();
