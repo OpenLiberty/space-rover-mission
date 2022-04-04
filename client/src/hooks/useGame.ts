@@ -71,14 +71,22 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
 
   useKeyboardControls(socket.current);
 
+  // setup socket
   useEffect(() => {
-    if (!crashSound || !scoreSound || !timerSound) {
+    socket.current = new WebSocket(gameSocketURL);
+
+    return () => {
+      socket.current?.close();
+      socket.current = null;
+    };
+  }, [gameSocketURL]);
+
+  // update socket handlers
+  useEffect(() => {
+    if (!socket.current) {
       return;
     }
 
-    if (!socket.current) {
-      socket.current = new WebSocket(gameSocketURL);
-    }
     socket.current.onopen = (ev) => {
       sendMessage(Event.ConnectGUI);
       sendMessage(Event.ConnectGesture);
@@ -127,12 +135,7 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
           console.log(`Received unknown event: ${event}`);
       }
     };
-
-    return () => {
-      socket.current?.close();
-      socket.current = null;
-    };
-  }, [gameSocketURL, crashSound, scoreSound, timerSound]);
+  }, [socket, crashSound, scoreSound, timerSound, health, score]);
 
   useEffect(() => {
     if (timeRemaining === 10) {
