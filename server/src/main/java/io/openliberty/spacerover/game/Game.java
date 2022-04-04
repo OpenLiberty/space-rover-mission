@@ -29,7 +29,7 @@ public class Game {
 
 	private static final int MAX_GAME_TIME_MINUTES = 5;
 	private static final int OBSTACLE_HP_DECREMENT = 10;
-	private static final int OBSTACLE_SCORE_DECREMENT = OBSTACLE_HP_DECREMENT ;
+	private static final int OBSTACLE_SCORE_DECREMENT = OBSTACLE_HP_DECREMENT;
 	private static final int MAX_GAME_TIME_SECONDS = 60 * MAX_GAME_TIME_MINUTES;
 	private String playerId;
 	private Instant startTime;
@@ -65,6 +65,7 @@ public class Game {
 
 	public void decrementScore(int amount) {
 //		this.score = Math.max(this.score - amount, 0); TODO
+		this.score = this.score - amount;
 		getEventManager().notify(GameEvent.SCORE, this.score);
 	}
 
@@ -76,8 +77,8 @@ public class Game {
 	public void endGameSession() throws IllegalStateException {
 		this.endGameSession(Instant.now());
 	}
-	public void endGameSession(String gameLengthInMillis)
-	{
+
+	public void endGameSession(String gameLengthInMillis) {
 		long seconds = Long.parseLong(gameLengthInMillis);
 		this.endGameSession(this.startTime.plus(seconds, ChronoUnit.SECONDS));
 	}
