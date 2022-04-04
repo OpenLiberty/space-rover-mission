@@ -28,8 +28,8 @@ public class Game {
 	private static final Logger LOGGER = Logger.getLogger(Game.class.getName());
 
 	private static final int MAX_GAME_TIME_MINUTES = 5;
-	private static final int SCORE_INCREMENT = 10;
-	private static final int OBSTACLE_DMG = 10;
+	private static final int OBSTACLE_HP_DECREMENT = 10;
+	private static final int OBSTACLE_SCORE_DECREMENT = OBSTACLE_HP_DECREMENT ;
 	private static final int MAX_GAME_TIME_SECONDS = 60 * MAX_GAME_TIME_MINUTES;
 	private String playerId;
 	private Instant startTime;
@@ -115,17 +115,22 @@ public class Game {
 
 	public void processColour(String msgID) {
 		if (msgID.equals(SocketMessages.COLOUR_RED)) {
-			this.decrementHP(OBSTACLE_DMG);
+			this.decrementHP(OBSTACLE_HP_DECREMENT);
+			this.decrementScore(OBSTACLE_SCORE_DECREMENT);
 		} else {
 			if (!this.coloursVisited.contains(msgID)) {
 				LOGGER.log(Level.INFO, "New colour visited: {0}", msgID);
 				this.coloursVisited.add(msgID);
-				this.incrementScore(SCORE_INCREMENT);
+				this.incrementScore(getScore(msgID));
 			}
 		}
 		if (this.isInProgressGameOver()) {
 			this.endGameSession();
 		}
+	}
+
+	private int getScore(String colour) {
+		return SocketMessages.COLOUR_SCORE_VALUES.get(colour);
 	}
 
 	@Override
