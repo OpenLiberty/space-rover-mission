@@ -31,7 +31,7 @@ public class GameServerHealth implements HealthCheck {
     String serverPort;
 
     @Inject
-    @ConfigProperty(name = "io.openliberty.server.hostname", defaultValue = "server")
+    @ConfigProperty(name = "io.openliberty.server.hostname", defaultValue = "gameservice")
     String serverHost;
 
     @Override
