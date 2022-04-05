@@ -62,8 +62,12 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
   const [, { sound: scoreSound }] = useSound(scoreSoundFile);
   const [, { sound: timerSound }] = useSound(timerSoundFile);
 
-  const { formattedTime, timeRemaining, startTimer, stopTimer } =
-    useTimer(durationInSeconds);
+  const {
+    formattedTime,
+    timeRemaining,
+    startTimer,
+    stopTimer,
+  } = useTimer(durationInSeconds);
 
   useKeyboardControls(socket.current);
 
