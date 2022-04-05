@@ -19,10 +19,10 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 import io.openliberty.spacerover.leaderboard.models.LeaderboardEntry;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import static com.mongodb.client.model.Sorts.descending;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -84,6 +84,8 @@ public class Leaderboard {
 		newLeaderboardEntry.put("player", entry.getPlayer());
 		newLeaderboardEntry.put("score", entry.getScore());
 		newLeaderboardEntry.put("time", entry.getTime());
+		newLeaderboardEntry.put("health", entry.getHealth());
+		newLeaderboardEntry.put("timestamp", Long.toString(System.currentTimeMillis()));
 
 		document.insertOne(newLeaderboardEntry);
 
@@ -103,7 +105,7 @@ public class Leaderboard {
 			MongoCollection<Document> collection = db.getCollection(LEADERBOARD_COLLECTION_NAME);
 			sb.append("[");
 			boolean first = true;
-			FindIterable<Document> docs = collection.find().sort(descending("score"));
+			FindIterable<Document> docs = collection.find().sort(new BasicDBObject("score", -1).append("time", 1));
 			for (Document d : docs) {
 				if (!first)
 					sb.append(",");

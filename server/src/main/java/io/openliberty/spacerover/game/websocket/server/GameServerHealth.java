@@ -35,6 +35,7 @@ public class GameServerHealth implements HealthCheck {
     String serverHost;
 
     @Override
+    @SimplyTimed(name="heartbeat", displayName = "Heartbeat", description = "provides a heart beat latency timer")
     public HealthCheckResponse call() {
         HealthCheckResponse resp;
         if (!isHealthy()) {
@@ -49,7 +50,7 @@ public class GameServerHealth implements HealthCheck {
         }
         return resp;
     }
-    @SimplyTimed(name="heartbeat", displayName = "Heartbeat", description = "provides a heart beat latency timer")
+    
     private boolean isHealthy() {
         boolean isHealthy = false;
         try {
@@ -63,11 +64,12 @@ public class GameServerHealth implements HealthCheck {
                     latch.countDown();
                 }
             });
-
+            client.connect();
             client.sendMessage(SocketMessages.GAME_HEALTH_TEST);
             isHealthy = latch.await(HEALTH_CHECK_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-        } catch (InterruptedException | IOException | URISyntaxException e) {
+        } catch ( IOException | InterruptedException | NumberFormatException | URISyntaxException e) {
             LOGGER.log(Level.SEVERE, "isHealthy() failed.", e);
+            Thread.currentThread().interrupt();
         }
         return isHealthy;
     }

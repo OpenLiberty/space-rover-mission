@@ -8,10 +8,13 @@ public class GameScore {
     private String player;
 
     @JsonbProperty("score")
-	private long score;
+	private int score;
 
     @JsonbProperty("time")
 	private long time;
+    
+    @JsonbProperty("health")
+    private int health;
 
     @NotEmpty(message = "All players must have a player ID!")
 	public String getPlayer() {
@@ -22,11 +25,11 @@ public class GameScore {
 		this.player = player;
 	}
 
-	public long getScore() {
+	public int getScore() {
 		return score;
 	}
 
-	public void setScore(long score) {
+	public void setScore(int score) {
 		this.score = score;
 	}
 
@@ -38,7 +41,15 @@ public class GameScore {
 		this.time = time;
 	}
 
-    @Override
+    public int getHealth() {
+		return health;
+	}
+
+	public void setHealth(int health) {
+		this.health = health;
+	}
+
+	@Override
     public String toString() {
         return "GameStat [player=" + player + ", score=" + score + ", time=" + time + "]";
     }

@@ -1,9 +1,16 @@
 version: "3.9"
 services:
         mongo:
-                build: ./leaderboard/assets
+                image: mongo:latest
+                environment:
+                    - MONGO_INITDB_ROOT_USERNAME=root
+                    - MONGO_INITDB_ROOT_PASSWORD=openliberty
                 ports:
-                        - "27017:27017"
+                    - "27017:27017"
+                volumes:
+                    - ~/mongo/data:/data/db
+                    - "./leaderboard/assets/:/docker-entrypoint-initdb.d/"
+                command: mongod
         leaderboard:
                 build: ./leaderboard
                 ports:
@@ -16,4 +23,8 @@ services:
                 build: ./client
                 ports:
                         - "3000:3000"
+                environment:
+                        - REACT_APP_GAME_SOCKET_URL=ws://localhost:9070/roversocket
+                        - REACT_APP_GAME_DURATION_SECONDS=180
+                        - REACT_APP_LEADERBOARD_URL=http://localhost:9080/mongo/leaderboard
 

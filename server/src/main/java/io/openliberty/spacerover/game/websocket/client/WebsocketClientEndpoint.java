@@ -10,9 +10,9 @@
  *******************************************************************************/
 package io.openliberty.spacerover.game.websocket.client;
 
-
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 
 import jakarta.websocket.ClientEndpoint;
@@ -28,109 +28,123 @@ import jakarta.websocket.WebSocketContainer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import io.openliberty.spacerover.game.GameEventManager;
+import io.openliberty.spacerover.game.models.GameEvent;
 
 @ClientEndpoint
 public class WebsocketClientEndpoint {
 
-    private static final Logger LOGGER = Logger.getLogger(WebsocketClientEndpoint.class.getName());
-    Session userSession = null;
-    private io.openliberty.spacerover.game.websocket.client.MessageHandler messageHandler;
+	private static final Logger LOGGER = Logger.getLogger(WebsocketClientEndpoint.class.getName());
+	Session userSession = null;
+	private io.openliberty.spacerover.game.websocket.client.MessageHandler messageHandler;
+	private GameEventManager manager;
+	private String uri;
 
-    public WebsocketClientEndpoint(URI endpointURI) throws IOException {
-        try {
-            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-            container.connectToServer(this, endpointURI);
-        } catch (DeploymentException e) {
-            throw new IOException(e);
-        }
-    }
-    
-    public WebsocketClientEndpoint(URI endpointURI,io.openliberty.spacerover.game.websocket.client.MessageHandler handler) throws IOException
-    {
-        try {
-        	this.messageHandler = handler;
-            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-            container.connectToServer(this, endpointURI);
-        } catch (DeploymentException e) {
-            throw new IOException(e);
-        }
-    }
+	public WebsocketClientEndpoint(String uri) {
+		manager = new GameEventManager(GameEvent.SOCKET_DISCONNECT);
+		this.messageHandler= null;
+		this.uri = uri;
+	}
 
-    /**
-     * Callback hook for Connection open events.
-     *
-     * @param userSession the userSession which is opened.
-     */
-    @OnOpen
-    public void onOpen(Session userSession) {
-        this.userSession = userSession;
-    }
-
-    /**
-     * Callback hook for Connection close events.
-     *
-     * @param userSession the userSession which is getting closed.
-     * @param reason the reason for connection close
-     */
-    @OnClose
-    public void onClose(Session userSession, CloseReason reason) {
-    	try {
-			this.disconnect();
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, "failed to disconnect during onClose()");
-		} 
-        this.userSession = null;
-    }
-
-    /**
-     * Callback hook for Message Events. This method will be invoked when a client send a message.
-     *
-     * @param message The text message
-     */
-    @OnMessage
-    public void onMessage(String message) {
-        if (this.messageHandler != null) {
-            this.messageHandler.handleMessage(message);
-        }
-        else
-        {
-        	LOGGER.log(Level.WARNING, "message handler is null");
-        }
-    }
-
-   @OnMessage
-   public void onMessage(ByteBuffer bytes) {
-	   LOGGER.log(Level.WARNING, "got a byte buffer message");
-    }
+	public WebsocketClientEndpoint(URI uri)
+	{
+		this(uri.toString());
+	}
 
 
-    /**
-     * Send a message.
-     *
-     * @param message
-     * @throws IOException 
-     */
-    public void sendMessage(String message) throws IOException {
-        this.userSession.getAsyncRemote().sendText(message);
-        LOGGER.info("Sent Message "+ message);
-    }
-    
+	public WebsocketClientEndpoint(io.openliberty.spacerover.game.websocket.client.MessageHandler handler, String uriStr) {
+		manager = new GameEventManager(GameEvent.SOCKET_DISCONNECT);
+		this.messageHandler = handler;
+		this.uri = uriStr;
+	}
+	
+	public GameEventManager getEventManager() {
+		return manager;
+	}
 
-    
-    /**
-     * register message handler
-     *
-     * @param msgHandler
-     */
-    public void addMessageHandler(io.openliberty.spacerover.game.websocket.client.MessageHandler msgHandler) {
-        this.messageHandler = msgHandler;
-    }
+	public void connect() throws IOException {
+		LOGGER.log(Level.WARNING, "Connecting to websocket client on URI {0}", this.uri);
+		WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+		try {
+			container.connectToServer(this, new URI(this.uri));
+		} catch (DeploymentException | URISyntaxException e) {
+			throw new IOException(e);
+		}
+	}
 
-    public void disconnect() throws IOException
-    {
-    	if(this.userSession.isOpen())
-    	{
-    		this.userSession.close();
-    	}
-    }
+
+	/**
+	 * Callback hook for Connection open events.
+	 *
+	 * @param userSession the userSession which is opened.
+	 */
+	@OnOpen
+	public void onOpen(Session userSession) {
+		this.userSession = userSession;
+	}
+
+	/**
+	 * Callback hook for Connection close events.
+	 *
+	 * @param userSession the userSession which is getting closed.
+	 * @param reason      the reason for connection close
+	 */
+	@OnClose
+	public void onClose(Session userSession, CloseReason reason) {
+		this.manager.notify(GameEvent.SOCKET_DISCONNECT, reason.getCloseCode().getCode());
+		this.userSession = null;
+	}
+
+	/**
+	 * Callback hook for Message Events. This method will be invoked when a client
+	 * send a message.
+	 *
+	 * @param message The text message
+	 */
+	@OnMessage
+	public void onMessage(String message) {
+		if (this.messageHandler != null) {
+			this.messageHandler.handleMessage(message);
+		} else {
+			LOGGER.log(Level.WARNING, "message handler is null");
+		}
+	}
+
+	@OnMessage
+	public void onMessage(ByteBuffer bytes) {
+		LOGGER.log(Level.WARNING, "got a byte buffer message");
+	}
+
+	/**
+	 * Send a message.
+	 *
+	 * @param message
+	 * @throws IOException
+	 */
+	public void sendMessage(String message){
+		if (this.userSession != null && this.userSession.isOpen()) {
+			try {
+				this.userSession.getBasicRemote().sendText(message);
+				LOGGER.log(Level.INFO, "Sent Message {0}", message);
+			} catch (IOException e) {
+				LOGGER.log(Level.SEVERE, "failed to send message {0}", message);
+			}
+		}
+
+	}
+
+	/**
+	 * register message handler
+	 *
+	 * @param msgHandler
+	 */
+	public void addMessageHandler(io.openliberty.spacerover.game.websocket.client.MessageHandler msgHandler) {
+		this.messageHandler = msgHandler;
+	}
+
+	public synchronized void disconnect() throws IOException {
+		if (this.userSession != null && this.userSession.isOpen()) {
+			this.userSession.close();
+		}
+	}
 }

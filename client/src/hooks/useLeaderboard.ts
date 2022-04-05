@@ -18,7 +18,7 @@ export type LeaderboardEntry = {
   time: number;
   health: number;
   score: number;
-  timestamp: number;
+  timestamp: string;
 };
 
 const getLeaderboard = async () => {

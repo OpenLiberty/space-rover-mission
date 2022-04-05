@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.spacerover.game.models;
 
+import java.util.Map;
+
 public class SocketMessages {
 
 	public static final String CONNECT_GUI = "connectGUI";
@@ -35,6 +37,8 @@ public class SocketMessages {
 	public static final String COLOUR_GREEN = "GRN";
 	public static final String COLOUR_YELLOW = "YW";
 	public static final String COLOUR_PURPLE = "PUR";
+	public static final Map<String, Integer> COLOUR_SCORE_VALUES = Map.of(COLOUR_BLUE, 10, COLOUR_GREEN, 20, COLOUR_YELLOW, 30, COLOUR_PURPLE, 40);
 	public static final String[] COLOURS = { COLOUR_RED, COLOUR_BLUE, COLOUR_GREEN, COLOUR_YELLOW, COLOUR_PURPLE };
+	public static final String INIT_GAME = "1";
 
 }

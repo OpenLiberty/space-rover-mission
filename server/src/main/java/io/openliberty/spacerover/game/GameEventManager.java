@@ -11,7 +11,7 @@
 package io.openliberty.spacerover.game;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +19,7 @@ import io.openliberty.spacerover.game.models.GameEvent;
 
 public class GameEventManager {
 
-	 Map<GameEvent, List<GameEventListener>> listeners = new HashMap<>();
+	 Map<GameEvent, List<GameEventListener>> listeners = new EnumMap<>(GameEvent.class);
 
 	    public GameEventManager(GameEvent... operations) {
 	        for (GameEvent operation : operations) {
@@ -37,10 +37,10 @@ public class GameEventManager {
 	        users.remove(listener);
 	    }
 
-	    public void notify(GameEvent eventType, long file) {
+	    public void notify(GameEvent eventType, int details) {
 	        List<GameEventListener> users = listeners.get(eventType);
 	        for (GameEventListener listener : users) {
-	            listener.update(eventType, file);
+	            listener.update(eventType, details);
 	        }
 	    }
 	    
