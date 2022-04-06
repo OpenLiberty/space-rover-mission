@@ -121,7 +121,7 @@ public class Game {
 			if (!this.coloursVisited.contains(msgID)) {
 				LOGGER.log(Level.INFO, "New colour visited: {0}", msgID);
 				this.coloursVisited.add(msgID);
-				this.incrementScore(getScore(msgID));
+				this.incrementScore(getScore());
 			}
 		}
 		if (this.isInProgressGameOver()) {
@@ -129,7 +129,7 @@ public class Game {
 		}
 	}
 
-	private int getScore(String colour) {
+	private int getScore() {
 		return this.coloursVisited.size() * 10;
 	}
 
