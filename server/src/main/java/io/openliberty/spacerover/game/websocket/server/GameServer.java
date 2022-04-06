@@ -219,8 +219,8 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			case SocketMessages.COLOUR_GREEN:
 			case SocketMessages.COLOUR_PURPLE:
 			case SocketMessages.COLOUR_YELLOW:
-				this.currentGame.processColour(msgID);
 				this.sendBoardColour(msgID);
+				this.currentGame.processColour(msgID);
 				break;
 			case SocketMessages.GAME_HEALTH_TEST:
 				session.getAsyncRemote().sendText(SocketMessages.GAME_HEALTH_ACK);
