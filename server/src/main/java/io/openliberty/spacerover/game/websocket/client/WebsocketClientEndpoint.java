@@ -42,22 +42,21 @@ public class WebsocketClientEndpoint {
 
 	public WebsocketClientEndpoint(String uri) {
 		manager = new GameEventManager(GameEvent.SOCKET_DISCONNECT);
-		this.messageHandler= null;
+		this.messageHandler = null;
 		this.uri = uri;
 	}
 
-	public WebsocketClientEndpoint(URI uri)
-	{
+	public WebsocketClientEndpoint(URI uri) {
 		this(uri.toString());
 	}
 
-
-	public WebsocketClientEndpoint(io.openliberty.spacerover.game.websocket.client.MessageHandler handler, String uriStr) {
+	public WebsocketClientEndpoint(io.openliberty.spacerover.game.websocket.client.MessageHandler handler,
+			String uriStr) {
 		manager = new GameEventManager(GameEvent.SOCKET_DISCONNECT);
 		this.messageHandler = handler;
 		this.uri = uriStr;
 	}
-	
+
 	public GameEventManager getEventManager() {
 		return manager;
 	}
@@ -71,7 +70,6 @@ public class WebsocketClientEndpoint {
 			throw new IOException(e);
 		}
 	}
-
 
 	/**
 	 * Callback hook for Connection open events.
@@ -121,16 +119,24 @@ public class WebsocketClientEndpoint {
 	 * @param message
 	 * @throws IOException
 	 */
-	public void sendMessage(String message){
+	public void sendMessage(String message) {
+		this.sendMessage(message, false);
+	}
+
+	public void sendMessage(String message, boolean isAsync) {
 		if (this.userSession != null && this.userSession.isOpen()) {
 			try {
-				this.userSession.getBasicRemote().sendText(message);
+				if (isAsync) {
+					this.userSession.getAsyncRemote().sendText(message);
+
+				} else {
+					this.userSession.getBasicRemote().sendText(message);
+				}
 				LOGGER.log(Level.INFO, "Sent Message {0}", message);
 			} catch (IOException e) {
 				LOGGER.log(Level.SEVERE, "failed to send message {0}", message);
 			}
 		}
-
 	}
 
 	/**
