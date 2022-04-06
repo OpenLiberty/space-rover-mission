@@ -24,7 +24,6 @@ const PlayPage = () => {
     health,
     score,
     startGame,
-    endGame,
     error,
   } = useGame(gameSocketURL, gameDurationSeconds);
 
@@ -52,11 +51,14 @@ const PlayPage = () => {
           health={health}
           score={score}
           time={formattedTime}
-          stopGame={endGame}
         />
       );
     case GameState.GameEnded:
-      return <Navigate to={`/leaderboard?player=${playerName}`} />;
+      return (
+        <Navigate
+          to={`/leaderboard?player=${encodeURIComponent(playerName)}`}
+        />
+      );
     default:
       return null;
   }

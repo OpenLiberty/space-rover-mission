@@ -43,11 +43,11 @@ services:
                 ports:
                         - "9070:9080"
         client:
-                build: ./client
+                build: 
+                        context: ./client
+                        args:
+                                - GAME_SOCKET_URL=ws://localhost:9070/roversocket
+                                - GAME_DURATION_SECONDS=180
+                                - LEADERBOARD_URL=http://localhost:9080/mongo/leaderboard
                 ports:
-                        - "3000:3000"
-                environment:
-                        - REACT_APP_GAME_SOCKET_URL=ws://localhost:9070/roversocket
-                        - REACT_APP_GAME_DURATION_SECONDS=180
-                        - REACT_APP_LEADERBOARD_URL=http://localhost:9080/mongo/leaderboard
-
+                        - "3000:80"
