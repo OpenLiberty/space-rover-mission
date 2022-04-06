@@ -177,7 +177,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	public synchronized void handleMessage(final String message, final Session session) {
 		LOGGER.log(Level.INFO, "Message received: <{0}>", message);
 		final String[] parsedMsg = message.split("\\" + SocketMessages.SOCKET_MESSAGE_DATA_DELIMITER);
-		final String msgID = parsedMsg[0];
+		String msgID = parsedMsg[0];
 
 		if (this.stateMachine.isValidState(msgID)) {
 			switch (msgID) {
@@ -219,8 +219,8 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			case SocketMessages.COLOUR_GREEN:
 			case SocketMessages.COLOUR_PURPLE:
 			case SocketMessages.COLOUR_YELLOW:
-				this.currentGame.processColour(msgID);
 				this.sendBoardColour(msgID);
+				this.currentGame.processColour(msgID);
 				break;
 			case SocketMessages.GAME_HEALTH_TEST:
 				session.getAsyncRemote().sendText(SocketMessages.GAME_HEALTH_ACK);
@@ -230,8 +230,11 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			}
 			this.stateMachine.incrementState(msgID);
 		}
-
-		connectGamePieces();
+		
+		if(!msgID.equals(SocketMessages.END_GAME))
+		{
+			connectGamePieces();
+		}
 	}
 
 	private synchronized void connectGamePieces() {

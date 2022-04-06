@@ -13,8 +13,8 @@ package io.openliberty.spacerover.game;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,7 +38,7 @@ public class Game {
 	private int score;
 	private int health;
 	private GameEventManager eventManager = null;
-	private Set<String> coloursVisited;
+	private List<String> coloursVisited;
 
 	public void startGameSession(String playerId) {
 		this.startGameSession(playerId, 100);
@@ -51,7 +51,7 @@ public class Game {
 		this.score = 0;
 		this.health = maxHP;
 		this.eventManager = new GameEventManager(GameEvent.HP, GameEvent.SCORE, GameEvent.GAME_OVER);
-		this.coloursVisited = new HashSet<>();
+		this.coloursVisited = new ArrayList<>();
 	}
 
 	public GameEventManager getEventManager() {
@@ -64,7 +64,6 @@ public class Game {
 	}
 
 	public void decrementScore(int amount) {
-//		this.score = Math.max(this.score - amount, 0); TODO
 		this.score = this.score - amount;
 		getEventManager().notify(GameEvent.SCORE, this.score);
 	}
@@ -116,22 +115,20 @@ public class Game {
 
 	public void processColour(String msgID) {
 		if (msgID.equals(SocketMessages.COLOUR_RED)) {
-			this.decrementHP(OBSTACLE_HP_DECREMENT);
 			this.decrementScore(OBSTACLE_SCORE_DECREMENT);
+			this.decrementHP(OBSTACLE_HP_DECREMENT);
 		} else {
-			if (!this.coloursVisited.contains(msgID)) {
-				LOGGER.log(Level.INFO, "New colour visited: {0}", msgID);
-				this.coloursVisited.add(msgID);
-				this.incrementScore(getScore(msgID));
-			}
+			LOGGER.log(Level.INFO, "Colour visited: {0}", msgID);
+			this.coloursVisited.add(msgID);
+			this.incrementScore(getScore());
 		}
 		if (this.isInProgressGameOver()) {
 			this.endGameSession();
 		}
 	}
 
-	private int getScore(String colour) {
-		return SocketMessages.COLOUR_SCORE_VALUES.get(colour);
+	private int getScore() {
+		return this.coloursVisited.size() * 10;
 	}
 
 	@Override
@@ -156,6 +153,10 @@ public class Game {
 		} else {
 			throw new IllegalStateException("Game was not started");
 		}
+	}
+
+	public boolean hasAlreadyVisitedYellow() {
+		return this.coloursVisited.contains(SocketMessages.COLOUR_YELLOW);
 	}
 
 }
