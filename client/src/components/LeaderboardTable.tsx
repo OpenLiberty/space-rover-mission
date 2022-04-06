@@ -11,12 +11,17 @@
 import React from "react";
 import { LeaderboardEntry } from "hooks/useLeaderboard";
 import { formatTime } from "lib/utils";
+import { gameDurationSeconds } from "lib/config";
 
 type Props = {
   data: LeaderboardEntry[];
-}
+};
 
 const LeaderboardTable = ({ data }: Props) => {
+  const filteredData = data
+    .filter((entry) => entry.health > 0 && entry.time < gameDurationSeconds)
+    .slice(0, 5);
+
   return (
     <>
       <div>
@@ -36,7 +41,7 @@ const LeaderboardTable = ({ data }: Props) => {
           </tr>
         </thead>
         <tbody>
-          {data.map((entry) => (
+          {filteredData.map((entry) => (
             <tr className="odd:bg-gray-50 even:bg-gray-200">
               <td className="p-3">{entry.rank}</td>
               <td className="p-3">{entry.player}</td>

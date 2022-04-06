@@ -52,7 +52,7 @@ const LeaderboardPage = () => {
   return (
     <div className="container mx-auto">
       {placement && <PlacementDisplay {...placement} />}
-      {leaderboard && <LeaderboardTable data={leaderboard.slice(0, 5)} />}
+      {leaderboard && <LeaderboardTable data={leaderboard} />}
     </div>
   );
 };
