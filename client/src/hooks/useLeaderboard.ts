@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+import { useMemo } from "react";
 import axios from "axios";
 import { useQuery } from "react-query";
 import { leaderboardURL } from "lib/config";
@@ -29,8 +30,22 @@ const getLeaderboard = async () => {
   return data;
 };
 
-const useLeaderboard = () => {
-  return useQuery("leaderboard", getLeaderboard);
+const useLeaderboard = (player: string | null) => {
+  const { data: leaderboard, ...rest } = useQuery("leaderboard", getLeaderboard);
+
+  const placement = useMemo(() => {
+    if (player) {
+      return leaderboard
+        ?.filter((entry) => entry.player === player)
+        .sort((a, b) => Number(b.timestamp) - Number(a.timestamp))[0];
+    }
+  }, [leaderboard, player]);
+
+  return {
+    leaderboard,
+    placement,
+    ...rest,
+  };
 };
 
 export default useLeaderboard;
