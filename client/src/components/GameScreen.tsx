@@ -9,6 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Stat from "./Stat";
 import HealthBar from "./HealthBar";
 import { ReactComponent as Combomark } from "assets/openliberty_combomark.svg";
@@ -18,10 +19,11 @@ type Props = {
   health: number;
   score: number;
   time: string;
-  stopGame: () => void;
 };
 
-const GameScreen = ({ playerName, health, score, time, stopGame }: Props) => {
+const GameScreen = ({ playerName, health, score, time }: Props) => {
+  const navigate = useNavigate();
+
   return (
     <div className="container mx-auto flex flex-col gap-12 justify-center h-full">
       <div className="flex flex-row">
@@ -46,7 +48,7 @@ const GameScreen = ({ playerName, health, score, time, stopGame }: Props) => {
       <div className="my-10 mx-auto">
         <button
           className="bg-red-600 hover:bg-red-500 text-3xl px-10 py-5 rounded-lg"
-          onClick={stopGame}
+          onClick={() => navigate("/")}
         >
           End mission
         </button>
