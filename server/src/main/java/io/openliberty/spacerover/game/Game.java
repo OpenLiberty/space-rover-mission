@@ -115,8 +115,8 @@ public class Game {
 
 	public void processColour(String msgID) {
 		if (msgID.equals(SocketMessages.COLOUR_RED)) {
-			this.decrementHP(OBSTACLE_HP_DECREMENT);
 			this.decrementScore(OBSTACLE_SCORE_DECREMENT);
+			this.decrementHP(OBSTACLE_HP_DECREMENT);
 		} else {
 			if (!this.coloursVisited.contains(msgID)) {
 				LOGGER.log(Level.INFO, "New colour visited: {0}", msgID);
