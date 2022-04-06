@@ -130,7 +130,7 @@ public class Game {
 	}
 
 	private int getScore(String colour) {
-		return SocketMessages.COLOUR_SCORE_VALUES.get(colour);
+		return this.coloursVisited.size() * 10;
 	}
 
 	@Override

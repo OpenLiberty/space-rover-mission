@@ -219,10 +219,6 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			case SocketMessages.COLOUR_GREEN:
 			case SocketMessages.COLOUR_PURPLE:
 			case SocketMessages.COLOUR_YELLOW:
-				if(msgID.equals(SocketMessages.COLOUR_YELLOW) && this.currentGame.hasAlreadyVisitedYellow())
-				{
-					msgID = SocketMessages.COLOUR_PURPLE;
-				}
 				this.sendBoardColour(msgID);
 				this.currentGame.processColour(msgID);
 				break;
@@ -234,8 +230,11 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			}
 			this.stateMachine.incrementState(msgID);
 		}
-
-		connectGamePieces();
+		
+		if(!msgID.equals(SocketMessages.END_GAME))
+		{
+			connectGamePieces();
+		}
 	}
 
 	private synchronized void connectGamePieces() {
