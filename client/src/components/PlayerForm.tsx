@@ -40,6 +40,7 @@ const PlayerForm = ({ isDisabled, onSubmit }: Props) => {
           autoFocus
           autoComplete="false"
           autoCorrect="false"
+          spellCheck="false"
           value={playerName}
           onChange={(e) => setPlayerName(e.target.value)}
         />
@@ -54,7 +55,7 @@ const PlayerForm = ({ isDisabled, onSubmit }: Props) => {
         <input
           className="w-2/3 hover:cursor-pointer bg-green hover:bg-green-light disabled:bg-gray-500 disabled:cursor-not-allowed px-5 py-5 rounded-lg"
           type="submit"
-          disabled={isDisabled}
+          disabled={isDisabled || playerName === ""}
           value="Begin mission"
         />
       </div>
