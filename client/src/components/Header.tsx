@@ -17,7 +17,7 @@ const Header = () => {
     { id: 1, to: "/", name: "Home" },
     { id: 2, to: "/play", name: "Play" },
     { id: 3, to: "/leaderboard", name: "Leaderboard" },
-    { id: 4, to: "/settings", name: "Settings" },
+    // { id: 4, to: "/settings", name: "Settings" },
   ];
 
   return (
@@ -33,7 +33,9 @@ const Header = () => {
         {routes.map((route) => (
           <Link
             key={route.id}
-            className="mx-5 text-gray-50 hover:text-gray-400 last:ml-auto last:mr-0"
+            className="mx-5 text-gray-50 hover:text-gray-400"
+            // TODO: uncomment below and remove above after adding settings page
+            // className="mx-5 text-gray-50 hover:text-gray-400 last:ml-auto last:mr-0"
             to={route.to}
           >
             {route.name}
