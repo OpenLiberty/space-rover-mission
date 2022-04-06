@@ -64,7 +64,6 @@ public class Game {
 	}
 
 	public void decrementScore(int amount) {
-//		this.score = Math.max(this.score - amount, 0); TODO
 		this.score = this.score - amount;
 		getEventManager().notify(GameEvent.SCORE, this.score);
 	}
@@ -156,6 +155,10 @@ public class Game {
 		} else {
 			throw new IllegalStateException("Game was not started");
 		}
+	}
+
+	public boolean hasAlreadyVisitedYellow() {
+		return this.coloursVisited.contains(SocketMessages.COLOUR_YELLOW);
 	}
 
 }
