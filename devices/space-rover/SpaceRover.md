@@ -1,4 +1,4 @@
-# Space Rover
+# Open Liberty Space Rover
 
 The Space Rover contains two microcontrollers: Arduino UNO and NodeMCU.
 
