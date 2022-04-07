@@ -39,7 +39,7 @@ services:
         ports:
             - "9080:9080"
     gameservice:
-        build: ./server
+        build: ./game
         ports:
             - "9070:9080"
     client:
