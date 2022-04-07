@@ -23,6 +23,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -33,6 +34,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -121,5 +123,24 @@ public class Leaderboard {
 		}
 
 		return Response.status(Response.Status.OK).entity(sb.toString()).build();
+	}
+	@Produces(MediaType.APPLICATION_JSON)
+	@APIResponse(responseCode = "200", description = "Successfully listed the leaderboard.")
+	@APIResponse(responseCode = "500", description = "Failed to list the leaderboard.")
+	@Operation(summary = "List the leaderboard from the database.")
+	@DELETE
+	@Path("/")
+	public Response clear() {
+		MongoCollection<Document> collection = db.getCollection(LEADERBOARD_COLLECTION_NAME);
+		DeleteResult result = collection.deleteMany(new Document());
+		if(result.wasAcknowledged())
+		{
+			return Response.status(Response.Status.OK).build();
+		}else
+		{
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("[\"Unable to clear leaderboard!\"]")
+					.build();
+		}
+		
 	}
 }

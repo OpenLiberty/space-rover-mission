@@ -344,7 +344,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	}
 
 	private void sendRoverDirection(final String direction) {
-		this.roverClient.sendMessage(direction);
+		this.roverClient.sendMessage(direction, false);
 	}
 
 	private static class GameHolder {
