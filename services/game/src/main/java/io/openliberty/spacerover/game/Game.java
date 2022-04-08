@@ -140,7 +140,7 @@ public class Game {
 
 	public boolean isInProgressGameOver() {
 		boolean isOver = false;
-		if (this.health <= 0 || this.coloursVisited.size() == 4) {
+		if (this.isInProgress() && (this.health <= 0 || this.coloursVisited.size() == 4)) {
 			isOver = true;
 		}
 		return isOver;
