@@ -160,14 +160,6 @@ public class Game {
 		return this.coloursVisited.contains(SocketMessages.COLOUR_YELLOW);
 	}
 
-	public boolean hasVisited(String colour) {
-		boolean hasVisited = false;
-		if (!colour.equals(SocketMessages.COLOUR_RED)) {
-			hasVisited = this.coloursVisited.contains(colour);
-		}
-		return hasVisited;
-	}
-
 	public String getColour(String msgID) {
 		return COLOURS[Math.min(this.coloursVisited.size(), 3)];
 	}
