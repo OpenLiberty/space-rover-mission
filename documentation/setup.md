@@ -18,7 +18,7 @@ The space rover mission has two physical devices to set up: the space rover and 
 
 When powered on, both devices will automatically attempt to connect to WiFi, and after connecting successfully, will wait for a websocket connection until the game service connects. **_The game will not start until both devices are connected to a websocket._**
 
-See the light patterns representing the setup, standby, and gameplay states for the space rover [here](./setup.md#states) and for the game board [here](./setup.md#states).
+See the light patterns representing the setup, standby, and gameplay states for the space rover [here](./setup.md#space-rover-state-light-patterns) and for the game board [here](./setup.md#game-board-state-light-patterns).
 
 ## Space Rover
 
@@ -29,55 +29,73 @@ See the light patterns representing the setup, standby, and gameplay states for 
 
 https://user-images.githubusercontent.com/31871360/162487597-b3590a36-6800-41ad-a065-5a428be69f76.mov
 
-### States
+### Space Rover State Light Patterns
 
 The space rover displays the following light patterns to represent different setup, standby, and gameplay states.
 
-**Blinking Blue Lights + Head/Tail Lights OFF --> Connecting to WiFi**
+**Blinking Blue Lights + Head/Tail Lights OFF**: Connecting to WiFi
 
 https://user-images.githubusercontent.com/31871360/162487597-b3590a36-6800-41ad-a065-5a428be69f76.mov
 
-**Cycling Blue Lights + Head/Tail Lights Blinking --> Waiting for a websocket connection**
+**Cycling Blue Lights + Head/Tail Lights Blinking**: Waiting for a websocket connection
 
 https://user-images.githubusercontent.com/31871360/162487626-c8ea1146-340c-4e31-b073-2fef61f02cbf.mov
 
-**Solid Blue Lights + Blinking Head/Tail Lights -->  Websocket connected, waiting for game start**
+**Solid Blue Lights + Blinking Head/Tail Lights**: Websocket connected, waiting for game start
 
 https://user-images.githubusercontent.com/31871360/162487765-e9647f5f-d1f7-4b80-95e2-3f235b2c17bd.MOV
 
-**Solid Blue Lights + Solid Head/Tail Lights --> Game Started**
+**Solid Blue Lights + Solid Head/Tail Lights**: Game Started
 
-![](../images/space-rover/sr-wsconn-gamestarted.png)
+![Game Started](../images/space-rover/sr-wsconn-gamestarted.png)
 
 
 ## Game Board
 
 1. Set out the four separate boards in the following layout:
 2. Connect the four boards together using the three-pin connectors between the boards. There are eight one-sided connectors in total - two for each board - that will create four connections between the boards. ****IMPORTANT: _Ensure that the wire colours coordinate when the connectors are linked -- the red wires (power), green wires (data line), and black wires (ground) should all line up when connected._**
+
+![Connectors](../images/game-board/gb-connectors.png)
+
 3. After the connectors are linked, push the connected section into either of the board holes that the connectors come out of.
 4. Push the four boards together and ensure the four center corners (the sun) are aligned.
 5. Using the metal clamps, fasten the board together at the ends of each of the board's perpendicular intersections.
-6. Unfold the metal barrier into a rectangle (black side in, silver side out).
+6. Unfold the metal barrier into a rectangle (black side in, silver side out). The barrier has eight "connections": seven are taped connections, and one is tied (circled red in the image below). Unfold the barrier into a big rectangle according to the image below, where each "side" of the big rectangle is made of either two short sides or two long sides of the individual four boards (in the image: S - short, L - long).
 
-### States
+![Unfolded barrier](../images/game-board/gb-unfolded-fence.png)
+
+When looking at the board in the below orientation, the tied corner of the rectangle should fit over the bottom left corner of the board
+
+![](image)
+
+
+
+
+### Game Board State Light Patterns
 
 In the following section, the game board LEDs are split into different naming categories.
 
-* **SUN** = the LEDs encircling the sun in the center of the board
-* **PLANETS** = all planet LEDs, the four 5x5 LED grids inside each planet
-    * **EARTH** = blue planet on the board, configured to have **blue** LEDs
-    * **JUPITER** = white planet on the board, configured to have **green** LEDs
-    * **VENUS** = yellow planet on the board, configured to have **yellow** LEDs
-    * **OPENLIBERTY** =  on the board, configured to have **purple** LEDs
-* **OBSTACLES** = the LEDs inside the asteroids and black hole
+* **SUN**: the LEDs encircling the sun in the center of the board
+* **PLANETS**: all planet LEDs, the four 5x5 LED grids inside each planet
+    * **EARTH**: blue planet on the board, configured to have **blue** LEDs
+    * **JUPITER**: white planet on the board, configured to have **green** LEDs
+    * **VENUS**: yellow planet on the board, configured to have **yellow** LEDs
+    * **OPENLIBERTY**:  on the board, configured to have **purple** LEDs
+* **OBSTACLES**: the LEDs inside the asteroids and black hole
 
 The game board displays the following light patterns to represent different game states.
 
-* **Blinking Red SUN --> Connecting to WiFi**
-* **One Green Flash of All LEDs --> CONNECTED to WiFi**
-* **Bursting SUN + PLANETS --> Waiting for a websocket connection**
-* **Solid Blue SUN -->  Websocket connected, waiting for game start**
-* **Red SUN + EARTH ON + Red OBSTACLES --> Game Started**
+**Blinking Red SUN:** Connecting to WiFi, **One Green Flash of All LEDs:** CONNECTED to WiFi
+
+**Bursting SUN + PLANETS:** Waiting for a websocket connection
+
+**Solid Blue SUN:**  Websocket connected, waiting for game start
+
+![Websocket connected, waiting for game start](../images/game-board/gb-wsconn-wfgame.png)
+
+**Red SUN + EARTH ON + Red OBSTACLES:** Game Started
+
+![Game Started](../images/game-board/gb-wsconn-gamestarted.png)
 
 ## Mini PC
 
@@ -94,16 +112,16 @@ The game board displays the following light patterns to represent different game
 
 4. Ensure that the Mini PC is connected to the **OL_DEMO** internet.
 
-5. Open Firefox and verify that four tabs are automatically generated with the following endpoints:
+5. Firefox will automatically open; verify that four tabs are generated with the following endpoints:
 
     * **Webapp** => localhost:3000/
-      <br>&nbsp; ![Webapp Play Page](../images/four-tab-game-page.png)
+        <br>&nbsp; ![Webapp Play Page](../images/four-tab-game-page.png)
     * **Game Service Health** => localhost:9070/health
-      <br><br>&nbsp; ![Game Service Health](../images/four-tab-game-server-health.png)
+        <br><br>&nbsp; ![Game Service Health](../images/four-tab-game-server-health.png)
     * **Leaderboard Health** => localhost:9080/health
-      <br><br>&nbsp; ![Leaderboard Health](../images/four-tab-leaderboard-health.png)
+        <br><br>&nbsp; ![Leaderboard Health](../images/four-tab-leaderboard-health.png)
     * **Grafana** => localhost:3010/
-      <br>&nbsp; ![Grafana](../images/four-tab-grafana.png)
+        <br>&nbsp; ![Grafana](../images/four-tab-grafana.png)
         
         If needed, login into Grafana with:
         * username: admin
