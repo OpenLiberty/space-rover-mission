@@ -20,7 +20,7 @@ For setup, cleanup, and troubleshooting instructions, see [documentation](https:
 ![ArchitectureDiagram](/images/architecture.png)
 
 #### Container 1 - Client
-The Client is built using React and served using Nginx. The UI is used to enter the player's name, start the game, view current game stats, and view the leaderboard. It interacts with the Game Service using websockets and the Leaderboard Service using http.
+The Client is built using React and served using Nginx. The UI is used to enter the player's name, start the game, view current game stats, and view the leaderboard. It interacts with the Game Service using websockets and the Leaderboard Service using HTTP.
 
 #### Container 2 - Leaderboard Serivce
 The Leaderboard Service is built using Open Liberty. It is used to provide a REST API for the Client to query for past game information and for the Game Service to add the information after a game completes.
@@ -31,8 +31,8 @@ The Game Service is built using Open Liberty. It holds the current game state an
 #### Container 4 - MongoDB
 MongoDB is used to store information about past games. It interacts with the Leaderboard Service.
 
-#### Container 5 - Prometheus Server
-The Prometheus Server scrapes metrics from the Game Service and sends them to Grafana.
+#### Container 5 - Prometheus server
+The Prometheus server scrapes metrics from the Game Service and sends them to Grafana.
 
 #### Container 6 - Grafana
 Grafana takes the metrics scraped by the Prometheus Server and displays them on a dashboard.
