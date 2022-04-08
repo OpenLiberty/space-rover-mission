@@ -60,6 +60,7 @@ const long headlight_interval = 650; // interval at which to blink (milliseconds
 bool isWifiConnected = false;
 bool isWSConnected = false; // WebSocket connection
 bool isGameStarted = false;
+bool yellowDetected = false;
 
 void setup()
 {
@@ -178,8 +179,7 @@ void processNewData() {
             isGameStarted=true;
         }
         else if (strcmp(receivedMsg, "GE") == 0) {
-            isWSConnected=false;
-            isGameStarted=false;
+            resetGameStartState();
         }
         newData = false;
     }
@@ -207,17 +207,24 @@ void getReadingsFromSensor()
   redColor = pulseIn(out, LOW);
   delay(200);
 
-  if (redColor > 1000 || redColor < 0) {
+  if (redColor < 0) {
     redColor = 0;
   }
+  else if (redColor > 255) {
+    redColor = 255;
+  }
+
 
   // BLUE
   digitalWrite(s3, HIGH);  
   blueColor = pulseIn(out, LOW);
   delay(200); 
 
-  if (blueColor > 1000 || blueColor < 0) {
+  if (blueColor < 0) {
     blueColor = 0;
+  }
+  else if (blueColor > 255) {
+    blueColor = 255;
   }
 
   // GREEN
@@ -225,23 +232,29 @@ void getReadingsFromSensor()
   greenColor = pulseIn(out, LOW);
   delay(200); 
 
-  if (greenColor > 1000 || greenColor < 0) {
+  if (greenColor < 0) {
     greenColor = 0;
+  }
+  else if (greenColor > 255) {
+    greenColor = 255;
   }
   
 }
 
 void determineColor() {
-  if ((redColor >= 7 && redColor <= 57) && (greenColor >= 15 && greenColor <= 156) && (blueColor >= 24 && blueColor <= 238)) 
+  if ((redColor >= 7 && redColor <= 57) && (greenColor >= 15 && greenColor <= 168) && (blueColor >= 24 && blueColor <= 255) && !yellowDetected) 
   {
    if (DEBUG)   
       Serial.println("YELLOW");
-   
-   // Send color to NodeMCU
-   SUART.println("<YW>");
+
+    if (!yellowDetected) {
+       // Send color to NodeMCU
+       SUART.println("<YW>");
+       yellowDetected = true;
+    }
    delay(500); 
   } 
-  else if ((redColor >= 8 && redColor <= 42) && (greenColor >= 29 && greenColor <= 115) && (blueColor >= 10 && blueColor <= 52))    
+  else if ((redColor >= 8 && redColor <= 42) && (greenColor >= 29 && greenColor <= 115) && (blueColor >= 10 && blueColor <= 52) && yellowDetected)    
   {  
    if (DEBUG)
       Serial.println("PURPLE");
@@ -250,7 +263,8 @@ void determineColor() {
    SUART.println("<PUR>"); 
    delay(500); 
   }  
-  else if ((redColor >= 0 && redColor <= 780) && (greenColor >= 32 && greenColor <= 71) && (blueColor >= 8 && blueColor <= 21))  
+  else if (blueColor < redColor && blueColor < greenColor && blueColor != 0)
+  //((redColor >= 0 && redColor <= 998) && (greenColor >= 32 && greenColor <= 144) && (blueColor >= 8 && blueColor <= 60))  
   {
    if (DEBUG)  
       Serial.println("BLUE");
@@ -259,7 +273,8 @@ void determineColor() {
    SUART.println("<BLU>"); 
    delay(500); 
   }  
-  else if ((redColor >= 153 && redColor <= 613) && (greenColor >= 24 && greenColor <= 116) && (blueColor >= 48 && blueColor <= 230)) 
+  else if (greenColor < redColor && greenColor < blueColor && greenColor != 0)
+  //((redColor >= 153 && redColor <= 797) && (greenColor >= 24 && greenColor <= 126) && (blueColor >= 48 && blueColor <= 333)) 
   {
    if (DEBUG)  
       Serial.println("GREEN");
@@ -268,7 +283,8 @@ void determineColor() {
    SUART.println("<GRN>"); 
    delay(500);
   } 
-  else if (redColor < blueColor && redColor < greenColor && redColor >= 3 && redColor <= 58) {
+  else if (redColor < blueColor && redColor < greenColor) {
+    //&& redColor >= 3 && redColor <= 58
    if (DEBUG)
       Serial.println("RED");
    
@@ -360,4 +376,10 @@ void turnOffRoverDamageLights() {
 
 void turnOnRoverDamageLights() {
   digitalWrite(DAMAGE_LIGHTS, HIGH);     // turn on Rover Damage light
+}
+
+void resetGameStartState() {
+  isWSConnected=false;
+  isGameStarted=false;
+  yellowDetected = false;
 }
