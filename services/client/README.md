@@ -8,7 +8,7 @@ This project is built using Docker by the main docker-compose file which creates
 
 This project can also be started on its own in development mode by running `npm start`.
 
-## Main technologies used
+## Main technologies
 - React
 - TypeScript
 - Tailwind CSS
