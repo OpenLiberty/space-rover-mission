@@ -356,8 +356,12 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		LOGGER.log(Level.WARNING, "ReInit called, resetting state to: {0}", new Object[] { state });
 
 		if (!this.stateMachine.hasErrorOccurred()) {
-			this.roverClient.getEventManager().unsubscribe(GameEvent.SOCKET_DISCONNECT, this);
-			this.boardClient.getEventManager().unsubscribe(GameEvent.SOCKET_DISCONNECT, this);
+			if (this.roverClient != null) {
+				this.roverClient.getEventManager().unsubscribe(GameEvent.SOCKET_DISCONNECT, this);
+			}
+			if (this.boardClient != null) {
+				this.boardClient.getEventManager().unsubscribe(GameEvent.SOCKET_DISCONNECT, this);
+			}
 		}
 
 		if (this.guiSession != null) {
