@@ -89,7 +89,7 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
 
     socket.current.onopen = (ev) => {
       sendMessage(Event.ConnectGUI);
-      sendMessage(Event.ConnectGesture);
+      // sendMessage(Event.ConnectGesture);
       setGameState(GameState.Waiting);
     };
     socket.current.onerror = (ev) => {
