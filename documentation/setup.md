@@ -1,6 +1,6 @@
 # Setup
 
-The following guide goes through how to set up the different components for the space rover mission demo.
+The following guide goes through how to set up the different components for the OpenLiberty Space Rover mission demo.
 
 ## Local Network
 
@@ -10,7 +10,7 @@ Connect the WiFi Router into a nearby power supply, wait till the green light st
 
 ## Devices
 
-The space rover mission has two physical devices to set up: the space rover and the game board. Both devices have LEDs that display light patterns for the following setup, standby, and gameplay states:
+The Space Rover mission has two physical devices to set up: the Space Rover and the Game Board. Both devices have LEDs that display light patterns for the following setup, standby, and gameplay states:
 * Connecting to WiFi
 * Waiting for a websocket connection
 * Websocket connected, waiting for game start
@@ -18,20 +18,20 @@ The space rover mission has two physical devices to set up: the space rover and 
 
 When powered on, both devices will automatically attempt to connect to WiFi, and after connecting successfully, will wait for a websocket connection until the game service connects. **_The game will not start until both devices are connected to a websocket._**
 
-See the light patterns representing the setup, standby, and gameplay states for the space rover [here](./setup.md#space-rover-state-light-patterns) and for the game board [here](./setup.md#game-board-state-light-patterns).
+See the light patterns representing the setup, standby, and gameplay states for the Space Rover [here](./setup.md#space-rover-state-light-patterns) and for the Game Board [here](./setup.md#game-board-state-light-patterns).
 
 ## Space Rover
 
-1. Plug the space rover into a power outlet.
+1. Plug the Space Rover into a power outlet.
 <br>&nbsp; ![Plug in space rover](../images/space-rover/sr-plug-in.png)
 
-2. Flip the switch on the power cord to turn the space rover on. **Note:** When the rover is initially powered on, it will "jolt".
+2. Flip the switch on the power cord to turn the Space Rover on. **Note:** When the rover is initially powered on, it will "jolt".
 
 https://user-images.githubusercontent.com/31871360/162487597-b3590a36-6800-41ad-a065-5a428be69f76.mov
 
 ### Space Rover State Light Patterns
 
-The space rover displays the following light patterns to represent different setup, standby, and gameplay states.
+The Space Rover displays the following light patterns to represent different setup, standby, and gameplay states.
 
 **Blinking Blue Lights + Head/Tail Lights OFF**: Connecting to WiFi
 
@@ -57,11 +57,11 @@ https://user-images.githubusercontent.com/31871360/162487765-e9647f5f-d1f7-4b80-
 
 ![Connectors](../images/game-board/gb-connectors.png)
 
-3. After the connectors are linked, push the connected section into either of the board holes that the connectors come out of.
+3. After the connectors are linked, push the connected section into either of the board holes that the connectors come out of (refer to video below).
 
 https://user-images.githubusercontent.com/31871360/162499249-462154af-2683-4a08-87a7-d8d280783a10.MOV
 
-4. Using the metal clamps, fasten the board together at the ends of each of the board's perpendicular intersections.
+4. Using the metal clamps, fasten the board together at the ends of each of the board's perpendicular intersections (refer to video below).
 
 https://user-images.githubusercontent.com/31871360/162499288-a1d28717-2cb4-4a22-a028-11e9f76ccde3.MOV
 
@@ -85,11 +85,11 @@ https://user-images.githubusercontent.com/31871360/162499288-a1d28717-2cb4-4a22-
 
 ![power-plug](../images/game-board/gb-powerplug.png)
 
-11. Flip the switch on the power cord to turn the game board on.
+11. Flip the switch on the power cord to turn the Game Board on.
 
 ### Game Board State Light Patterns
 
-In the following section, the game board LEDs are split into different naming categories.
+In the following section, the Game Board LEDs are split into different naming categories.
 
 * **SUN**: the LEDs encircling the sun in the center of the board
 * **PLANETS**: all planet LEDs, the four 5x5 LED grids inside each planet
@@ -99,7 +99,7 @@ In the following section, the game board LEDs are split into different naming ca
     * **OPENLIBERTY**:  on the board, configured to have **purple** LEDs
 * **OBSTACLES**: the LEDs inside the asteroids and black hole
 
-The game board displays the following light patterns to represent different game states.
+The Game Board displays the following light patterns to represent different game states.
 
 **Blinking Red SUN:** Connecting to WiFi, **One Green Flash of All LEDs:** CONNECTED to WiFi
 
