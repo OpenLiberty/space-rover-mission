@@ -39,6 +39,7 @@ public class Game {
 	private int health;
 	private GameEventManager eventManager = null;
 	private Set<String> coloursVisited;
+	private static final String[] COLOURS = new String[] {SocketMessages.COLOUR_BLUE, SocketMessages.COLOUR_GREEN, SocketMessages.COLOUR_YELLOW, SocketMessages.COLOUR_PURPLE};
 
 	public void startGameSession(String playerId) {
 		this.startGameSession(playerId, 100);
@@ -165,6 +166,10 @@ public class Game {
 			hasVisited = this.coloursVisited.contains(colour);
 		}
 		return hasVisited;
+	}
+
+	public String getColour(String msgID) {
+		return COLOURS[Math.max(this.coloursVisited.size(), 3)];
 	}
 
 }
