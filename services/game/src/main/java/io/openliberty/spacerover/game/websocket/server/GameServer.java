@@ -148,8 +148,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			if (!this.stateMachine.hasErrorOccurred()) {
 				this.setErrorStateAndSendError("Socket disconnected");
 			}
-		} else if (eventType == GameEvent.GAME_OVER)
-		{
+		} else if (eventType == GameEvent.GAME_OVER) {
 			LOGGER.log(Level.WARNING, "Ending game from event type {0}", eventType);
 			endGameFromServer(false);
 		} else {
@@ -215,10 +214,14 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 				this.sendRoverDirection(msgID);
 				break;
 			case SocketMessages.COLOUR_RED:
+				this.sendBoardColour(msgID);
+				this.currentGame.processColour(msgID);
+				break;
 			case SocketMessages.COLOUR_BLUE:
 			case SocketMessages.COLOUR_GREEN:
 			case SocketMessages.COLOUR_PURPLE:
 			case SocketMessages.COLOUR_YELLOW:
+				msgID = this.currentGame.getColour(msgID);
 				this.sendBoardColour(msgID);
 				this.currentGame.processColour(msgID);
 				break;
@@ -230,9 +233,8 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			}
 			this.stateMachine.incrementState(msgID);
 		}
-		
-		if(!msgID.equals(SocketMessages.END_GAME))
-		{
+
+		if (!msgID.equals(SocketMessages.END_GAME)) {
 			connectGamePieces();
 		}
 	}
@@ -353,17 +355,21 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 	private synchronized void reInit() {
 		GameServerState state = GameServerState.SERVER_STARTED;
-		LOGGER.log(Level.WARNING, "ReInit called, resetting state to: {0}",
-				new Object[] { state });
+		LOGGER.log(Level.WARNING, "ReInit called, resetting state to: {0}", new Object[] { state });
 
 		if (!this.stateMachine.hasErrorOccurred()) {
-			this.roverClient.getEventManager().unsubscribe(GameEvent.SOCKET_DISCONNECT, this);
-			this.boardClient.getEventManager().unsubscribe(GameEvent.SOCKET_DISCONNECT, this);
+			if (this.roverClient != null) {
+				this.roverClient.getEventManager().unsubscribe(GameEvent.SOCKET_DISCONNECT, this);
+			}
+			if (this.boardClient != null) {
+				this.boardClient.getEventManager().unsubscribe(GameEvent.SOCKET_DISCONNECT, this);
+			}
 		}
 
 		if (this.guiSession != null) {
 			try {
 				this.guiSession.close();
+				LOGGER.log(Level.WARNING, "Disconnected gui session from server side");
 			} catch (IOException ioe) {
 				LOGGER.log(Level.WARNING, "failure during reInit", ioe);
 			}
@@ -371,6 +377,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		if (this.gestureSession != null) {
 			try {
 				this.gestureSession.close();
+				LOGGER.log(Level.WARNING, "Disconnected gesture  session from server side");
 
 			} catch (IOException ioe) {
 				LOGGER.log(Level.WARNING, "failure during reInit", ioe);
