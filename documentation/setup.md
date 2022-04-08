@@ -58,15 +58,19 @@ https://user-images.githubusercontent.com/31871360/162487765-e9647f5f-d1f7-4b80-
 ![Connectors](../images/game-board/gb-connectors.png)
 
 3. After the connectors are linked, push the connected section into either of the board holes that the connectors come out of.
+
+https://user-images.githubusercontent.com/31871360/162499249-462154af-2683-4a08-87a7-d8d280783a10.MOV
+
 4. Push the four boards together and ensure the four center corners (the sun) are aligned.
 5. Using the metal clamps, fasten the board together at the ends of each of the board's perpendicular intersections.
+
+https://user-images.githubusercontent.com/31871360/162499288-a1d28717-2cb4-4a22-a028-11e9f76ccde3.MOV
+
 6. Unfold the metal barrier into a rectangle (black side in, silver side out). The barrier has eight "connections": seven are taped connections, and one is tied (circled red in the image below). Unfold the barrier into a big rectangle according to the image below, where each "side" of the big rectangle is made of either two short sides or two long sides of the individual four boards (in the image: S - short, L - long).
 
 ![Unfolded barrier](../images/game-board/gb-unfolded-fence.png)
 
 When looking at the board in the below orientation, the tied corner of the rectangle should fit over the bottom left corner of the board
-
-![](image)
 
 
 
@@ -87,7 +91,11 @@ The game board displays the following light patterns to represent different game
 
 **Blinking Red SUN:** Connecting to WiFi, **One Green Flash of All LEDs:** CONNECTED to WiFi
 
+https://user-images.githubusercontent.com/31871360/162498704-b3f76810-d031-4d85-98d1-fbb172c52ca8.mov
+
 **Bursting SUN + PLANETS:** Waiting for a websocket connection
+
+https://user-images.githubusercontent.com/31871360/162498739-14222c5a-c67e-4310-95d4-9841c06d9a96.mov
 
 **Solid Blue SUN:**  Websocket connected, waiting for game start
 
