@@ -169,7 +169,7 @@ public class Game {
 	}
 
 	public String getColour(String msgID) {
-		return COLOURS[Math.max(this.coloursVisited.size(), 3)];
+		return COLOURS[Math.min(this.coloursVisited.size(), 3)];
 	}
 
 }
