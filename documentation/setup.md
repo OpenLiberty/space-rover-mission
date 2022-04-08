@@ -61,19 +61,31 @@ https://user-images.githubusercontent.com/31871360/162487765-e9647f5f-d1f7-4b80-
 
 https://user-images.githubusercontent.com/31871360/162499249-462154af-2683-4a08-87a7-d8d280783a10.MOV
 
-4. Push the four boards together and ensure the four center corners (the sun) are aligned.
-5. Using the metal clamps, fasten the board together at the ends of each of the board's perpendicular intersections.
+4. Using the metal clamps, fasten the board together at the ends of each of the board's perpendicular intersections.
 
 https://user-images.githubusercontent.com/31871360/162499288-a1d28717-2cb4-4a22-a028-11e9f76ccde3.MOV
+
+5. Push the four boards together and ensure the four center corners (the sun) are aligned.
 
 6. Unfold the metal barrier into a rectangle (black side in, silver side out). The barrier has eight "connections": seven are taped connections, and one is tied (circled red in the image below). Unfold the barrier into a big rectangle according to the image below, where each "side" of the big rectangle is made of either two short sides or two long sides of the individual four boards (in the image: S - short, L - long).
 
 ![Unfolded barrier](../images/game-board/gb-unfolded-fence.png)
 
-When looking at the board in the below orientation, the tied corner of the rectangle should fit over the bottom left corner of the board
+7. When looking at the board in the orientation from step 1 of this section, the tied corner of the rectangular barrier should fit over the bottom-left corner of the board. Fit the three taped corners of the rectangular barrier over the top-left, top-right, and bottom-right corners of the board. Then, fit the last tied corner over the bottom-left corner of the board.
 
+![Fence](../images/game-board/gb-fence.png)
 
+8. Fasten the bottom of the tied corner with a twist-tie.
 
+![twist-tie](../images/game-board/gb-twist-tie.png)
+
+9. Place the four plexiglass sheets onto the board; one sheet over each of the four smaller boards.
+
+10. Plug the power source into the board.
+
+![power-plug](../images/game-board/gb-powerplug.png)
+
+11. Flip the switch on the power cord to turn the game board on.
 
 ### Game Board State Light Patterns
 
