@@ -24,23 +24,23 @@ See the light patterns representing the setup, standby, and gameplay states for 
 ## Space Rover
 
 1. Plug the space rover into a power outlet.
-<br>&nbsp; ![Plug in space rover](./images/space-rover/sr-plug-in.png)
+<br>&nbsp; ![Plug in space rover](../images/space-rover/sr-plug-in.png)
 
 2. Flip the switch on the power cord to turn the space rover on. **Note:** When the rover is initially powered on, it will "jolt".
-<br>&nbsp; ![Turn on space rover](./images/space-rover/sr-wfwifi.mov)
+<br>&nbsp; ![Turn on space rover](../images/space-rover/sr-wfwifi.mov)
 
 ### States
 
 The space rover displays the following light patterns to represent different setup, standby, and gameplay states.
 
 * **Blinking Blue Lights + Head/Tail Lights OFF --> Connecting to WiFi**
-<br>&nbsp; ![Connecting to WiFi](./images/space-rover/sr-wfwifi.mov)
+<br>&nbsp; ![Connecting to WiFi](../images/space-rover/sr-wfwifi.mov)
 * **Cycling Blue Lights + Head/Tail Lights Blinking --> Waiting for a websocket connection**
-<br>&nbsp; ![Waiting for a websocket connection](./images/space-rover/sr-wfwsconn.mov)
+<br>&nbsp; ![Waiting for a websocket connection](../images/space-rover/sr-wfwsconn.mov)
 * **Solid Blue Lights + Blinking Head/Tail Lights -->  Websocket connected, waiting for game start**
-<br>&nbsp; ![Websocket connected, waiting for game start](./images/space-rover/sr-wsconn-wfgame.mov)
+<br>&nbsp; ![Websocket connected, waiting for game start](../images/space-rover/sr-wsconn-wfgame.mov)
 * **Solid Blue Lights + Solid Head/Tail Lights --> Game Started**
-<br>&nbsp; ![Game Started](./images/space-rover/sr-wsconn-gamestarted.mov)
+<br>&nbsp; ![Game Started](../images/space-rover/sr-wsconn-gamestarted.mov)
 
 ## Game Board
 
@@ -99,13 +99,13 @@ The game board displays the following light patterns to represent different game
 5. Open Firefox and verify that four tabs are automatically generated with the following endpoints:
 
     * **Webapp** => localhost:3000/
-        <br>&nbsp; ![Webapp Play Page](./images/four-tab-game-page.png)
+        <br>&nbsp; ![Webapp Play Page](../images/four-tab-game-page.png)
     * **Game Service Health** => localhost:9070/health
-        <br>&nbsp; ![Game Service Health](./images/four-tab-game-service-health.png)
+        <br>&nbsp; ![Game Service Health](../images/four-tab-game-service-health.png)
     * **Leaderboard Health** => localhost:9080/health
-        <br>&nbsp; ![Leaderboard Health](./images/four-tab-leaderboard-health.png)
+        <br>&nbsp; ![Leaderboard Health](../images/four-tab-leaderboard-health.png)
     * **Grafana** => localhost:3010/
-        <br>&nbsp; ![Grafana](./images/four-tab-grafana.png)
+        <br>&nbsp; ![Grafana](../images/four-tab-grafana.png)
         
         If needed, login into Grafana with:
         * username: admin
