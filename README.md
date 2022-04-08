@@ -34,7 +34,7 @@ MongoDB is used to store information about past games. It interacts with the Lea
 #### Container 5 - Prometheus Server
 The Prometheus Server scrapes metrics from the Game Service and sends them to Grafana.
 
-#### Container 5 - Grafana
+#### Container 6 - Grafana
 Grafana takes the metrics scraped by the Prometheus Server and displays them on a dashboard.
 
 #### Webcam and WiFi Enabled Standalone Device
