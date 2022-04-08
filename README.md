@@ -2,7 +2,7 @@
 
 Open Liberty Space Rover Mission is an interactive IoT game designed to showcase microservices with modern Java technologies in a fun way. The mission is to guide the Space Rover using hand gestures to its home while visiting planets along the way to gather supplies. Make sure to avoid any obstacles (asteroids, black-hole, etc.) in your path. 🚨 Beware of strong winds on Venus and Open Liberty 🚨
 
-![GameBoard](/images/gameboard.jpg)
+![Teaser](/images/teaser.jpg)
 
 ## Prerequisites
 1. [Space Rover hardware component](https://github.com/OpenLiberty/space-rover-mission/tree/main/devices/space-rover) with the project code compiled and running.
@@ -12,6 +12,8 @@ Open Liberty Space Rover Mission is an interactive IoT game designed to showcase
 
 ## Setup, Cleanup, and Troubleshooting
 For setup, cleanup, and troubleshooting instructions, see [documentation](https://github.com/OpenLiberty/space-rover-mission/tree/main/documentation).
+
+![GameBoard](/images/gameboard.jpg)
 
 ## Architecture Diagram
 
@@ -77,5 +79,3 @@ The Game Map is the physical game board which the Space Rover roams on. It emits
     - Used to record JVM metrics on the game service as well as a SimpleTimer that tracks the amount of time it takes for the GameService to respond to the health check test. This tells us a local round trip latency value determining how long it takes a message to be sent to the server and have the server respond.
 - [MP Rest Client 3.0](https://download.eclipse.org/microprofile/microprofile-rest-client-3.0/microprofile-rest-client-spec-3.0.html)
     - Generates an HTTP client to send game end statistics to the leaderboard's REST server.
-
-![Teaser](/images/teaser.jpg)
