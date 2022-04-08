@@ -363,6 +363,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		if (this.guiSession != null) {
 			try {
 				this.guiSession.close();
+				LOGGER.log(Level.WARNING, "Disconnected gui session from server side");
 			} catch (IOException ioe) {
 				LOGGER.log(Level.WARNING, "failure during reInit", ioe);
 			}
@@ -370,6 +371,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		if (this.gestureSession != null) {
 			try {
 				this.gestureSession.close();
+				LOGGER.log(Level.WARNING, "Disconnected gesture  session from server side");
 
 			} catch (IOException ioe) {
 				LOGGER.log(Level.WARNING, "failure during reInit", ioe);

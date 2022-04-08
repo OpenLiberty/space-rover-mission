@@ -161,9 +161,8 @@ public class Game {
 
 	public boolean hasVisited(String colour) {
 		boolean hasVisited = false;
-		if(!colour.equals(SocketMessages.COLOUR_RED))
-		{
-			hasVisited=this.coloursVisited.contains(colour);
+		if (!colour.equals(SocketMessages.COLOUR_RED)) {
+			hasVisited = this.coloursVisited.contains(colour);
 		}
 		return hasVisited;
 	}
