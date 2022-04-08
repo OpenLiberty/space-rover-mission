@@ -1,13 +1,12 @@
 # Setup
 
+The following guide goes through how to set up the different components for the space rover mission demo.
+
 ## Local Network
 
 Connect the WiFi Router into a nearby power supply, wait till the green light starts blinking, which indicates it has successfully created a local WiFi network.
 
 ![TP-Link Nano WiFi Router](../images/TP-Link-Nano-Wifi-Router.png)  
-
-#
-
 
 ## Devices
 
@@ -27,36 +26,37 @@ See the light patterns representing the setup, standby, and gameplay states for 
 <br>&nbsp; ![Plug in space rover](../images/space-rover/sr-plug-in.png)
 
 2. Flip the switch on the power cord to turn the space rover on. **Note:** When the rover is initially powered on, it will "jolt".
-<br>&nbsp; ![Turn on space rover](../images/space-rover/sr-wfwifi.mov)
+
+https://user-images.githubusercontent.com/31871360/162487597-b3590a36-6800-41ad-a065-5a428be69f76.mov
 
 ### States
 
 The space rover displays the following light patterns to represent different setup, standby, and gameplay states.
 
-* **Blinking Blue Lights + Head/Tail Lights OFF --> Connecting to WiFi**
-<br>&nbsp; ![Connecting to WiFi](../images/space-rover/sr-wfwifi.mov)
-* **Cycling Blue Lights + Head/Tail Lights Blinking --> Waiting for a websocket connection**
-<br>&nbsp; ![Waiting for a websocket connection](../images/space-rover/sr-wfwsconn.mov)
-* **Solid Blue Lights + Blinking Head/Tail Lights -->  Websocket connected, waiting for game start**
-<br>&nbsp; ![Websocket connected, waiting for game start](../images/space-rover/sr-wsconn-wfgame.mov)
-* **Solid Blue Lights + Solid Head/Tail Lights --> Game Started**
-<br>&nbsp; ![Game Started](../images/space-rover/sr-wsconn-gamestarted.mov)
+**Blinking Blue Lights + Head/Tail Lights OFF --> Connecting to WiFi**
+
+https://user-images.githubusercontent.com/31871360/162487597-b3590a36-6800-41ad-a065-5a428be69f76.mov
+
+**Cycling Blue Lights + Head/Tail Lights Blinking --> Waiting for a websocket connection**
+
+https://user-images.githubusercontent.com/31871360/162487626-c8ea1146-340c-4e31-b073-2fef61f02cbf.mov
+
+**Solid Blue Lights + Blinking Head/Tail Lights -->  Websocket connected, waiting for game start**
+
+https://user-images.githubusercontent.com/31871360/162487765-e9647f5f-d1f7-4b80-95e2-3f235b2c17bd.MOV
+
+**Solid Blue Lights + Solid Head/Tail Lights --> Game Started**
+
+![](../images/space-rover/sr-wsconn-gamestarted.png)
+
 
 ## Game Board
 
 1. Set out the four separate boards in the following layout:
-##
-
 2. Connect the four boards together using the three-pin connectors between the boards. There are eight one-sided connectors in total - two for each board - that will create four connections between the boards. ****IMPORTANT: _Ensure that the wire colours coordinate when the connectors are linked -- the red wires (power), green wires (data line), and black wires (ground) should all line up when connected._**
-## 
-
 3. After the connectors are linked, push the connected section into either of the board holes that the connectors come out of.
-##
-
 4. Push the four boards together and ensure the four center corners (the sun) are aligned.
-##
 5. Using the metal clamps, fasten the board together at the ends of each of the board's perpendicular intersections.
-##
 6. Unfold the metal barrier into a rectangle (black side in, silver side out).
 
 ### States
@@ -73,47 +73,43 @@ In the following section, the game board LEDs are split into different naming ca
 
 The game board displays the following light patterns to represent different game states.
 
-* **Blinking Red SUN--> Connecting to WiFi**
-* **One Green Flash of All LEDs--> CONNECTED to WiFi**
+* **Blinking Red SUN --> Connecting to WiFi**
+* **One Green Flash of All LEDs --> CONNECTED to WiFi**
 * **Bursting SUN + PLANETS --> Waiting for a websocket connection**
 * **Solid Blue SUN -->  Websocket connected, waiting for game start**
 * **Red SUN + EARTH ON + Red OBSTACLES --> Game Started**
 
-#
-
 ## Mini PC
 
-![mini-pc](./images/mini-pc.png)
+![mini-pc](../images/mini-pc.png)
 
 1. Plug in the Mini PC and press the red button to turn it on.
-##
+
 2. Once the Mini PC is on and the login page is up, log in using the following credentials:
 
     * username: spacerover 
     * password:  was4ever
-##
+
 3. The containers running the game will automatically start up in the background.
-##
+
 4. Ensure that the Mini PC is connected to the **OL_DEMO** internet.
-##
+
 5. Open Firefox and verify that four tabs are automatically generated with the following endpoints:
 
     * **Webapp** => localhost:3000/
-        <br>&nbsp; ![Webapp Play Page](../images/four-tab-game-page.png)
+      <br>&nbsp; ![Webapp Play Page](../images/four-tab-game-page.png)
     * **Game Service Health** => localhost:9070/health
-        <br>&nbsp; ![Game Service Health](../images/four-tab-game-service-health.png)
+      <br><br>&nbsp; ![Game Service Health](../images/four-tab-game-server-health.png)
     * **Leaderboard Health** => localhost:9080/health
-        <br>&nbsp; ![Leaderboard Health](../images/four-tab-leaderboard-health.png)
+      <br><br>&nbsp; ![Leaderboard Health](../images/four-tab-leaderboard-health.png)
     * **Grafana** => localhost:3010/
-        <br>&nbsp; ![Grafana](../images/four-tab-grafana.png)
+      <br>&nbsp; ![Grafana](../images/four-tab-grafana.png)
         
         If needed, login into Grafana with:
         * username: admin
         * password: admin
-##
-6. Return to the webapp tab's game page and leave it in the home page with the play button.
 
-#
+6. Return to the webapp tab's game page and leave it in the home page with the play button.
 
 ## Gesture Controls
 
