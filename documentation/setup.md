@@ -4,7 +4,7 @@ The following guide goes through how to set up the different components for the 
 
 ## Local Network
 
-Connect the WiFi Router into a nearby power supply, wait till the green light starts blinking, which indicates it has successfully created a local WiFi network.
+Connect the WiFi Router into a nearby power supply and wait until the green light starts blinking, which indicates a local WiFi network has been successfully created.
 
 ![TP-Link Nano WiFi Router](../images/TP-Link-Nano-Wifi-Router.png)  
 
@@ -22,6 +22,8 @@ See the light patterns representing the setup, standby, and gameplay states for 
 
 ## Space Rover
 
+The following instructions detail how to set up the Space Rover.
+
 1. Plug the Space Rover into a power outlet.
 <br>&nbsp; ![Plug in space rover](../images/space-rover/sr-plug-in.png)
 
@@ -30,6 +32,8 @@ See the light patterns representing the setup, standby, and gameplay states for 
 https://user-images.githubusercontent.com/31871360/162487597-b3590a36-6800-41ad-a065-5a428be69f76.mov
 
 ### Space Rover State Light Patterns
+
+The Space Rover has six blue LEDs underneath the spaceship model, one white head light LED, and two red tail light LEDs. The "front" of the Space Rover is designated by the white head light, and all directions for gesture control/keyboard control movement of the Rover follow that convention; for example, FORWARD will drive in the direction the white head light LED is facing.
 
 The Space Rover displays the following light patterns to represent different setup, standby, and gameplay states.
 
@@ -52,12 +56,17 @@ https://user-images.githubusercontent.com/31871360/162487765-e9647f5f-d1f7-4b80-
 
 ## Game Board
 
+The following instructions detail how to set up the Game Board.
+
 1. Set out the four separate boards in the following layout:
-2. Connect the four boards together using the three-pin connectors between the boards. There are eight one-sided connectors in total - two for each board - that will create four connections between the boards. ****IMPORTANT: _Ensure that the wire colours coordinate when the connectors are linked -- the red wires (power), green wires (data line), and black wires (ground) should all line up when connected._**
+
+![Board Layout](../images/game-board/gb-board-layout.png)
+
+2. Connect the four boards together using the three-pin connectors between the boards. There are eight one-sided connectors in total - two for each board - that will create four connections between the boards. **_Ensure that the wire colours coordinate when the connectors are connected -- the red wires (power), green wires (data line), and black wires (ground) should all line up when connected._**
 
 ![Connectors](../images/game-board/gb-connectors.png)
 
-3. After the connectors are linked, push the connected section into either of the board holes that the connectors come out of (refer to video below).
+3. After the connectors are connected, push the connected section into either of the board holes that the connectors come out of (refer to video below).
 
 https://user-images.githubusercontent.com/31871360/162499249-462154af-2683-4a08-87a7-d8d280783a10.MOV
 
@@ -71,13 +80,11 @@ https://user-images.githubusercontent.com/31871360/162499288-a1d28717-2cb4-4a22-
 
 ![Unfolded barrier](../images/game-board/gb-unfolded-fence.png)
 
-7. When looking at the board in the orientation from step 1 of this section, the tied corner of the rectangular barrier should fit over the bottom-left corner of the board. Fit the three taped corners of the rectangular barrier over the top-left, top-right, and bottom-right corners of the board. Then, fit the last tied corner over the bottom-left corner of the board.
+7. When looking at the board in the orientation from step 1 of this section, the tied corner of the rectangular barrier should fit over the bottom-left corner of the fully connected board. Fit the three taped corners of the rectangular barrier over the top-left, top-right, and bottom-right corners of the board. Then, fit the last tied corner over the bottom-left corner of the board.
 
 ![Fence](../images/game-board/gb-fence.png)
 
 8. Fasten the bottom of the tied corner with a twist-tie.
-
-![twist-tie](../images/game-board/gb-twist-tie.png)
 
 9. Place the four plexiglass sheets onto the board; one sheet over each of the four smaller boards.
 
@@ -119,6 +126,8 @@ https://user-images.githubusercontent.com/31871360/162498739-14222c5a-c67e-4310-
 
 ## Mini PC
 
+The following instructions detail how to setup the Mini PC used to run the game service, leaderboard service, and game UI.
+
 ![mini-pc](../images/mini-pc.png)
 
 1. Plug in the Mini PC and press the red button to turn it on.
@@ -150,5 +159,7 @@ https://user-images.githubusercontent.com/31871360/162498739-14222c5a-c67e-4310-
 6. Return to the webapp tab's game page and leave it in the home page with the play button.
 
 ## Gesture Controls
+
+The following instructions detail how to setup the gesture control technology used to control the Space Rover.
 
 _TODO: MALHAR
