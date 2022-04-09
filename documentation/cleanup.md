@@ -62,11 +62,11 @@ To keep track of all the components and parts being shipped/packed, the followin
 - [ ] Mini PC Cable
 - [ ] Keyboard
 
-## Gesture Control
+### Gesture Control
 
 - [ ] Space Rover Laptop
 
-## Extra Tools
+### Extra Tools
 
 - [ ] Four rolls of tape: duct tape, masking tape, electrical tape, clear tape
 - [ ] Pliers
