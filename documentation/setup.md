@@ -86,7 +86,7 @@ https://user-images.githubusercontent.com/31871360/162499288-a1d28717-2cb4-4a22-
 
 8. Fasten the bottom of the tied corner with a twist-tie.
 
-9. Place the four plexiglass sheets onto the board; one sheet over each of the four smaller boards.
+9. Place the four plexiglass sheets onto the board; one sheet over each of the four smaller boards. The plexiglass sheet with the red arrow should be placed over the board with planet Earth, ad the red arrow should be positioned in the bottom left corner. Place the Space Rover over the red arrow, with the Rover's head light facing the direction of the arrow -- this is the Rover's starting position at the beginning of each game.
 
 10. Plug the power source into the board.
 
@@ -133,7 +133,6 @@ The following instructions detail how to setup the Mini PC used to run the game 
 1. Plug in the Mini PC and press the red button to turn it on.
 
 2. Once the Mini PC is on and the login page is up, log in using the following credentials:
-
     * username: spacerover 
     * password:  was4ever
 

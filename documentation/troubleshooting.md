@@ -7,7 +7,7 @@ This document covers some common troubleshooting items for the OpenLiberty Space
 **Ensure that the TP-Link WiFi Router is connected and on, and that the Mini PC is connected to the OL_DEMO internet.** 
 
 If the local WiFi network is not up, or if the Mini PC is not connected to the OL_DEMO internet, nothing will work. The following list includes some signs of the WiFi network not being up:
-* Both the Space Rover and the Game Board will continue cycling their respective light patterns for attempting to connect to WiFi. Those patterns can be seen for the Space Rover [here](./setup.md#space-rover-state-light-patterns) and for the Game Board [here](./setup.md#game-board-state-light-patterns).
+* Both the Space Rover and the Game Board will continue blinking their respective light patterns for attempting to connect to WiFi. Those patterns can be seen for the Space Rover [here](./setup.md#space-rover-state-light-patterns) and for the Game Board [here](./setup.md#game-board-state-light-patterns).
 * When attempting to play the game, the UI will return a message that says there was a failure to connect to the game service. This is because the game service must run on the OL_DEMO internet in order to successfully send the websocket connection.
 
 ## Devices

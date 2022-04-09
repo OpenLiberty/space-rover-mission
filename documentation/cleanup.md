@@ -28,7 +28,12 @@ This document covers the cleanup process for the OpenLiberty Space Rover mission
 
 ## Mini PC
 
-1. Shut down the Mini PC.
+1. Stop the docker containers, using:
+    ```
+    docker-compose down
+    ```
+2. Return to the homepage of the game.
+3. Shut down the Mini PC.
 
 ## Gesture Control
 
