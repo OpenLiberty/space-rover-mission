@@ -1,5 +1,9 @@
 # Open Liberty Space Rover
 
+![PXL_20220328_193253574 PORTRAIT](https://user-images.githubusercontent.com/29461649/162758191-b390cb2c-bb63-493b-b101-556ff0d4ab51.jpg)
+
+The Space Rover has six blue LEDs underneath the spaceship model, one white head light LED, and two red tail light LEDs. The "front" of the Space Rover is designated by the white head light, and all directions for gesture control/keyboard control movement of the Rover follow that convention; for example, FORWARD will drive in the direction the white head light LED is facing.
+
 The Space Rover contains two microcontrollers: Arduino UNO and NodeMCU.
 
 The NodeMCU handles the WiFi connection to the services and controls the 4 DC motors for the Rover's movement.
