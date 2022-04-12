@@ -56,5 +56,3 @@ docker-compose down
 
 docker-compose up
 ```
-
-## Gesture Control
