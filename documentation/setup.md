@@ -156,9 +156,3 @@ The following instructions detail how to setup the Mini PC used to run the game 
         * password: admin
 
 6. Return to the webapp tab's game page and leave it in the home page with the play button.
-
-## Gesture Controls
-
-The following instructions detail how to setup the gesture control technology used to control the Space Rover.
-
-_TODO: MALHAR
