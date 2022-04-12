@@ -5,10 +5,8 @@ import cv2
 from cv2 import imshow
 import cvzone
 import mediapipe as mp
-import numpy as np
 import websockets
 from cvzone.HandTrackingModule import HandDetector
-from math import floor
 import time
  
 print("Starting to connect")
