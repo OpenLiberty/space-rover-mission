@@ -57,7 +57,7 @@ RgbColor sun_InnerRing(255, 30, 0);
 
 //wifi credentials
 char ssid[] = "OL_DEMO";  
-char pass[] = "was4ever";
+char pass[] = "######"; // WIFI PASSWORD
 
 //game connection booleans
 boolean isWifiConnected = false;
