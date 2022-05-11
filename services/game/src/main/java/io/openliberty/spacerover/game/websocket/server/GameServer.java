@@ -16,6 +16,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Gauge;
 
 import io.openliberty.spacerover.game.Game;
 import io.openliberty.spacerover.game.GameEventListener;
@@ -24,6 +26,7 @@ import io.openliberty.spacerover.game.GameServerState;
 import io.openliberty.spacerover.game.GameServerStateMachine;
 import io.openliberty.spacerover.game.GameSession;
 import io.openliberty.spacerover.game.models.GameEvent;
+import io.openliberty.spacerover.game.models.GameScore;
 import io.openliberty.spacerover.game.models.SocketMessages;
 import io.openliberty.spacerover.game.websocket.client.WebsocketClientEndpoint;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -45,6 +48,11 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	private static final String WEBSOCKET_PROTOCOL = "ws://";
 	private static final Logger LOGGER = Logger.getLogger(GameServer.class.getName());
 	Game currentGame = GameHolder.INSTANCE;
+	/* statistics kept for metrics */
+	private long aggregateDamage = 0;
+	private long numberOfGamesCompleted = 0;
+	private long totalScorePoints = 0;
+	private long totalGameTimeInSeconds;
 
 	@Singleton
 	GameServerStateMachine stateMachine = new GameServerStateMachine();
@@ -163,7 +171,13 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			this.setErrorStateAndSendError("Game ended unexpectedly");
 		} else {
 			LOGGER.log(Level.INFO, "Ending game from server side. {0}", this.currentGame);
-			this.getLeaderboard().updateLeaderboard(this.currentGame.getGameLeaderboardStat());
+			GameScore leaderboardEntry = this.currentGame.getGameLeaderboardStat();
+
+			this.aggregateDamage += this.currentGame.getDamageTaken();
+			this.numberOfGamesCompleted += 1;
+			this.totalScorePoints += leaderboardEntry.getScore();
+			this.totalGameTimeInSeconds += leaderboardEntry.getTime();
+			this.getLeaderboard().updateLeaderboard(leaderboardEntry);
 			this.sendTextToGuiSocket(SocketMessages.END_GAME);
 		}
 	}
@@ -389,4 +403,39 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		this.currentGame = new Game();
 	}
 
+	@Gauge(unit = MetricUnits.NONE, name = "averageDamage", absolute = true, description = "The average amount of damage taken per game.")
+	public long getAverageDamage() {
+		if (this.numberOfGamesCompleted > 0) {
+			return this.aggregateDamage / this.numberOfGamesCompleted;
+		} else {
+			return 0;
+		}
+	}
+
+	@Gauge(unit = MetricUnits.NONE, name = "averageScore", absolute = true, description = "The average score per game.")
+	public long getAverageScore() {
+		if (this.numberOfGamesCompleted > 0) {
+			return this.totalScorePoints / this.numberOfGamesCompleted;
+		} else {
+			return 0;
+		}
+	}
+
+	@Gauge(unit = MetricUnits.NONE, name = "averageGameLength", absolute = true, description = "The average time in seconds that it takes to complete the game.")
+	public long getAverageGameTime() {
+		if (this.numberOfGamesCompleted > 0) {
+			return this.totalGameTimeInSeconds / this.numberOfGamesCompleted;
+		} else {
+			return 0;
+		}
+	}
+
+	@Gauge(unit = MetricUnits.NONE, name = "gamesPlayed", absolute = true, description = "The number of games played since server start.")
+	public long getTotalNumberOfGamesPlayed() {
+		if (this.numberOfGamesCompleted > 0) {
+			return this.numberOfGamesCompleted;
+		} else {
+			return 0;
+		}
+	}
 }

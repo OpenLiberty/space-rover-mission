@@ -40,7 +40,7 @@ public class Game {
 	private GameEventManager eventManager = null;
 	private Set<String> coloursVisited;
 	private static final String[] COLOURS = new String[] {SocketMessages.COLOUR_BLUE, SocketMessages.COLOUR_GREEN, SocketMessages.COLOUR_YELLOW, SocketMessages.COLOUR_PURPLE};
-
+	private int startingHealth; 
 	public void startGameSession(String playerId) {
 		this.startGameSession(playerId, 100);
 	}
@@ -51,6 +51,7 @@ public class Game {
 		inProgress = true;
 		this.score = 0;
 		this.health = maxHP;
+		this.startingHealth = this.health;
 		this.eventManager = new GameEventManager(GameEvent.HP, GameEvent.SCORE, GameEvent.GAME_OVER);
 		this.coloursVisited = new HashSet<>();
 	}
@@ -162,6 +163,11 @@ public class Game {
 
 	public String getColour(String msgID) {
 		return COLOURS[Math.min(this.coloursVisited.size(), 3)];
+	}
+	
+	public int getDamageTaken()
+	{
+		return this.startingHealth - this.health;
 	}
 
 }
