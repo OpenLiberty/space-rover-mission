@@ -18,6 +18,7 @@ import static com.mongodb.client.model.Filters.*;
 import org.bson.Document;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.metrics.annotation.Counted;
 
 import io.openliberty.spacerover.leaderboard.models.LeaderboardDuration;
 import io.openliberty.spacerover.leaderboard.models.LeaderboardEntry;
@@ -73,6 +74,9 @@ public class Leaderboard {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 
+	@Counted(name = "leaderboardRecordAdded",
+	absolute = true,
+	description = "Number of times that new records were sent to the leaderboard.")
 	@APIResponse(responseCode = "200", description = "Successfully added player to leaderboard.")
 	@APIResponse(responseCode = "400", description = "Invalid leaderboard entry.")
 	@Operation(summary = "Add a new entry to the leaderboard.")
@@ -170,7 +174,7 @@ public class Leaderboard {
 	@APIResponse(responseCode = "500", description = "Failed to query database.")
 	@Operation(summary = "Selects records from a specific duration from the leaderboard db.")
 	@GET
-	@Path("/")
+	@Path("/timescoped")
 	public Response getStatisticsFromDuration(LeaderboardDuration duration) {
 		try {
 			MongoCollection<Document> collection = db.getCollection(LEADERBOARD_COLLECTION_NAME);
