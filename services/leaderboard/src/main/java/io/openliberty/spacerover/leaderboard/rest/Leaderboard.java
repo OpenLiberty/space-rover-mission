@@ -41,6 +41,7 @@ import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
@@ -161,12 +162,12 @@ public class Leaderboard {
 	}
 
 	@Produces(MediaType.APPLICATION_JSON)
-	@APIResponse(responseCode = "200", description = "Successfully cleared the leaderboard.")
-	@APIResponse(responseCode = "500", description = "Failed to clear the leaderboard.")
-	@Operation(summary = "Clear the leaderboard entries from the database.")
+	@APIResponse(responseCode = "200", description = "Successfully cleared a row from the leaderboard.")
+	@APIResponse(responseCode = "500", description = "Failed to delete an entry from the leaderboard.")
+	@Operation(summary = "Clear a leaderboard entry from the database.")
 	@DELETE
-	@Path("/_id")
-	public Response clearSingleEntryWithID(@QueryParam(LeaderboardConstants.QUERY_PARAM_ID) String documentID) {
+	@Path("/{id}")
+	public Response clearSingleEntryWithID(@PathParam(LeaderboardConstants.QUERY_PARAM_ID) String documentID) {
 		MongoCollection<Document> collection = db.getCollection(LeaderboardConstants.LEADERBOARD_COLLECTION_NAME);
 		DeleteResult result;
 		result = collection
@@ -174,8 +175,8 @@ public class Leaderboard {
 		if (result.wasAcknowledged()) {
 			return Response.status(Response.Status.OK).build();
 		} else {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("[\"Unable to clear leaderboard!\"]")
-					.build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+					.entity("[\"Unable to clear an entry (" + documentID + ") from the leaderboard!\"]").build();
 		}
 
 	}
