@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-import React from "react";
+import React, { useState } from "react";
 import { LeaderboardEntry } from "hooks/useLeaderboard";
 import { formatTime } from "lib/utils";
 import { gameDurationSeconds } from "lib/config";
@@ -18,17 +18,35 @@ type Props = {
 };
 
 const LeaderboardTable = ({ data }: Props) => {
+  const [nameFilter, setNameFilter] = useState("");
+
   const filteredData = data
     .filter((entry) => entry.health > 0 && entry.time < gameDurationSeconds)
+    .filter((entry) =>
+      entry.player.toLowerCase().includes(nameFilter.toLowerCase())
+    )
     .slice(0, 5);
 
   return (
     <>
-      <div>
-        <h1 className="text-gray-50 text-5xl">Leaderboard</h1>
-        <h2 className="text-orange text-xl my-2">
-          Open Liberty - Space Rover Mission
-        </h2>
+      <div className="flex flex-row justify-between items-end my-2">
+        <div>
+          <h1 className="text-gray-50 text-5xl">Leaderboard</h1>
+          <h2 className="text-orange text-xl mt-2">
+            Open Liberty - Space Rover Mission
+          </h2>
+        </div>
+        <div>
+          <input
+            className="px-5 py-3 rounded-md"
+            type="text"
+            autoComplete="false"
+            autoCorrect="false"
+            spellCheck="false"
+            placeholder="Filter by player name"
+            onChange={(e) => setNameFilter(e.target.value)}
+          />
+        </div>
       </div>
       <table className="w-full rounded-md overflow-hidden text-center text-xl">
         <thead className="bg-green">
@@ -52,6 +70,11 @@ const LeaderboardTable = ({ data }: Props) => {
           ))}
         </tbody>
       </table>
+      {filteredData.length === 0 && (
+        <div className="text-center text-xl text-gray-200 py-5">
+          No players to show
+        </div>
+      )}
     </>
   );
 };

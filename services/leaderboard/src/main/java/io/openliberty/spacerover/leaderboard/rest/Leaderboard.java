@@ -21,7 +21,9 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 
 import io.openliberty.spacerover.leaderboard.models.LeaderboardConstants;
+
 import io.openliberty.spacerover.leaderboard.models.LeaderboardEntry;
+import io.openliberty.spacerover.leaderboard.models.PlayerID;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.FindIterable;
@@ -74,6 +76,7 @@ public class Leaderboard {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 
+
 	@Counted(name = "leaderboardRecordAdded", absolute = true, description = "Number of times that new records were sent to the leaderboard.")
 	@APIResponse(responseCode = "200", description = "Successfully added player to leaderboard.")
 	@APIResponse(responseCode = "400", description = "Invalid leaderboard entry.")
@@ -117,6 +120,7 @@ public class Leaderboard {
 			docs.sort(new BasicDBObject(LeaderboardConstants.MONGO_LEADERBOARD_TIMESTAMP, 1));
 			String output = getJsonListFromIterableDocuments(docs);
 			return Response.status(Response.Status.OK).entity(output).build();
+
 		} catch (Exception e) {
 			e.printStackTrace(System.out);
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("[\"Unable to list leaderboard!\"]")
@@ -147,6 +151,7 @@ public class Leaderboard {
 		} else {
 			result = collection.deleteMany(eq(LeaderboardConstants.MONGO_LEADERBOARD_PLAYER, playerName));
 		}
+
 		if (result.wasAcknowledged()) {
 			return Response.status(Response.Status.OK).build();
 		} else {
@@ -169,8 +174,7 @@ public class Leaderboard {
 		if (result.wasAcknowledged()) {
 			return Response.status(Response.Status.OK).build();
 		} else {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("[\"Unable to clear leaderboard!\"]")
-					.build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("[\"Unable to clear leaderboard!\"]").build();
 		}
 
 	}
