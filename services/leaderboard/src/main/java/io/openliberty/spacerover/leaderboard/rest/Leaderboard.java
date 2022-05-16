@@ -19,12 +19,8 @@ import org.bson.types.ObjectId;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.metrics.annotation.Counted;
-
 import io.openliberty.spacerover.leaderboard.models.LeaderboardConstants;
-
 import io.openliberty.spacerover.leaderboard.models.LeaderboardEntry;
-import io.openliberty.spacerover.leaderboard.models.PlayerID;
-
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -54,7 +50,6 @@ import jakarta.ws.rs.core.Response;
 @Path("/")
 public class Leaderboard {
 
-
 	@Inject
 	MongoDatabase db;
 
@@ -76,7 +71,6 @@ public class Leaderboard {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 
-
 	@Counted(name = "leaderboardRecordAdded", absolute = true, description = "Number of times that new records were sent to the leaderboard.")
 	@APIResponse(responseCode = "200", description = "Successfully added player to leaderboard.")
 	@APIResponse(responseCode = "400", description = "Invalid leaderboard entry.")
@@ -96,7 +90,8 @@ public class Leaderboard {
 		newLeaderboardEntry.put(LeaderboardConstants.MONGO_LEADERBOARD_SCORE, entry.getScore());
 		newLeaderboardEntry.put(LeaderboardConstants.MONGO_LEADERBOARD_TIME, entry.getTime());
 		newLeaderboardEntry.put(LeaderboardConstants.MONGO_LEADERBOARD_HEALTH, entry.getHealth());
-		newLeaderboardEntry.put(LeaderboardConstants.MONGO_LEADERBOARD_TIMESTAMP, Long.toString(System.currentTimeMillis()));
+		newLeaderboardEntry.put(LeaderboardConstants.MONGO_LEADERBOARD_TIMESTAMP,
+				Long.toString(System.currentTimeMillis()));
 
 		document.insertOne(newLeaderboardEntry);
 
@@ -109,14 +104,17 @@ public class Leaderboard {
 	@Operation(summary = "List the leaderboard from the database.")
 	@GET
 	@Path("/")
-	public Response retrieve(@DefaultValue(LeaderboardConstants.QUERY_PARAM_START_TIME_DEFAULT_VALUE) @QueryParam(LeaderboardConstants.QUERY_PARAM_START_TIME) String startTime,
+	public Response retrieve(
+			@DefaultValue(LeaderboardConstants.QUERY_PARAM_START_TIME_DEFAULT_VALUE) @QueryParam(LeaderboardConstants.QUERY_PARAM_START_TIME) String startTime,
 			@DefaultValue(LeaderboardConstants.QUERY_PARAM_END_TIME_DEFAULT_VALUE) @QueryParam(LeaderboardConstants.QUERY_PARAM_END_TIME) String endTime) {
 		try {
 			if (endTime.isEmpty()) {
 				endTime = Long.toString(System.currentTimeMillis());
 			}
 			MongoCollection<Document> collection = db.getCollection(LeaderboardConstants.LEADERBOARD_COLLECTION_NAME);
-			FindIterable<Document> docs = collection.find(and(gte(LeaderboardConstants.MONGO_LEADERBOARD_TIMESTAMP, startTime), lte(LeaderboardConstants.MONGO_LEADERBOARD_TIMESTAMP, endTime)));
+			FindIterable<Document> docs = collection
+					.find(and(gte(LeaderboardConstants.MONGO_LEADERBOARD_TIMESTAMP, startTime),
+							lte(LeaderboardConstants.MONGO_LEADERBOARD_TIMESTAMP, endTime)));
 			docs.sort(new BasicDBObject(LeaderboardConstants.MONGO_LEADERBOARD_TIMESTAMP, 1));
 			String output = getJsonListFromIterableDocuments(docs);
 			return Response.status(Response.Status.OK).entity(output).build();
@@ -143,7 +141,8 @@ public class Leaderboard {
 	@Operation(summary = "Clear the leaderboard entries from the database.")
 	@DELETE
 	@Path("/")
-	public Response clear(@DefaultValue(LeaderboardConstants.QUERY_PARAM_PLAYER_NAME_DEFAULT) @QueryParam(LeaderboardConstants.QUERY_PARAM_PLAYER_NAME) String playerName) {
+	public Response clear(
+			@DefaultValue(LeaderboardConstants.QUERY_PARAM_PLAYER_NAME_DEFAULT) @QueryParam(LeaderboardConstants.QUERY_PARAM_PLAYER_NAME) String playerName) {
 		MongoCollection<Document> collection = db.getCollection(LeaderboardConstants.LEADERBOARD_COLLECTION_NAME);
 		DeleteResult result;
 		if (playerName.isEmpty()) {
@@ -160,7 +159,7 @@ public class Leaderboard {
 		}
 
 	}
-	
+
 	@Produces(MediaType.APPLICATION_JSON)
 	@APIResponse(responseCode = "200", description = "Successfully cleared the leaderboard.")
 	@APIResponse(responseCode = "500", description = "Failed to clear the leaderboard.")
@@ -170,11 +169,13 @@ public class Leaderboard {
 	public Response clearSingleEntryWithID(@QueryParam(LeaderboardConstants.QUERY_PARAM_ID) String documentID) {
 		MongoCollection<Document> collection = db.getCollection(LeaderboardConstants.LEADERBOARD_COLLECTION_NAME);
 		DeleteResult result;
-		result = collection.deleteOne(new Document(LeaderboardConstants.MONGO_LEADERBOARD_DOCUMENT_ID, new ObjectId(documentID)));
+		result = collection
+				.deleteOne(new Document(LeaderboardConstants.MONGO_LEADERBOARD_DOCUMENT_ID, new ObjectId(documentID)));
 		if (result.wasAcknowledged()) {
 			return Response.status(Response.Status.OK).build();
 		} else {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("[\"Unable to clear leaderboard!\"]").build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("[\"Unable to clear leaderboard!\"]")
+					.build();
 		}
 
 	}
