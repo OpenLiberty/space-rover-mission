@@ -403,39 +403,24 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		this.currentGame = new Game();
 	}
 
-	@Gauge(unit = MetricUnits.NONE, name = "averageDamage", absolute = true, description = "The average amount of damage taken per game.")
-	public long getAverageDamage() {
-		if (this.numberOfGamesCompleted > 0) {
-			return this.aggregateDamage / this.numberOfGamesCompleted;
-		} else {
-			return 0;
-		}
+	@Gauge(unit = MetricUnits.NONE, name = "totalDamage", absolute = true, description = "The aggregate amount of damage taken since server start.")
+	public long getDamage() {
+		return this.aggregateDamage;
 	}
 
-	@Gauge(unit = MetricUnits.NONE, name = "averageScore", absolute = true, description = "The average score per game.")
-	public long getAverageScore() {
-		if (this.numberOfGamesCompleted > 0) {
-			return this.totalScorePoints / this.numberOfGamesCompleted;
-		} else {
-			return 0;
-		}
+	@Gauge(unit = MetricUnits.NONE, name = "totalScore", absolute = true, description = "The aggregate of all score values since server start.")
+	public long getScore() {
+		return this.totalScorePoints;
 	}
 
-	@Gauge(unit = MetricUnits.NONE, name = "averageGameLength", absolute = true, description = "The average time in seconds that it takes to complete the game.")
-	public long getAverageGameTime() {
-		if (this.numberOfGamesCompleted > 0) {
-			return this.totalGameTimeInSeconds / this.numberOfGamesCompleted;
-		} else {
-			return 0;
-		}
+	@Gauge(unit = MetricUnits.NONE, name = "timeInGame", absolute = true, description = "The total amount of time the game has been played in seconds since server start.")
+	public long getPlayTime() {
+		return this.totalGameTimeInSeconds;
 	}
 
-	@Gauge(unit = MetricUnits.NONE, name = "gamesPlayed", absolute = true, description = "The number of games played since server start.")
-	public long getTotalNumberOfGamesPlayed() {
-		if (this.numberOfGamesCompleted > 0) {
-			return this.numberOfGamesCompleted;
-		} else {
-			return 0;
-		}
+	@Gauge(unit = MetricUnits.NONE, name = "totalNumberOfGames", absolute = true, description = "The total number of games played since server start.")
+	public long getNumberOfGamesCompleted() {
+		return this.numberOfGamesCompleted;
 	}
+
 }
