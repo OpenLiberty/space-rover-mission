@@ -365,9 +365,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(application_io_openliberty_spacerover_game_websocket_server_GameServerHealth_heartbeat_elapsedTime_seconds[10m]) / rate(application_io_openliberty_spacerover_game_websocket_server_GameServerHealth_heartbeat_total[10m])\n",
+          "expr": "rate(application_io_openliberty_spacerover_game_websocket_server_GameServerHealth_heartbeat_elapsedTime_seconds[1d]) / rate(application_io_openliberty_spacerover_game_websocket_server_GameServerHealth_heartbeat_total[1d])\n",
           "interval": "",
-          "legendFormat": "Roundtrip latency 10 minute average",
+          "legendFormat": "Roundtrip latency",
           "queryType": "randomWalk",
           "refId": "A"
         },
