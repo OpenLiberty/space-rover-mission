@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.faulttolerance.Retry;
 
 import io.openliberty.spacerover.game.Game;
 import io.openliberty.spacerover.game.GameEventListener;
@@ -273,7 +274,8 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		this.stateMachine.attachRover();
 		this.roverClient = new WebsocketClientEndpoint(this, roverConnectionString);
 		try {
-			this.roverClient.connect();
+//			this.roverClient.connect();
+			connectClient(roverClient);
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, "Failed to connect to rover", e);
 			this.setErrorStateAndSendError("Failed to connect to rover.");
@@ -388,5 +390,10 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		this.stateMachine = new GameServerStateMachine(state);
 		this.currentGame = new Game();
 	}
-
+	
+	@Retry(maxRetries = 3, retryOn = IOException.class)
+	private void connectClient(WebsocketClientEndpoint wce) throws IOException {
+		LOGGER.log(Level.WARNING,"Attempting to connect");
+		wce.connect();
+	}
 }
