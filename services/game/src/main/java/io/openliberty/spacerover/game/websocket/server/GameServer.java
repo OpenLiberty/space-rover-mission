@@ -52,7 +52,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	private long aggregateDamage = 0;
 	private long numberOfGamesCompleted = 0;
 	private long totalScorePoints = 0;
-	private long totalGameTimeInSeconds;
+	private long totalGameTimeInSeconds = 0;
 
 	@Singleton
 	GameServerStateMachine stateMachine = new GameServerStateMachine();
@@ -413,7 +413,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		return this.totalScorePoints;
 	}
 
-	@Gauge(unit = MetricUnits.NONE, name = "timeInGame", absolute = true, description = "The total amount of time the game has been played in seconds since server start.")
+	@Gauge(unit = MetricUnits.SECONDS, name = "timeInGame", absolute = true, description = "The total amount of time the game has been played in seconds since server start.")
 	public long getPlayTime() {
 		return this.totalGameTimeInSeconds;
 	}

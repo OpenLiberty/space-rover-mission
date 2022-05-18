@@ -68,9 +68,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(application_timeInGame[1d])/rate(application_totalNumberOfGames[1d])",
+          "expr": "rate(application_timeInGame_seconds[1d])/rate(application_totalNumberOfGames[1d])",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "Game length seconds",
           "queryType": "randomWalk",
           "refId": "A"
         }
@@ -136,8 +136,8 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 0,
-        "y": 8
+        "x": 12,
+        "y": 0
       },
       "hiddenSeries": false,
       "id": 6,
@@ -169,7 +169,7 @@
         {
           "expr": "rate(application_totalScore[1d])/rate(application_totalNumberOfGames[1d])",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "Score",
           "queryType": "randomWalk",
           "refId": "A"
         }
@@ -236,7 +236,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 16
+        "y": 8
       },
       "hiddenSeries": false,
       "id": 4,
@@ -334,8 +334,8 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 0,
-        "y": 24
+        "x": 12,
+        "y": 8
       },
       "hiddenSeries": false,
       "id": 2,
@@ -367,7 +367,7 @@
         {
           "expr": "rate(application_io_openliberty_spacerover_game_websocket_server_GameServerHealth_heartbeat_elapsedTime_seconds[10m]) / rate(application_io_openliberty_spacerover_game_websocket_server_GameServerHealth_heartbeat_total[10m])\n",
           "interval": "",
-          "legendFormat": "Roundtrip latency average last 10 minutes",
+          "legendFormat": "Roundtrip latency 10 minute average",
           "queryType": "randomWalk",
           "refId": "A"
         },
@@ -404,6 +404,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:84",
           "format": "short",
           "label": "Time in Seconds",
           "logBase": 1,
@@ -412,6 +413,7 @@
           "show": true
         },
         {
+          "$$hashKey": "object:85",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -464,5 +466,5 @@
   "timezone": "",
   "title": "Space Rover",
   "uid": "cT8Kxcunz",
-  "version": 2
+  "version": 1
 }
