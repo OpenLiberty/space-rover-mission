@@ -37,6 +37,7 @@ public class Game {
 	private boolean inProgress = false;
 	private int score;
 	private int health;
+	private int startingHealth;
 	private GameEventManager eventManager = null;
 	private Set<String> coloursVisited;
 
@@ -50,6 +51,7 @@ public class Game {
 		inProgress = true;
 		this.score = 0;
 		this.health = maxHP;
+		this.startingHealth = this.health;
 		this.eventManager = new GameEventManager(GameEvent.HP, GameEvent.SCORE, GameEvent.GAME_OVER);
 		this.coloursVisited = new HashSet<>();
 	}
@@ -158,5 +160,9 @@ public class Game {
 	public boolean hasAlreadyVisitedYellow() {
 		return this.coloursVisited.contains(SocketMessages.COLOUR_YELLOW);
 	}
-
+	
+	public int getDamageTaken()
+	{
+		return this.startingHealth - this.health;
+	}
 }
