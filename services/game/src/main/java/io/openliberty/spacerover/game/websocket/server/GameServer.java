@@ -214,14 +214,10 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 				this.sendRoverDirection(msgID);
 				break;
 			case SocketMessages.COLOUR_RED:
-				this.sendBoardColour(msgID);
-				this.currentGame.processColour(msgID);
-				break;
 			case SocketMessages.COLOUR_BLUE:
 			case SocketMessages.COLOUR_GREEN:
 			case SocketMessages.COLOUR_PURPLE:
 			case SocketMessages.COLOUR_YELLOW:
-				msgID = this.currentGame.getColour(msgID);
 				this.sendBoardColour(msgID);
 				this.currentGame.processColour(msgID);
 				break;
