@@ -12,6 +12,8 @@ package io.openliberty.spacerover.game.websocket.server;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,6 +49,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	private static final String COLON = ":";
 	private static final String WEBSOCKET_PROTOCOL = "ws://";
 	private static final Logger LOGGER = Logger.getLogger(GameServer.class.getName());
+	private final Set<String> damageSet = new HashSet<>();
 	Game currentGame = GameHolder.INSTANCE;
 	/* statistics kept for metrics */
 	private long aggregateDamage = 0;
@@ -227,16 +230,21 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			case SocketMessages.STOP:
 				this.sendRoverDirection(msgID);
 				break;
-			case SocketMessages.COLOUR_RED:
 			case SocketMessages.COLOUR_BLUE:
 			case SocketMessages.COLOUR_GREEN:
 			case SocketMessages.COLOUR_PURPLE:
 			case SocketMessages.COLOUR_YELLOW:
-				this.sendBoardColour(msgID);
-				this.currentGame.processColour(msgID);
+				updateBoardAndGame(msgID);
 				break;
 			case SocketMessages.GAME_HEALTH_TEST:
 				session.getAsyncRemote().sendText(SocketMessages.GAME_HEALTH_ACK);
+				break;
+			case SocketMessages.COLOUR_RED:
+				updateBoardAndGame(msgID);
+				if (parsedMsg.length == 2) {
+					this.damageSet.add(parsedMsg[1]);
+					LOGGER.log(Level.WARNING, Arrays.toString(this.damageSet.toArray()));
+				}
 				break;
 			default:
 				LOGGER.log(Level.INFO, "Unknown Message received <{0}>", msgID);
@@ -247,6 +255,11 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		if (!msgID.equals(SocketMessages.END_GAME)) {
 			connectGamePieces();
 		}
+	}
+
+	private void updateBoardAndGame(String msgID) {
+		this.sendBoardColour(msgID);
+		this.currentGame.processColour(msgID);
 	}
 
 	private synchronized void connectGamePieces() {

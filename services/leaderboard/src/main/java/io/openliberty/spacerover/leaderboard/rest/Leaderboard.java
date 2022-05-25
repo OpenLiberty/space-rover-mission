@@ -129,8 +129,7 @@ public class Leaderboard {
 		MongoCollection<Document> collection = db.getCollection(LeaderboardConstants.LEADERBOARD_COLLECTION_NAME);
 		FindIterable<Document> docs = collection
 				.find(and(gte(LeaderboardConstants.MONGO_LEADERBOARD_TIMESTAMP, startTime),
-						lte(LeaderboardConstants.MONGO_LEADERBOARD_TIMESTAMP, endTime)));
-		docs.sort(new BasicDBObject(LeaderboardConstants.MONGO_LEADERBOARD_TIMESTAMP, 1));
+						lte(LeaderboardConstants.MONGO_LEADERBOARD_TIMESTAMP, endTime))).sort(new BasicDBObject("score", -1).append("time", 1));
 		String output = getJsonListFromIterableDocuments(docs);
 		return Response.status(Response.Status.OK).entity(output).build();
 	}
