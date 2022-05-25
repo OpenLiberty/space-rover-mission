@@ -10,5 +10,6 @@ db.createUser({
 
 // tag::createCollection[]
 db.createCollection("Leaderboard");
+db.createCollection("Settings");
 // end::createCollection[]
 

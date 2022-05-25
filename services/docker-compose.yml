@@ -9,7 +9,7 @@ services:
             - "27017:27017"
         volumes:
             - ~/mongo/data:/data/db
-            - "./leaderboard/assets/:/docker-entrypoint-initdb.d/"
+            - "./mongo/assets/:/docker-entrypoint-initdb.d/"
         command: mongod
     prometheus:
         image: prom/prometheus:latest
@@ -51,3 +51,7 @@ services:
                 - LEADERBOARD_URL=http://localhost:9080/mongo/leaderboard
         ports:
             - "3000:80"
+    settings:
+        build: ./settings
+        ports:
+            - "9020:9080"
