@@ -28,8 +28,8 @@ public class Game {
 	private static final Logger LOGGER = Logger.getLogger(Game.class.getName());
 
 	private static final int MAX_GAME_TIME_MINUTES = 5;
-	private static final int OBSTACLE_HP_DECREMENT = 10;
-	private static final int OBSTACLE_SCORE_DECREMENT = OBSTACLE_HP_DECREMENT;
+	protected static final int OBSTACLE_HP_DECREMENT = 10;
+	protected static final int OBSTACLE_SCORE_DECREMENT = OBSTACLE_HP_DECREMENT;
 	private static final int MAX_GAME_TIME_SECONDS = 60 * MAX_GAME_TIME_MINUTES;
 	private String playerId;
 	private Instant startTime;
@@ -40,6 +40,11 @@ public class Game {
 	private int startingHealth;
 	private GameEventManager eventManager = null;
 	private Set<String> coloursVisited;
+	private String lastColourVisited;
+
+	public Game() {
+		this.eventManager = new GameEventManager(GameEvent.HP, GameEvent.SCORE, GameEvent.GAME_OVER);
+	}
 
 	public void startGameSession(String playerId) {
 		this.startGameSession(playerId, 100);
@@ -52,7 +57,6 @@ public class Game {
 		this.score = 0;
 		this.health = maxHP;
 		this.startingHealth = this.health;
-		this.eventManager = new GameEventManager(GameEvent.HP, GameEvent.SCORE, GameEvent.GAME_OVER);
 		this.coloursVisited = new HashSet<>();
 	}
 
@@ -116,6 +120,7 @@ public class Game {
 	}
 
 	public void processColour(String msgID) {
+		this.lastColourVisited = msgID;
 		if (msgID.equals(SocketMessages.COLOUR_RED)) {
 			this.decrementScore(OBSTACLE_SCORE_DECREMENT);
 			this.decrementHP(OBSTACLE_HP_DECREMENT);
@@ -147,6 +152,14 @@ public class Game {
 		return isOver;
 	}
 
+	public int getHealth() {
+		return health;
+	}
+
+	public void setHealth(int health) {
+		this.health = health;
+	}
+
 	public void endGameSession(Instant inputEndTime) {
 		if (inProgress) {
 			this.endTime = inputEndTime;
@@ -160,9 +173,12 @@ public class Game {
 	public boolean hasAlreadyVisitedYellow() {
 		return this.coloursVisited.contains(SocketMessages.COLOUR_YELLOW);
 	}
-	
-	public int getDamageTaken()
-	{
+
+	public int getDamageTaken() {
 		return this.startingHealth - this.health;
+	}
+
+	public String getCurrentPlanetColour() {
+		return this.lastColourVisited;
 	}
 }

@@ -27,6 +27,7 @@ import io.openliberty.spacerover.game.GameLeaderboard;
 import io.openliberty.spacerover.game.GameServerState;
 import io.openliberty.spacerover.game.GameServerStateMachine;
 import io.openliberty.spacerover.game.GameSession;
+import io.openliberty.spacerover.game.SpaceHop;
 import io.openliberty.spacerover.game.models.GameEvent;
 import io.openliberty.spacerover.game.models.GameScore;
 import io.openliberty.spacerover.game.models.SocketMessages;
@@ -50,7 +51,8 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	private static final String WEBSOCKET_PROTOCOL = "ws://";
 	private static final Logger LOGGER = Logger.getLogger(GameServer.class.getName());
 	private final Set<String> damageSet = new HashSet<>();
-	Game currentGame = GameHolder.INSTANCE;
+//	Game currentGame = GameHolder.INSTANCE;
+	private Game currentGame = new Game();
 	/* statistics kept for metrics */
 	private long aggregateDamage = 0;
 	private long numberOfGamesCompleted = 0;
@@ -138,6 +140,15 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	private void startGame(final String[] parsedMsg) {
 		String playerId = parsedMsg[1];
 		LOGGER.log(Level.INFO, "Start Game received for player ID: {0}", playerId);
+		int gameType = 1;
+		if (parsedMsg.length > 2) {
+			gameType = Integer.parseInt(parsedMsg[2]);
+		}
+		if (gameType == 1) {
+			this.currentGame = new Game();
+		} else {
+			this.currentGame = new SpaceHop();
+		}
 		this.currentGame.startGameSession(playerId);
 		registerGameEventManager();
 	}
@@ -146,6 +157,9 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		this.currentGame.getEventManager().subscribe(GameEvent.HP, this);
 		this.currentGame.getEventManager().subscribe(GameEvent.SCORE, this);
 		this.currentGame.getEventManager().subscribe(GameEvent.GAME_OVER, this);
+		this.currentGame.getEventManager().subscribe(GameEvent.FIVE_SECONDS_LEFT, this);
+		this.currentGame.getEventManager().subscribe(GameEvent.PLANET_CHANGED, this);
+
 	}
 
 	@OnError
@@ -162,7 +176,14 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		} else if (eventType == GameEvent.GAME_OVER) {
 			LOGGER.log(Level.WARNING, "Ending game from event type {0}", eventType);
 			endGameFromServer(false);
-		} else {
+		} else if (eventType == GameEvent.FIVE_SECONDS_LEFT) {
+			this.boardClient.sendMessage(
+					"blinkColour" + SocketMessages.SOCKET_MESSAGE_DATA_DELIMITER + this.currentGame.getCurrentPlanetColour());
+		} else if (eventType == GameEvent.PLANET_CHANGED) {
+			this.boardClient.sendMessage("setColour" + SocketMessages.SOCKET_MESSAGE_DATA_DELIMITER
+					+ this.currentGame.getCurrentPlanetColour());
+		}
+		else {
 			this.sendTextToGuiSocket(
 					eventType.toString().toLowerCase() + SocketMessages.SOCKET_MESSAGE_DATA_DELIMITER + value);
 		}
@@ -370,10 +391,6 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 	private void sendRoverDirection(final String direction) {
 		this.roverClient.sendMessage(direction, false);
-	}
-
-	private static class GameHolder {
-		static final Game INSTANCE = new Game();
 	}
 
 	private synchronized void reInit() {

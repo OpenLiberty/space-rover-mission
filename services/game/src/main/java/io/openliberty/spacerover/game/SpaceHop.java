@@ -1,0 +1,101 @@
+package io.openliberty.spacerover.game;
+
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import io.openliberty.spacerover.game.models.GameEvent;
+import io.openliberty.spacerover.game.models.SocketMessages;
+
+public class SpaceHop extends Game {
+	private static final int SCORE_INCREMENT = 10;
+	private static final long MAX_TIMEOUT_SECONDS = 15 * 1000L;
+	private String currentColour;
+	private Random r;
+	private Timer gameTimer;
+
+	public SpaceHop() {
+		super();
+		this.getEventManager().addOperations(GameEvent.FIVE_SECONDS_LEFT, GameEvent.PLANET_CHANGED);
+	}
+
+	@Override
+	public void startGameSession(String playerId) {
+		this.startGameSession(playerId, 100);
+	}
+
+	@Override
+	public void startGameSession(String playerId, int maxHP) {
+		super.startGameSession(playerId, maxHP);
+		this.gameTimer = new Timer();
+		this.r = new Random();
+		this.chooseNextPlanet();
+	}
+
+	private void chooseNextPlanet() {
+		String prevColour = this.getCurrentPlanetColour();
+		String newColour = prevColour;
+		if (newColour == null) {
+			newColour = SocketMessages.COLOURS_EXCLUDING_RED[r.nextInt(SocketMessages.COLOURS_EXCLUDING_RED.length)];
+		} else {
+
+			while (newColour.equals(prevColour)) {
+				newColour = SocketMessages.COLOURS_EXCLUDING_RED[r
+						.nextInt(SocketMessages.COLOURS_EXCLUDING_RED.length)];
+			}
+		}
+		this.setCurrentColour(newColour);
+		this.getEventManager().notify(GameEvent.PLANET_CHANGED, 0);
+		this.gameTimer.schedule(new TimerTask() {
+
+			@Override
+			public void run() {
+				sendFiveSecondWarning();
+			}
+		}, MAX_TIMEOUT_SECONDS - 5000);
+
+		this.gameTimer.schedule(new TimerTask() {
+
+			@Override
+			public void run() {
+				chooseNextPlanet();
+			}
+		}, MAX_TIMEOUT_SECONDS);
+	}
+
+	public void sendFiveSecondWarning() {
+		this.getEventManager().notify(GameEvent.FIVE_SECONDS_LEFT, 0);
+	}
+
+	@Override
+	public String getCurrentPlanetColour() {
+		return currentColour;
+	}
+
+	public void setCurrentColour(String currentColour) {
+		this.currentColour = currentColour;
+	}
+
+	@Override
+	public boolean isInProgressGameOver() {
+		boolean isOver = false;
+		if (this.isInProgress() && (this.getHealth() <= 0)) {
+			isOver = true;
+		}
+		return isOver;
+	}
+
+	@Override
+	public void processColour(String msgID) {
+		if (msgID.equals(SocketMessages.COLOUR_RED)) {
+			this.decrementScore(OBSTACLE_SCORE_DECREMENT);
+			this.decrementHP(OBSTACLE_HP_DECREMENT);
+		}else if (msgID.equals(getCurrentPlanetColour())) {
+			this.incrementScore(SCORE_INCREMENT);
+			this.chooseNextPlanet();
+		}
+		if (this.isInProgressGameOver()) {
+			this.endGameSession();
+		}
+	}
+}

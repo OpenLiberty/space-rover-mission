@@ -11,5 +11,5 @@
 package io.openliberty.spacerover.game.models;
 
 public enum GameEvent {
-	HP, SCORE, GAME_OVER, SOCKET_DISCONNECT
+	HP, SCORE, GAME_OVER, SOCKET_DISCONNECT, FIVE_SECONDS_LEFT, PLANET_CHANGED
 }
