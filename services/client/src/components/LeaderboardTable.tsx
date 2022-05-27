@@ -8,10 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { LeaderboardEntry } from "hooks/useLeaderboard";
 import { formatTime } from "lib/utils";
 import { gameDurationSeconds } from "lib/config";
+import usePagination from "hooks/usePagination";
 
 type Props = {
   data: LeaderboardEntry[];
@@ -20,12 +21,17 @@ type Props = {
 const LeaderboardTable = ({ data }: Props) => {
   const [nameFilter, setNameFilter] = useState("");
 
-  const filteredData = data
-    .filter((entry) => entry.health > 0 && entry.time < gameDurationSeconds)
-    .filter((entry) =>
-      entry.player.toLowerCase().includes(nameFilter.toLowerCase())
-    )
-    .slice(0, 5);
+  const filteredData = useMemo(() => {
+    return data
+      .filter((entry) =>
+        entry.health > 0 && entry.time < gameDurationSeconds)
+      .filter((entry) =>
+        entry.player.toLowerCase().includes(nameFilter.toLowerCase())
+      );
+  }, [nameFilter]);
+
+  const { page, totalPages, changePage, paginatedData } =
+    usePagination(filteredData);
 
   return (
     <>
@@ -48,7 +54,7 @@ const LeaderboardTable = ({ data }: Props) => {
           />
         </div>
       </div>
-      <table className="w-full rounded-md overflow-hidden text-center text-xl">
+      <table className="w-full rounded-t-md overflow-hidden text-center text-xl">
         <thead className="bg-green">
           <tr>
             <th className="p-3">RANK</th>
@@ -59,7 +65,7 @@ const LeaderboardTable = ({ data }: Props) => {
           </tr>
         </thead>
         <tbody>
-          {filteredData.map((entry) => (
+          {paginatedData.map((entry) => (
             <tr className="odd:bg-gray-50 even:bg-gray-200">
               <td className="p-3">{entry.rank}</td>
               <td className="p-3">{entry.player}</td>
@@ -70,6 +76,27 @@ const LeaderboardTable = ({ data }: Props) => {
           ))}
         </tbody>
       </table>
+      {filteredData.length > 0 && (
+        <div className="flex flex-row justify-end items-center bg-blue-dark text-white rounded-b-md">
+          <button
+            className="px-5 py-1 text-xl disabled:text-gray-500"
+            onClick={() => changePage(page - 1)}
+            disabled={page === 1}
+          >
+            &#x25C0;
+          </button>
+          <div>
+            Page {page} of {totalPages}
+          </div>
+          <button
+            className="px-5 py-3 text-xl disabled:text-gray-500"
+            onClick={() => changePage(page + 1)}
+            disabled={page === totalPages}
+          >
+            &#x25B6;
+          </button>
+        </div>
+      )}
       {filteredData.length === 0 && (
         <div className="text-center text-xl text-gray-200 py-5">
           No players to show
