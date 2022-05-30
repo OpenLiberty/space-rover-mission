@@ -31,4 +31,6 @@ public class LeaderboardConstants {
 	
 	public static final String QUERY_PARAM_PLAYER_NAME = "playerName";
 
+	public static final String MONGO_LEADERBOARD_GAME_MODE = "gameMode";
+
 }

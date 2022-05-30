@@ -25,6 +25,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class Game {
+	private static final String GAME_MODE = "1";
+
 	private static final Logger LOGGER = Logger.getLogger(Game.class.getName());
 
 	private static final int MAX_GAME_TIME_MINUTES = 5;
@@ -116,7 +118,12 @@ public class Game {
 		currScore.setScore(this.score);
 		currScore.setTime(getGameDuration());
 		currScore.setHealth(this.health);
+		currScore.setGameMode(this.getGameMode());
 		return currScore;
+	}
+
+	protected String getGameMode() {
+		return GAME_MODE;
 	}
 
 	public void processColour(String msgID) {

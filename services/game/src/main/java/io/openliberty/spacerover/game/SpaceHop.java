@@ -8,6 +8,7 @@ import io.openliberty.spacerover.game.models.GameEvent;
 import io.openliberty.spacerover.game.models.SocketMessages;
 
 public class SpaceHop extends Game {
+	private static final String GAME_MODE = "2";
 	private static final int SCORE_INCREMENT = 10;
 	private static final long MAX_TIMEOUT_SECONDS = 15 * 1000L;
 	private String currentColour;
@@ -46,21 +47,32 @@ public class SpaceHop extends Game {
 		}
 		this.setCurrentColour(newColour);
 		this.getEventManager().notify(GameEvent.PLANET_CHANGED, 0);
-		this.gameTimer.schedule(new TimerTask() {
+		this.gameTimer.cancel();
+		// maybe we should keep a list of tasks being scheduled and cancel those instead of recreating the timer object. 
+		// it seems odd that the Timer object doesn't have a way to get the currently scheduled tasks. 
+		this.gameTimer = new Timer();
+		this.gameTimer.schedule(getFiveSecondWarningTask(), MAX_TIMEOUT_SECONDS - 5000);
+		this.gameTimer.schedule(getTimeoutTask(), MAX_TIMEOUT_SECONDS);
+	}
 
-			@Override
-			public void run() {
-				sendFiveSecondWarning();
-			}
-		}, MAX_TIMEOUT_SECONDS - 5000);
-
-		this.gameTimer.schedule(new TimerTask() {
+	private TimerTask getTimeoutTask() {
+		return new TimerTask() {
 
 			@Override
 			public void run() {
 				chooseNextPlanet();
 			}
-		}, MAX_TIMEOUT_SECONDS);
+		};
+	}
+
+	private TimerTask getFiveSecondWarningTask() {
+		return new TimerTask() {
+
+			@Override
+			public void run() {
+				sendFiveSecondWarning();
+			}
+		};
 	}
 
 	public void sendFiveSecondWarning() {
@@ -97,5 +109,11 @@ public class SpaceHop extends Game {
 		if (this.isInProgressGameOver()) {
 			this.endGameSession();
 		}
+	}
+	
+	@Override
+	protected String getGameMode()
+	{
+		return GAME_MODE;
 	}
 }
