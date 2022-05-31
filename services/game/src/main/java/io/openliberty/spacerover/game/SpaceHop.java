@@ -1,8 +1,11 @@
 package io.openliberty.spacerover.game;
 
+import java.time.Instant;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import io.openliberty.spacerover.game.models.GameEvent;
 import io.openliberty.spacerover.game.models.SocketMessages;
@@ -14,6 +17,7 @@ public class SpaceHop extends Game {
 	private String currentColour;
 	private Random r;
 	private Timer gameTimer;
+	private static final Logger LOGGER = Logger.getLogger(Game.class.getName());
 
 	public SpaceHop() {
 		super();
@@ -48,8 +52,10 @@ public class SpaceHop extends Game {
 		this.setCurrentColour(newColour);
 		this.getEventManager().notify(GameEvent.PLANET_CHANGED, 0);
 		this.gameTimer.cancel();
-		// maybe we should keep a list of tasks being scheduled and cancel those instead of recreating the timer object. 
-		// it seems odd that the Timer object doesn't have a way to get the currently scheduled tasks. 
+		// maybe we should keep a list of tasks being scheduled and cancel those instead
+		// of recreating the timer object.
+		// it seems odd that the Timer object doesn't have a way to get the currently
+		// scheduled tasks.
 		this.gameTimer = new Timer();
 		this.gameTimer.schedule(getFiveSecondWarningTask(), MAX_TIMEOUT_SECONDS - 5000);
 		this.gameTimer.schedule(getTimeoutTask(), MAX_TIMEOUT_SECONDS);
@@ -99,10 +105,12 @@ public class SpaceHop extends Game {
 
 	@Override
 	public void processColour(String msgID) {
+		LOGGER.log(Level.INFO, "Colour visited: {0}", msgID);
+
 		if (msgID.equals(SocketMessages.COLOUR_RED)) {
 			this.decrementScore(OBSTACLE_SCORE_DECREMENT);
 			this.decrementHP(OBSTACLE_HP_DECREMENT);
-		}else if (msgID.equals(getCurrentPlanetColour())) {
+		} else if (msgID.equals(getCurrentPlanetColour())) {
 			this.incrementScore(SCORE_INCREMENT);
 			this.chooseNextPlanet();
 		}
@@ -110,10 +118,15 @@ public class SpaceHop extends Game {
 			this.endGameSession();
 		}
 	}
-	
+
 	@Override
-	protected String getGameMode()
-	{
+	protected String getGameMode() {
 		return GAME_MODE;
+	}
+
+	@Override
+	public void endGameSession(Instant inputEndTime) {
+		super.endGameSession(inputEndTime);
+		this.gameTimer.cancel();
 	}
 }

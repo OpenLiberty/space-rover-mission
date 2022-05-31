@@ -177,10 +177,6 @@ public class Game {
 		}
 	}
 
-	public boolean hasAlreadyVisitedYellow() {
-		return this.coloursVisited.contains(SocketMessages.COLOUR_YELLOW);
-	}
-
 	public int getDamageTaken() {
 		return this.startingHealth - this.health;
 	}

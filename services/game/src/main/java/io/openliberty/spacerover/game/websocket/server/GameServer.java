@@ -145,12 +145,13 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			gameType = Integer.parseInt(parsedMsg[2]);
 		}
 		if (gameType == 1) {
-			this.currentGame = new Game();
+//			this.currentGame = new Game();
+			this.currentGame = new SpaceHop();
 		} else {
 			this.currentGame = new SpaceHop();
 		}
-		this.currentGame.startGameSession(playerId);
 		registerGameEventManager();
+		this.currentGame.startGameSession(playerId);
 	}
 
 	private void registerGameEventManager() {
@@ -169,6 +170,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 	@Override
 	public void update(final GameEvent eventType, final long value) {
+		System.out.println("update called: event type:" + eventType + "value: " + value);
 		if (eventType == GameEvent.SOCKET_DISCONNECT) {
 			if (!this.stateMachine.hasErrorOccurred()) {
 				this.setErrorStateAndSendError("Socket disconnected");
@@ -177,13 +179,12 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			LOGGER.log(Level.WARNING, "Ending game from event type {0}", eventType);
 			endGameFromServer(false);
 		} else if (eventType == GameEvent.FIVE_SECONDS_LEFT) {
-			this.boardClient.sendMessage(
-					"blinkColour" + SocketMessages.SOCKET_MESSAGE_DATA_DELIMITER + this.currentGame.getCurrentPlanetColour());
+			this.boardClient.sendMessage("blinkColour" + SocketMessages.SOCKET_MESSAGE_DATA_DELIMITER
+					+ this.currentGame.getCurrentPlanetColour());
 		} else if (eventType == GameEvent.PLANET_CHANGED) {
 			this.boardClient.sendMessage("setColour" + SocketMessages.SOCKET_MESSAGE_DATA_DELIMITER
 					+ this.currentGame.getCurrentPlanetColour());
-		}
-		else {
+		} else {
 			this.sendTextToGuiSocket(
 					eventType.toString().toLowerCase() + SocketMessages.SOCKET_MESSAGE_DATA_DELIMITER + value);
 		}
@@ -232,9 +233,9 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 				break;
 			case SocketMessages.START_GAME:
 				assert (parsedMsg.length == 2);
-				startGame(parsedMsg);
 				this.roverClient.sendMessage(SocketMessages.INIT_GAME);
 				this.boardClient.sendMessage(SocketMessages.INIT_GAME);
+				startGame(parsedMsg);
 				break;
 			case SocketMessages.END_GAME:
 				if (parsedMsg.length == 2) {
