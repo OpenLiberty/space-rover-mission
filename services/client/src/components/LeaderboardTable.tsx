@@ -10,8 +10,7 @@
  *******************************************************************************/
 import React, { useState, useMemo } from "react";
 import { LeaderboardEntry } from "hooks/useLeaderboard";
-import { formatTime } from "lib/utils";
-import { gameDurationSeconds } from "lib/config";
+import { formatTime, playerFinished } from "lib/utils";
 import usePagination from "hooks/usePagination";
 
 type Props = {
@@ -20,15 +19,17 @@ type Props = {
 
 const LeaderboardTable = ({ data }: Props) => {
   const [nameFilter, setNameFilter] = useState("");
+  const [showFails, setShowFails] = useState(false);
 
   const filteredData = useMemo(() => {
     return data
       .filter((entry) =>
-        entry.health > 0 && entry.time < gameDurationSeconds)
+        showFails || playerFinished(entry.health, entry.time)
+      )
       .filter((entry) =>
         entry.player.toLowerCase().includes(nameFilter.toLowerCase())
       );
-  }, [nameFilter]);
+  }, [nameFilter, showFails]);
 
   const { page, totalPages, changePage, paginatedData } =
     usePagination(filteredData);
@@ -66,7 +67,13 @@ const LeaderboardTable = ({ data }: Props) => {
         </thead>
         <tbody>
           {paginatedData.map((entry) => (
-            <tr className="odd:bg-gray-50 even:bg-gray-200">
+            <tr
+              className={
+                playerFinished(entry.health, entry.time)
+                  ? "odd:bg-gray-50 even:bg-gray-200"
+                  : "odd:bg-red-200 even:bg-red-300"
+              }
+            >
               <td className="p-3">{entry.rank}</td>
               <td className="p-3">{entry.player}</td>
               <td className="p-3">{formatTime(entry.time)}</td>
@@ -77,24 +84,37 @@ const LeaderboardTable = ({ data }: Props) => {
         </tbody>
       </table>
       {filteredData.length > 0 && (
-        <div className="flex flex-row justify-end items-center bg-blue-dark text-white rounded-b-md">
-          <button
-            className="px-5 py-1 text-xl disabled:text-gray-500"
-            onClick={() => changePage(page - 1)}
-            disabled={page === 1}
-          >
-            &#x25C0;
-          </button>
-          <div>
-            Page {page} of {totalPages}
+        <div className="flex flex-row justify-between items-center px-1 bg-blue-dark text-white rounded-b-md">
+          <div className="flex flex-row items-center">
+            <label className="mx-5">
+              <input
+                className="accent-green h-3 w-3 mr-2"
+                type="checkbox"
+                checked={showFails}
+                onChange={(e) => setShowFails(e.target.checked)}
+              />
+              Show fails
+            </label>
           </div>
-          <button
-            className="px-5 py-3 text-xl disabled:text-gray-500"
-            onClick={() => changePage(page + 1)}
-            disabled={page === totalPages}
-          >
-            &#x25B6;
-          </button>
+          <div className="flex flex-row items-center">
+            <button
+              className="px-5 py-1 text-xl disabled:text-gray-500"
+              onClick={() => changePage(page - 1)}
+              disabled={page === 1}
+            >
+              &#x25C0;
+            </button>
+            <div>
+              Page {page} of {totalPages}
+            </div>
+            <button
+              className="px-5 py-3 text-xl disabled:text-gray-500"
+              onClick={() => changePage(page + 1)}
+              disabled={page === totalPages}
+            >
+              &#x25B6;
+            </button>
+          </div>
         </div>
       )}
       {filteredData.length === 0 && (
