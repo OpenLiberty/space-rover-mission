@@ -16,7 +16,7 @@ import { GameMode } from "hooks/useGameModes";
 type Props = {
   gameModes: GameMode[];
   isDisabled: boolean;
-  onSubmit: (...args: string[]) => void;
+  onSubmit: (playerName: string, gameMode: string) => void;
 };
 
 const PlayerForm = ({ gameModes, isDisabled, onSubmit }: Props) => {
