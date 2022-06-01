@@ -22,8 +22,9 @@ import { gameDurationSeconds } from "lib/config";
 const LeaderboardPage = () => {
   const [searchParams] = useSearchParams();
   const player = searchParams.get("player");
+  const gameMode = searchParams.get("gameMode");
 
-  const { leaderboard, placement } = useLeaderboard(player);
+  const { leaderboard, placement } = useLeaderboard(player, gameMode ?? "1");
 
   const [playHighscore] = useSound(highscoreSoundFile, {
     volume: 0.25,
