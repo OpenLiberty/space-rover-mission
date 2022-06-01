@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+export const gameURL = process.env.REACT_APP_GAME_URL ?? "http://localhost:3001";
 export const gameSocketURL = process.env.REACT_APP_GAME_SOCKET_URL ?? "ws://localhost:3001";
 export const gameDurationSeconds = process.env.REACT_APP_GAME_DURATION_SECONDS ? parseInt(process.env.REACT_APP_GAME_DURATION_SECONDS) : 300;
 
