@@ -33,23 +33,23 @@ https://user-images.githubusercontent.com/31871360/162487597-b3590a36-6800-41ad-
 
 ### Space Rover State Light Patterns
 
-The Space Rover has six blue LEDs underneath the spaceship model, one white head light LED, and two red tail light LEDs. The "front" of the Space Rover is designated by the white head light, and all directions for gesture control/keyboard control movement of the Rover follow that convention; for example, FORWARD will drive in the direction the white head light LED is facing.
+The Space Rover has six addressable LEDs underneath the spaceship model, one white head light LED, and two red tail light LEDs. The "front" of the Space Rover is designated by the white head light, and all directions for gesture control/keyboard control movement of the Rover follow that convention; for example, FORWARD will drive in the direction the white head light LED is facing.
 
 The Space Rover displays the following light patterns to represent different setup, standby, and gameplay states.
 
-**Blinking Blue Lights + Head/Tail Lights OFF**: Connecting to WiFi
+**Blinking Red Lights + Head/Tail Lights OFF**: Connecting to WiFi
 
 https://user-images.githubusercontent.com/31871360/162487597-b3590a36-6800-41ad-a065-5a428be69f76.mov
 
-**Cycling Blue Lights + Head/Tail Lights Blinking**: Waiting for a websocket connection
+**Breathing Rainbow Lights + Head/Tail Lights OFF**: Waiting for a websocket connection
 
 https://user-images.githubusercontent.com/31871360/162487626-c8ea1146-340c-4e31-b073-2fef61f02cbf.mov
 
-**Solid Blue Lights + Blinking Head/Tail Lights**: Websocket connected, waiting for game start
+**Solid Turquoise Lights + Blinking Head/Tail Lights**: Websocket connected, waiting for game start
 
 https://user-images.githubusercontent.com/31871360/162487765-e9647f5f-d1f7-4b80-95e2-3f235b2c17bd.MOV
 
-**Solid Blue Lights + Solid Head/Tail Lights**: Game Started
+**Solid Turquoise Lights + Solid Head/Tail Lights**: Game Started
 
 ![Game Started](../images/space-rover/sr-wsconn-gamestarted.png)
 
