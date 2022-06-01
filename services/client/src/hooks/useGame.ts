@@ -149,10 +149,10 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
     }
   }, [timeRemaining, timerSound]);
 
-  function startGame(...args: string[]) {
+  function startGame(playerName: string, gameMode: string) {
     if (gameState === GameState.NotStarted) {
       setPlayerName(playerName);
-      sendMessage(Event.Start, args.join(","));
+      sendMessage(Event.Start, [playerName, gameMode].join(","));
       setGameState(GameState.InGame);
       startTimer();
     }
