@@ -19,6 +19,7 @@ import { gameSocketURL, gameDurationSeconds } from "lib/config";
 const PlayPage = () => {
   const {
     playerName,
+    gameModes,
     gameState,
     formattedTime,
     health,
@@ -35,6 +36,7 @@ const PlayPage = () => {
       return (
         <div className="flex flex-col gap-7 justify-center h-full">
           <PlayerForm
+            gameModes={gameModes}
             isDisabled={gameState !== GameState.NotStarted}
             onSubmit={startGame}
           />

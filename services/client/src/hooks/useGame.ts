@@ -17,6 +17,7 @@ import timerSoundFile from "assets/sounds/timer.mp3";
 
 import useTimer from "./useTimer";
 import useKeyboardControls from "./useKeyboardControls";
+import useGameModes from "./useGameModes";
 
 export enum GameState {
   Connecting,
@@ -70,6 +71,8 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
   } = useTimer(durationInSeconds);
 
   useKeyboardControls(socket.current);
+
+  const gameModes = useGameModes();
 
   // setup socket
   useEffect(() => {
@@ -146,10 +149,10 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
     }
   }, [timeRemaining, timerSound]);
 
-  function startGame(playerName: string) {
+  function startGame(...args: string[]) {
     if (gameState === GameState.NotStarted) {
       setPlayerName(playerName);
-      sendMessage(Event.Start, playerName);
+      sendMessage(Event.Start, args.join(","));
       setGameState(GameState.InGame);
       startTimer();
     }
@@ -168,6 +171,7 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
 
   return {
     playerName,
+    gameModes,
     gameState,
     formattedTime,
     health,
