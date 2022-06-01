@@ -51,6 +51,7 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
   const socket = useRef<WebSocket | null>(null);
 
   const [playerName, setPlayerName] = useState("");
+  const [gameMode, setGameMode] = useState("1");
   const [health, setHealth] = useState(100);
   const [score, setScore] = useState(0);
 
@@ -152,6 +153,7 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
   function startGame(playerName: string, gameMode: string) {
     if (gameState === GameState.NotStarted) {
       setPlayerName(playerName);
+      setGameMode(gameMode);
       sendMessage(Event.Start, [playerName, gameMode].join(","));
       setGameState(GameState.InGame);
       startTimer();
@@ -171,6 +173,7 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
 
   return {
     playerName,
+    gameMode,
     gameModes,
     gameState,
     formattedTime,
