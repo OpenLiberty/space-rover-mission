@@ -19,6 +19,7 @@ import { gameSocketURL, gameDurationSeconds } from "lib/config";
 const PlayPage = () => {
   const {
     playerName,
+    gameMode,
     gameModes,
     gameState,
     formattedTime,
@@ -58,7 +59,7 @@ const PlayPage = () => {
     case GameState.GameEnded:
       return (
         <Navigate
-          to={`/leaderboard?player=${encodeURIComponent(playerName)}`}
+          to={`/leaderboard?player=${encodeURIComponent(playerName)}&gameMode=${gameMode}`}
         />
       );
     default:
