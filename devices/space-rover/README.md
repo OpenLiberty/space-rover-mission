@@ -39,5 +39,5 @@ In the circuit diagram below, you can find the wire connections between the Ardu
 - Headlight/Tailights -> A1
 - Damage LED -> A2
 
-![Space Rover Circuit Schematic Diagram](../../images/SpaceRover_Circuit_Schematic.jpeg)
+![Space Rover Circuit Schematic Diagram](../../images/SpaceRover_Circuit_Schematic.png)
 
