@@ -46,7 +46,7 @@ Grafana takes the metrics scraped by the Prometheus Server and displays them on 
 The Webcam and WiFi Enabled Standalone Device is used to run the hand gesture game controls which is powered by CV Zone which uses Open CV under the hood.
 
 #### Space Rover
-The Space Rover is the physical device built using an Arduino which roams the game map. This component picks up light to determine if it has landed on a planet or hit an obstacle to the Game Service.
+The Space Rover is the physical device built using an Arduino which roams the game map. This component picks up RFID cards/NFC stickers to determine if it has landed on a planet or hit an obstacle to the Game Service.
 
 #### Game Map with Addressable LED's
 The Game Map is the physical game board which the Space Rover roams on. It emits LED's of different colour to signify planets and obstacles.
