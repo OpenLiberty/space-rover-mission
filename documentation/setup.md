@@ -37,6 +37,8 @@ The Space Rover has six addressable LEDs underneath the spaceship model, one whi
 
 The Space Rover displays the following light patterns to represent different setup, standby, and gameplay states.
 
+**Solid Red Lights + Head/Tail Lights OFF + Canopy Red Light**: Error state, recommend to switch OFF/ON the Space Rover.
+
 **Blinking Red Lights + Head/Tail Lights OFF**: Connecting to WiFi
 
 https://user-images.githubusercontent.com/31871360/162487597-b3590a36-6800-41ad-a065-5a428be69f76.mov
