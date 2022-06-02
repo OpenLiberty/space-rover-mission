@@ -1,7 +1,7 @@
 package io.openliberty.spacerover.game;
 
 import io.openliberty.spacerover.game.models.GameEvent;
-import io.openliberty.spacerover.game.models.SocketMessages;
+import io.openliberty.spacerover.game.models.Constants;
 
 public class SuddenDeathGame extends Game {
 
@@ -13,6 +13,6 @@ public class SuddenDeathGame extends Game {
 
 	@Override
 	protected String getGameMode() {
-		return SocketMessages.INIT_GAME_SUDDEN_DEATH;
+		return Constants.INIT_GAME_SUDDEN_DEATH;
 	}
 }

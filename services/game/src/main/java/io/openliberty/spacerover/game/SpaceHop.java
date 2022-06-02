@@ -8,7 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import io.openliberty.spacerover.game.models.GameEvent;
-import io.openliberty.spacerover.game.models.SocketMessages;
+import io.openliberty.spacerover.game.models.Constants;
 
 public class SpaceHop extends Game {	
 	private static final int SCORE_INCREMENT = 10;
@@ -40,12 +40,12 @@ public class SpaceHop extends Game {
 		String prevColour = this.getCurrentPlanetColour();
 		String newColour = prevColour;
 		if (newColour == null) {
-			newColour = SocketMessages.COLOURS_EXCLUDING_RED[r.nextInt(SocketMessages.COLOURS_EXCLUDING_RED.length)];
+			newColour = Constants.COLOURS_EXCLUDING_RED[r.nextInt(Constants.COLOURS_EXCLUDING_RED.length)];
 		} else {
 
 			while (newColour.equals(prevColour)) {
-				newColour = SocketMessages.COLOURS_EXCLUDING_RED[r
-						.nextInt(SocketMessages.COLOURS_EXCLUDING_RED.length)];
+				newColour = Constants.COLOURS_EXCLUDING_RED[r
+						.nextInt(Constants.COLOURS_EXCLUDING_RED.length)];
 			}
 		}
 		this.setCurrentColour(newColour);
@@ -106,7 +106,7 @@ public class SpaceHop extends Game {
 	public void processColour(String msgID) {
 		LOGGER.log(Level.INFO, "Colour visited: {0}", msgID);
 
-		if (msgID.equals(SocketMessages.COLOUR_RED)) {
+		if (msgID.equals(Constants.COLOUR_RED)) {
 			this.decrementScore(OBSTACLE_SCORE_DECREMENT);
 			this.decrementHP(OBSTACLE_HP_DECREMENT);
 		} else if (msgID.equals(getCurrentPlanetColour())) {
@@ -120,7 +120,7 @@ public class SpaceHop extends Game {
 
 	@Override
 	protected String getGameMode() {
-		return SocketMessages.INIT_GAME_HOP;
+		return Constants.INIT_GAME_HOP;
 	}
 
 	@Override

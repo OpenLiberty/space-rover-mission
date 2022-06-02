@@ -14,7 +14,7 @@ import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.Liveness;
 import org.eclipse.microprofile.metrics.annotation.SimplyTimed;
 
-import io.openliberty.spacerover.game.models.SocketMessages;
+import io.openliberty.spacerover.game.models.Constants;
 import io.openliberty.spacerover.game.websocket.client.WebsocketClientEndpoint;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -60,12 +60,12 @@ public class GameServerHealth implements HealthCheck {
             WebsocketClientEndpoint client = new WebsocketClientEndpoint(uri);
 
             client.addMessageHandler(e -> {
-                if (e.equals(SocketMessages.GAME_HEALTH_ACK)) {
+                if (e.equals(Constants.GAME_HEALTH_ACK)) {
                     latch.countDown();
                 }
             });
             client.connect();
-            client.sendMessage(SocketMessages.GAME_HEALTH_TEST);
+            client.sendMessage(Constants.GAME_HEALTH_TEST);
             isHealthy = latch.await(HEALTH_CHECK_TIMEOUT_SECONDS, TimeUnit.SECONDS);
         } catch ( IOException | InterruptedException | NumberFormatException | URISyntaxException e) {
             LOGGER.log(Level.SEVERE, "isHealthy() failed.", e);

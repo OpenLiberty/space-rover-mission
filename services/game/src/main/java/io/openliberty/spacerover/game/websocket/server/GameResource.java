@@ -8,7 +8,7 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 import io.openliberty.spacerover.game.models.GameMode;
-import io.openliberty.spacerover.game.models.SocketMessages;
+import io.openliberty.spacerover.game.models.Constants;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.ws.rs.GET;
@@ -31,23 +31,23 @@ public class GameResource {
 	public Response retrieve() {
 		List<GameMode> supportedGameModes = new ArrayList<>();
 		GameMode classic = new GameMode();
-		classic.setGameModeID(Integer.parseInt(SocketMessages.INIT_GAME_CLASSIC));
-		classic.setGameModeName(SocketMessages.GAME_MODE_NAME_CLASSIC);
+		classic.setGameModeID(Integer.parseInt(Constants.INIT_GAME_CLASSIC));
+		classic.setGameModeName(Constants.GAME_MODE_NAME_CLASSIC);
 		supportedGameModes.add(classic);
 
 		GameMode planetHop = new GameMode();
-		planetHop.setGameModeID(Integer.parseInt(SocketMessages.INIT_GAME_HOP));
-		planetHop.setGameModeName(SocketMessages.GAME_MODE_NAME_PLANET_HOP);
+		planetHop.setGameModeID(Integer.parseInt(Constants.INIT_GAME_HOP));
+		planetHop.setGameModeName(Constants.GAME_MODE_NAME_PLANET_HOP);
 		supportedGameModes.add(planetHop);
 		
 		GameMode guided = new GameMode();
-		guided.setGameModeID(Integer.parseInt(SocketMessages.INIT_GAME_GUIDED));
-		guided.setGameModeName(SocketMessages.GAME_MODE_NAME_GUIDED);
+		guided.setGameModeID(Integer.parseInt(Constants.INIT_GAME_GUIDED));
+		guided.setGameModeName(Constants.GAME_MODE_NAME_GUIDED);
 		supportedGameModes.add(guided);
 		
 		GameMode suddenDeath = new GameMode();
-		suddenDeath.setGameModeID(Integer.parseInt(SocketMessages.INIT_GAME_SUDDEN_DEATH));
-		suddenDeath.setGameModeName(SocketMessages.GAME_MODE_NAME_SUDDENDEATH);
+		suddenDeath.setGameModeID(Integer.parseInt(Constants.INIT_GAME_SUDDEN_DEATH));
+		suddenDeath.setGameModeName(Constants.GAME_MODE_NAME_SUDDENDEATH);
 		supportedGameModes.add(suddenDeath);
 		
 		Jsonb jsonb = JsonbBuilder.create();

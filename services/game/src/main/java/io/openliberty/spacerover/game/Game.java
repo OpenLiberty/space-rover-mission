@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 
 import io.openliberty.spacerover.game.models.GameEvent;
 import io.openliberty.spacerover.game.models.GameScore;
-import io.openliberty.spacerover.game.models.SocketMessages;
+import io.openliberty.spacerover.game.models.Constants;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
@@ -30,6 +30,8 @@ public class Game {
 	private static final int MAX_GAME_TIME_MINUTES = 5;
 	protected static final int OBSTACLE_HP_DECREMENT = 10;
 	protected static final int OBSTACLE_SCORE_DECREMENT = OBSTACLE_HP_DECREMENT;
+	protected static final int OBSTACLE_SUN_HP_DECREMENT = 34;
+	protected static final int OBSTACLE_SUN_SCORE_DECREMENT = OBSTACLE_HP_DECREMENT;
 	private static final int MAX_GAME_TIME_SECONDS = 60 * MAX_GAME_TIME_MINUTES;
 	private String playerId;
 	private Instant startTime;
@@ -129,7 +131,7 @@ public class Game {
 	}
 
 	protected String getGameMode() {
-		return SocketMessages.INIT_GAME_CLASSIC;
+		return Constants.INIT_GAME_CLASSIC;
 	}
 
 	public Set<String> getColoursVisited() {
@@ -142,7 +144,10 @@ public class Game {
 
 	public void processColour(String msgID) {
 		this.lastColourVisited = msgID;
-		if (msgID.equals(SocketMessages.COLOUR_RED)) {
+		if (msgID.equals(Constants.COLOUR_RED)) {
+			this.decrementScore(OBSTACLE_SCORE_DECREMENT);
+			this.decrementHP(OBSTACLE_HP_DECREMENT);
+		} else if (msgID.equals(Constants.COLOUR_RED_SUN)) {
 			this.decrementScore(OBSTACLE_SCORE_DECREMENT);
 			this.decrementHP(OBSTACLE_HP_DECREMENT);
 		} else if (!this.coloursVisited.contains(msgID)) {

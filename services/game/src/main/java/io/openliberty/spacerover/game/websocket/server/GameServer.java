@@ -32,7 +32,7 @@ import io.openliberty.spacerover.game.SpaceHop;
 import io.openliberty.spacerover.game.SuddenDeathGame;
 import io.openliberty.spacerover.game.models.GameEvent;
 import io.openliberty.spacerover.game.models.GameScore;
-import io.openliberty.spacerover.game.models.SocketMessages;
+import io.openliberty.spacerover.game.models.Constants;
 import io.openliberty.spacerover.game.websocket.client.WebsocketClientEndpoint;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -52,8 +52,6 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	private static final String COLON = ":";
 	private static final String WEBSOCKET_PROTOCOL = "ws://";
 	private static final Logger LOGGER = Logger.getLogger(GameServer.class.getName());
-	private final Set<String> damageSet = new HashSet<>();
-//	Game currentGame = GameHolder.INSTANCE;
 	private Game currentGame = new Game();
 	/* statistics kept for metrics */
 	private long aggregateDamage = 0;
@@ -136,7 +134,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	}
 
 	private String getErrorMessage(final String errorText) {
-		return SocketMessages.ERROR_MESSAGE + SocketMessages.SOCKET_MESSAGE_DATA_DELIMITER + errorText;
+		return Constants.ERROR_MESSAGE + Constants.SOCKET_MESSAGE_DATA_DELIMITER + errorText;
 	}
 
 	private void startGame(final String[] properties) {
@@ -145,16 +143,16 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		LOGGER.log(Level.INFO, "Start Game received for player ID: {0}, GameMode: {1}",
 				new Object[] { playerId, gameMode });
 
-		if (gameMode == Integer.parseInt(SocketMessages.INIT_GAME_CLASSIC)) {
+		if (gameMode == Integer.parseInt(Constants.INIT_GAME_CLASSIC)) {
 			this.currentGame = new Game();
 			registerGameEventManager();
-		} else if (gameMode == Integer.parseInt(SocketMessages.INIT_GAME_HOP)) {
+		} else if (gameMode == Integer.parseInt(Constants.INIT_GAME_HOP)) {
 			this.currentGame = new SpaceHop();
 			registerSpaceHopEventManager();
-		} else if (gameMode == Integer.parseInt(SocketMessages.INIT_GAME_GUIDED)) {
+		} else if (gameMode == Integer.parseInt(Constants.INIT_GAME_GUIDED)) {
 			this.currentGame = new GuidedGame();
 			registerGameEventManager();
-		} else if (gameMode == Integer.parseInt(SocketMessages.INIT_GAME_SUDDEN_DEATH)) {
+		} else if (gameMode == Integer.parseInt(Constants.INIT_GAME_SUDDEN_DEATH)) {
 			this.currentGame = new SuddenDeathGame();
 			registerGameEventManager();
 		}
@@ -193,14 +191,14 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			LOGGER.log(Level.WARNING, "Ending game from event type {0}", eventType);
 			endGameFromServer(false);
 		} else if (eventType == GameEvent.FIVE_SECONDS_LEFT) {
-			this.boardClient.sendMessage("blinkColour" + SocketMessages.SOCKET_MESSAGE_DATA_DELIMITER
+			this.boardClient.sendMessage("blinkColour" + Constants.SOCKET_MESSAGE_DATA_DELIMITER
 					+ this.currentGame.getCurrentPlanetColour());
 		} else if (eventType == GameEvent.PLANET_CHANGED) {
-			this.boardClient.sendMessage("setColour" + SocketMessages.SOCKET_MESSAGE_DATA_DELIMITER
+			this.boardClient.sendMessage("setColour" + Constants.SOCKET_MESSAGE_DATA_DELIMITER
 					+ this.currentGame.getCurrentPlanetColour());
 		} else {
 			this.sendTextToGuiSocket(
-					eventType.toString().toLowerCase() + SocketMessages.SOCKET_MESSAGE_DATA_DELIMITER + value);
+					eventType.toString().toLowerCase() + Constants.SOCKET_MESSAGE_DATA_DELIMITER + value);
 		}
 	}
 
@@ -217,7 +215,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			this.totalScorePoints += leaderboardEntry.getScore();
 			this.totalGameTimeInSeconds += leaderboardEntry.getTime();
 			this.getLeaderboard().updateLeaderboard(leaderboardEntry);
-			this.sendTextToGuiSocket(SocketMessages.END_GAME);
+			this.sendTextToGuiSocket(Constants.END_GAME);
 		}
 	}
 
@@ -228,31 +226,31 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 	public synchronized void handleMessage(final String message, final Session session) {
 		LOGGER.log(Level.INFO, "Message received: <{0}>", message);
-		final String[] parsedMsg = message.split("\\" + SocketMessages.SOCKET_MESSAGE_DATA_DELIMITER);
+		final String[] parsedMsg = message.split("\\" + Constants.SOCKET_MESSAGE_DATA_DELIMITER);
 		String msgID = parsedMsg[0];
 
 		if (this.stateMachine.isValidState(msgID)) {
 			switch (msgID) {
-			case SocketMessages.CONNECT_GUI:
+			case Constants.CONNECT_GUI:
 				this.guiSession = session;
 				break;
-			case SocketMessages.CONNECT_GESTURE:
+			case Constants.CONNECT_GESTURE:
 				this.gestureSession = session;
 				break;
-			case SocketMessages.ROVER_ACK:
+			case Constants.ROVER_ACK:
 				this.roverClient.getEventManager().subscribe(GameEvent.SOCKET_DISCONNECT, this);
 				break;
-			case SocketMessages.GAMEBOARD_ACK:
+			case Constants.GAMEBOARD_ACK:
 				this.boardClient.getEventManager().subscribe(GameEvent.SOCKET_DISCONNECT, this);
 				break;
-			case SocketMessages.START_GAME:
+			case Constants.START_GAME:
 				assert (parsedMsg.length == 2);
-				String[] properties = parsedMsg[1].split(SocketMessages.SOCKET_MESSAGE_PAYLOAD_DELIMITER);
+				String[] properties = parsedMsg[1].split(Constants.SOCKET_MESSAGE_PAYLOAD_DELIMITER);
 				this.roverClient.sendMessage(properties[1]);
 				this.boardClient.sendMessage(properties[1]);
 				startGame(properties);
 				break;
-			case SocketMessages.END_GAME:
+			case Constants.END_GAME:
 				if (parsedMsg.length == 2) {
 					// timeout
 					this.currentGame.endGameSession(parsedMsg[1]);
@@ -260,28 +258,29 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 					this.currentGame.endGameSession();
 				}
 				break;
-			case SocketMessages.BACKWARD:
-			case SocketMessages.FORWARD:
-			case SocketMessages.LEFT:
-			case SocketMessages.RIGHT:
-			case SocketMessages.STOP:
+			case Constants.BACKWARD:
+			case Constants.FORWARD:
+			case Constants.LEFT:
+			case Constants.RIGHT:
+			case Constants.STOP:
 				this.sendRoverDirection(msgID);
 				break;
-			case SocketMessages.COLOUR_BLUE:
-			case SocketMessages.COLOUR_GREEN:
-			case SocketMessages.COLOUR_PURPLE:
-			case SocketMessages.COLOUR_YELLOW:
+			case Constants.COLOUR_BLUE:
+			case Constants.COLOUR_GREEN:
+			case Constants.COLOUR_PURPLE:
+			case Constants.COLOUR_YELLOW:
 				updateBoardAndGame(msgID);
 				break;
-			case SocketMessages.GAME_HEALTH_TEST:
-				session.getAsyncRemote().sendText(SocketMessages.GAME_HEALTH_ACK);
+			case Constants.GAME_HEALTH_TEST:
+				session.getAsyncRemote().sendText(Constants.GAME_HEALTH_ACK);
 				break;
-			case SocketMessages.COLOUR_RED:
+			case Constants.COLOUR_RED:
+				if(Constants.SUN_RFID_IDENTIFIERS.contains(parsedMsg[1]))
+				{
+					LOGGER.log(Level.WARNING, "Detected sun damage");
+					msgID = Constants.COLOUR_RED_SUN;
+				}				
 				updateBoardAndGame(msgID);
-				if (parsedMsg.length == 2) {
-					this.damageSet.add(parsedMsg[1]);
-					LOGGER.log(Level.WARNING, Arrays.toString(this.damageSet.toArray()));
-				}
 				break;
 			default:
 				LOGGER.log(Level.INFO, "Unknown Message received <{0}>", msgID);
@@ -289,7 +288,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			this.stateMachine.incrementState(msgID);
 		}
 
-		if (!msgID.equals(SocketMessages.END_GAME)) {
+		if (!msgID.equals(Constants.END_GAME)) {
 			connectGamePieces();
 		}
 	}
@@ -308,7 +307,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		} else if (this.stateMachine.isReadyToConnectBoard() && !this.stateMachine.hasErrorOccurred()) {
 			connectBoard();
 		} else if (this.stateMachine.isAllConnected()) {
-			this.sendTextToGuiSocket(SocketMessages.SERVER_READY);
+			this.sendTextToGuiSocket(Constants.SERVER_READY);
 		} else if (this.stateMachine.hasErrorOccurred()) {
 			this.endGameFromServer(true);
 		}
@@ -402,7 +401,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	}
 
 	public static boolean isDirection(final String msgID) {
-		return Arrays.asList(SocketMessages.DIRECTIONS).contains(msgID);
+		return Arrays.asList(Constants.DIRECTIONS).contains(msgID);
 	}
 
 	private void sendRoverDirection(final String direction) {
