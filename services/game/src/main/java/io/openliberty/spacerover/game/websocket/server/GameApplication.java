@@ -13,7 +13,7 @@ package io.openliberty.spacerover.game.websocket.server;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 
-@ApplicationPath("/gameapp")
+@ApplicationPath("/game")
 public class GameApplication extends Application {
 
 }

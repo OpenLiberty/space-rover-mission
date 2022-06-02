@@ -20,6 +20,7 @@ public class SocketMessages {
 	public static final String END_GAME = "endGame";
 	public static final String START_GAME = "startGame";
 	public static final String SOCKET_MESSAGE_DATA_DELIMITER = "|";
+	public static final String SOCKET_MESSAGE_PAYLOAD_DELIMITER = ",";	
 	public static final String RIGHT = "R";
 	public static final String LEFT = "L";
 	public static final String FORWARD = "F";
@@ -40,6 +41,13 @@ public class SocketMessages {
 	public static final Map<String, Integer> COLOUR_SCORE_VALUES = Map.of(COLOUR_BLUE, 10, COLOUR_GREEN, 20, COLOUR_YELLOW, 30, COLOUR_PURPLE, 40);
 	public static final String[] COLOURS = { COLOUR_RED, COLOUR_BLUE, COLOUR_GREEN, COLOUR_YELLOW, COLOUR_PURPLE };
 	public static final String[] COLOURS_EXCLUDING_RED = { COLOUR_BLUE, COLOUR_GREEN, COLOUR_YELLOW, COLOUR_PURPLE };
-	public static final String INIT_GAME = "2";
+	public static final String INIT_GAME_CLASSIC = "1";
+	public static final String INIT_GAME_HOP = "2";
+	public static final String INIT_GAME_GUIDED = "3";
+	public static final String INIT_GAME_SUDDEN_DEATH = "4";
+	public static final String GAME_MODE_NAME_PLANET_HOP = "Planet Hop";
+	public static final String GAME_MODE_NAME_CLASSIC = "Classic";
+	public static final String GAME_MODE_NAME_GUIDED = "Guided";
+	public static final String GAME_MODE_NAME_SUDDENDEATH = "Sudden Death";
 
 }

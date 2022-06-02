@@ -25,8 +25,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class Game {
-	private static final String GAME_MODE = "1";
-
 	private static final Logger LOGGER = Logger.getLogger(Game.class.getName());
 
 	private static final int MAX_GAME_TIME_MINUTES = 5;
@@ -43,6 +41,14 @@ public class Game {
 	private GameEventManager eventManager = null;
 	private Set<String> coloursVisited;
 	private String lastColourVisited;
+
+	public String getLastColourVisited() {
+		return lastColourVisited;
+	}
+
+	public void setLastColourVisited(String lastColourVisited) {
+		this.lastColourVisited = lastColourVisited;
+	}
 
 	public Game() {
 		this.eventManager = new GameEventManager(GameEvent.HP, GameEvent.SCORE, GameEvent.GAME_OVER);
@@ -123,7 +129,15 @@ public class Game {
 	}
 
 	protected String getGameMode() {
-		return GAME_MODE;
+		return SocketMessages.INIT_GAME_CLASSIC;
+	}
+
+	public Set<String> getColoursVisited() {
+		return coloursVisited;
+	}
+
+	public void setColoursVisited(Set<String> coloursVisited) {
+		this.coloursVisited = coloursVisited;
 	}
 
 	public void processColour(String msgID) {
@@ -141,7 +155,7 @@ public class Game {
 		}
 	}
 
-	private int getScore() {
+	protected int getScore() {
 		return this.coloursVisited.size() * 10;
 	}
 

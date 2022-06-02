@@ -10,8 +10,7 @@ import java.util.logging.Logger;
 import io.openliberty.spacerover.game.models.GameEvent;
 import io.openliberty.spacerover.game.models.SocketMessages;
 
-public class SpaceHop extends Game {
-	private static final String GAME_MODE = "2";
+public class SpaceHop extends Game {	
 	private static final int SCORE_INCREMENT = 10;
 	private static final long MAX_TIMEOUT_SECONDS = 15 * 1000L;
 	private String currentColour;
@@ -121,7 +120,7 @@ public class SpaceHop extends Game {
 
 	@Override
 	protected String getGameMode() {
-		return GAME_MODE;
+		return SocketMessages.INIT_GAME_HOP;
 	}
 
 	@Override

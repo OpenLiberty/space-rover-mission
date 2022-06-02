@@ -27,7 +27,9 @@ import io.openliberty.spacerover.game.GameLeaderboard;
 import io.openliberty.spacerover.game.GameServerState;
 import io.openliberty.spacerover.game.GameServerStateMachine;
 import io.openliberty.spacerover.game.GameSession;
+import io.openliberty.spacerover.game.GuidedGame;
 import io.openliberty.spacerover.game.SpaceHop;
+import io.openliberty.spacerover.game.SuddenDeathGame;
 import io.openliberty.spacerover.game.models.GameEvent;
 import io.openliberty.spacerover.game.models.GameScore;
 import io.openliberty.spacerover.game.models.SocketMessages;
@@ -137,29 +139,41 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		return SocketMessages.ERROR_MESSAGE + SocketMessages.SOCKET_MESSAGE_DATA_DELIMITER + errorText;
 	}
 
-	private void startGame(final String[] parsedMsg) {
-		String playerId = parsedMsg[1];
-		LOGGER.log(Level.INFO, "Start Game received for player ID: {0}", playerId);
-		int gameType = 1;
-		if (parsedMsg.length > 2) {
-			gameType = Integer.parseInt(parsedMsg[2]);
-		}
-		if (gameType == 1) {
-//			this.currentGame = new Game();
+	private void startGame(final String[] properties) {
+		String playerId = properties[0];
+		int gameMode = Integer.parseInt(properties[1]);
+		LOGGER.log(Level.INFO, "Start Game received for player ID: {0}, GameMode: {1}",
+				new Object[] { playerId, gameMode });
+
+		if (gameMode == Integer.parseInt(SocketMessages.INIT_GAME_CLASSIC)) {
+			this.currentGame = new Game();
+			registerGameEventManager();
+		} else if (gameMode == Integer.parseInt(SocketMessages.INIT_GAME_HOP)) {
 			this.currentGame = new SpaceHop();
-		} else {
-			this.currentGame = new SpaceHop();
+			registerSpaceHopEventManager();
+		} else if (gameMode == Integer.parseInt(SocketMessages.INIT_GAME_GUIDED)) {
+			this.currentGame = new GuidedGame();
+			registerGameEventManager();
+		} else if (gameMode == Integer.parseInt(SocketMessages.INIT_GAME_SUDDEN_DEATH)) {
+			this.currentGame = new SuddenDeathGame();
+			registerGameEventManager();
 		}
-		registerGameEventManager();
 		this.currentGame.startGameSession(playerId);
+	}
+
+	private void registerSpaceHopEventManager() {
+		this.currentGame.getEventManager().subscribe(GameEvent.HP, this);
+		this.currentGame.getEventManager().subscribe(GameEvent.SCORE, this);
+		this.currentGame.getEventManager().subscribe(GameEvent.GAME_OVER, this);
+		this.currentGame.getEventManager().subscribe(GameEvent.FIVE_SECONDS_LEFT, this);
+		this.currentGame.getEventManager().subscribe(GameEvent.PLANET_CHANGED, this);
+
 	}
 
 	private void registerGameEventManager() {
 		this.currentGame.getEventManager().subscribe(GameEvent.HP, this);
 		this.currentGame.getEventManager().subscribe(GameEvent.SCORE, this);
 		this.currentGame.getEventManager().subscribe(GameEvent.GAME_OVER, this);
-		this.currentGame.getEventManager().subscribe(GameEvent.FIVE_SECONDS_LEFT, this);
-		this.currentGame.getEventManager().subscribe(GameEvent.PLANET_CHANGED, this);
 
 	}
 
@@ -233,9 +247,10 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 				break;
 			case SocketMessages.START_GAME:
 				assert (parsedMsg.length == 2);
-				this.roverClient.sendMessage(SocketMessages.INIT_GAME);
-				this.boardClient.sendMessage(SocketMessages.INIT_GAME);
-				startGame(parsedMsg);
+				String[] properties = parsedMsg[1].split(SocketMessages.SOCKET_MESSAGE_PAYLOAD_DELIMITER);
+				this.roverClient.sendMessage(properties[1]);
+				this.boardClient.sendMessage(properties[1]);
+				startGame(properties);
 				break;
 			case SocketMessages.END_GAME:
 				if (parsedMsg.length == 2) {
