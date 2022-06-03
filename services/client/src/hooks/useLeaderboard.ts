@@ -31,7 +31,10 @@ const getLeaderboard = async (gameMode: string) => {
 };
 
 const useLeaderboard = (player: string | null, gameMode: string) => {
-  const { data: leaderboard, ...rest } = useQuery("leaderboard", () => getLeaderboard(gameMode));
+  const { data: leaderboard, ...rest } = useQuery(
+    ["leaderboard", gameMode],
+    () => getLeaderboard(gameMode)
+  );
 
   const placement = useMemo(() => {
     if (player) {

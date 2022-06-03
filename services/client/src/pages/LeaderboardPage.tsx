@@ -53,7 +53,9 @@ const LeaderboardPage = () => {
   return (
     <div className="container mx-auto">
       {placement && <PlacementDisplay {...placement} />}
-      {leaderboard && <LeaderboardTable data={leaderboard} />}
+      {leaderboard && (
+        <LeaderboardTable gameMode={gameMode ?? "1"} data={leaderboard} />
+      )}
     </div>
   );
 };

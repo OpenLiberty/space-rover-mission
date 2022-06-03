@@ -9,15 +9,18 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 import React, { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import useGameModes from "hooks/useGameModes";
 import { LeaderboardEntry } from "hooks/useLeaderboard";
 import { formatTime, playerFinished } from "lib/utils";
 import usePagination from "hooks/usePagination";
 
 type Props = {
+  gameMode: string;
   data: LeaderboardEntry[];
 };
 
-const LeaderboardTable = ({ data }: Props) => {
+const LeaderboardTable = ({ gameMode, data }: Props) => {
   const [nameFilter, setNameFilter] = useState("");
   const [showFails, setShowFails] = useState(false);
 
@@ -34,6 +37,9 @@ const LeaderboardTable = ({ data }: Props) => {
   const { page, totalPages, changePage, paginatedData } =
     usePagination(filteredData);
 
+  const navigate = useNavigate();
+  const gameModes = useGameModes();
+
   return (
     <>
       <div className="flex flex-row justify-between items-end my-2">
@@ -43,16 +49,40 @@ const LeaderboardTable = ({ data }: Props) => {
             Open Liberty - Space Rover Mission
           </h2>
         </div>
-        <div>
-          <input
-            className="px-5 py-3 rounded-md"
-            type="text"
-            autoComplete="false"
-            autoCorrect="false"
-            spellCheck="false"
-            placeholder="Filter by player name"
-            onChange={(e) => setNameFilter(e.target.value)}
-          />
+        <div className="flex flex-row gap-2">
+          <div>
+            <label className="block text-gray-50 text-sm">Game mode</label>
+            <div className="relative">
+              <select
+                className="w-48 rounded-lg px-5 py-3 appearance-none"
+                value={gameMode}
+                onChange={(e) =>
+                  navigate(`/leaderboard?gameMode=${e.target.value}`)
+                }
+              >
+                {gameModes.map((gameMode) => (
+                  <option key={gameMode.id} value={gameMode.id}>
+                    {gameMode.name}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute right-0 inset-y-0 flex items-center mx-3">
+                &#x25BC;
+              </div>
+            </div>
+          </div>
+          <div>
+            <label className="block text-gray-50 text-sm">Player filter</label>
+            <input
+              className="px-5 py-3 rounded-md"
+              type="text"
+              autoComplete="false"
+              autoCorrect="false"
+              spellCheck="false"
+              placeholder="Filter by player name"
+              onChange={(e) => setNameFilter(e.target.value)}
+            />
+          </div>
         </div>
       </div>
       <table className="w-full rounded-t-md overflow-hidden text-center text-xl">
