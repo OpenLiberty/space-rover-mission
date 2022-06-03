@@ -25,11 +25,11 @@ See the light patterns representing the setup, standby, and gameplay states for 
 The following instructions detail how to set up the Space Rover.
 
 1. Plug the Space Rover into a power outlet.
-<br>&nbsp; ![Plug in space rover](../images/space-rover/sr-plug-in.png)
+<br>&nbsp; ![Plug in space rover](../images/space-rover/v2/sr-plug-in-v2.png)
 
 2. Flip the switch on the power cord to turn the Space Rover on. **Note:** When the rover is initially powered on, it will "jolt".
 
-https://user-images.githubusercontent.com/31871360/162487597-b3590a36-6800-41ad-a065-5a428be69f76.mov
+[https://user-images.githubusercontent.com/31871360/162487597-b3590a36-6800-41ad-a065-5a428be69f76.mov](https://user-images.githubusercontent.com/31871360/171911083-6930cd98-a069-4f21-96fb-1fd3dea7fddf.MOV)
 
 ### Space Rover State Light Patterns
 
@@ -41,19 +41,20 @@ The Space Rover displays the following light patterns to represent different set
 
 **Blinking Red Lights + Head/Tail Lights OFF**: Connecting to WiFi
 
-https://user-images.githubusercontent.com/31871360/162487597-b3590a36-6800-41ad-a065-5a428be69f76.mov
+https://user-images.githubusercontent.com/31871360/171911033-e5e5cfcb-ab37-4efc-84e7-eab11ec93cd6.MOV
 
 **Breathing Rainbow Lights + Head/Tail Lights OFF**: Waiting for a websocket connection
 
-https://user-images.githubusercontent.com/31871360/162487626-c8ea1146-340c-4e31-b073-2fef61f02cbf.mov
+https://user-images.githubusercontent.com/31871360/171911083-6930cd98-a069-4f21-96fb-1fd3dea7fddf.MOV
 
 **Solid Turquoise Lights + Blinking Head/Tail Lights**: Websocket connected, waiting for game start
 
-https://user-images.githubusercontent.com/31871360/162487765-e9647f5f-d1f7-4b80-95e2-3f235b2c17bd.MOV
+https://user-images.githubusercontent.com/31871360/171911111-c6d07857-3885-4ef6-a0b9-b0890a70592b.MOV
 
 **Solid Turquoise Lights + Solid Head/Tail Lights**: Game Started
 
-![Game Started](../images/space-rover/sr-wsconn-gamestarted.png)
+![Game Started Headlights](../images/space-rover/v2/sr-wsconn-gamestarted-headlights-v2.png)
+![Game Started Taillights](../images/space-rover/v2/sr-wsconn-gamestarted-taillights-v2.png)
 
 
 ## Game Board

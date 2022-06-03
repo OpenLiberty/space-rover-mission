@@ -20,6 +20,15 @@ For setup, cleanup, and troubleshooting instructions, see [documentation](https:
 
 ![GameBoard](/images/gameboard.jpg)
 
+## Gameplay
+
+Open Liberty Space Rover Mission is playable in four different game modes: Classic, Planet Hop, Guided, and Sudden Death.
+
+1. **Classic**: Pick up all four planet resources (in any desired order) as fast as possible while avoiding obstacles.
+2. **Planet Hop**: One planet will randomly turn on at a time -- go to the planet that is lit up to retrieve its resource. The availability of the planet's resource runs on a timer -- you can only retrieve the resource when its light is on! The planet's light will start blinking if you are running low on time to retrieve its resource, and the next planet's light will automatically turn on when the time is up. Pick up as many planet resources as possible within the time limit while avoiding obstacles.
+3. **Guided**: One planet will turn on at a time in a specific order. Pick up all four planet resources in the order that the planet lights turn on as fast as possible, while avoiding obstacles.
+4. **Sudden Death**: A variant of **Classic** mode, but if you hit an obstacle, you immediately fail the mission.
+
 ## Architecture Diagram
 
 ![ArchitectureDiagram](/images/architecture.png)
