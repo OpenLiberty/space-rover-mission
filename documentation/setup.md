@@ -25,7 +25,7 @@ See the light patterns representing the setup, standby, and gameplay states for 
 The following instructions detail how to set up the Space Rover.
 
 1. Plug the Space Rover into a power outlet.
-<br>&nbsp; ![Plug in space rover](../images/space-rover/sr-plug-in.png)
+<br>&nbsp; ![Plug in space rover](../images/space-rover/v2/sr-plug-in-v2.png)
 
 2. Flip the switch on the power cord to turn the Space Rover on. **Note:** When the rover is initially powered on, it will "jolt".
 
@@ -53,7 +53,8 @@ https://user-images.githubusercontent.com/31871360/162487765-e9647f5f-d1f7-4b80-
 
 **Solid Turquoise Lights + Solid Head/Tail Lights**: Game Started
 
-![Game Started](../images/space-rover/sr-wsconn-gamestarted.png)
+![Game Started Headlights](../images/space-rover/v2/sr-wsconn-gamestarted-headlights-v2.png)
+![Game Started Taillights](../images/space-rover/v2/sr-wsconn-gamestarted-taillights-v2.png)
 
 
 ## Game Board
