@@ -48,22 +48,23 @@ To keep track of all the components and parts being shipped/packed, the followin
 - [ ] Wifi Router + Router Cord
 - [ ] Power Bar
 
-### Space Rover
+### Pelican Box (contains Space Rover)
 
 - [ ] Space Rover
 - [ ] Power Source Unit + Switch
+- [ ] Mini PC
 
 ### Game Board
 
-- [ ] Four Boards (One Board = Top Foam Board + Inner Cardboard Board)
-- [ ] Four Metal Clamps
+- [ ] Four Boards
+- [ ] Four Black Connectors
 - [ ] Four Plexiglass Sheets
-- [ ] Barrier
-- [ ] Power Source Unit + Switch
+- [ ] Eight Plexiglass Barriers
+- [ ] Power Source Unit
+- [ ] Screws and Washers (set of 16, bring extra)
 
 ### Mini PC
 
-- [ ] Mini PC
 - [ ] Mini PC Cable
 - [ ] Keyboard
 
@@ -73,12 +74,10 @@ To keep track of all the components and parts being shipped/packed, the followin
 
 ### Extra Tools
 
-- [ ] Four rolls of tape: duct tape, masking tape, electrical tape, clear tape
-- [ ] Pliers
-- [ ] Scissors
-- [ ] Screwdriver
-- [ ] Fishing Line
-- [ ] Extra Twist-ties
+- [ ] Arduino
+- [ ] NodeMCU
+- [ ] Solder/Soldering Iron
+- [ ] RFID Sensor
 
 
 
