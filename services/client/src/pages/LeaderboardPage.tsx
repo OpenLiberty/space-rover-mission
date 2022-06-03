@@ -22,9 +22,9 @@ import { playerFinished } from "lib/utils";
 const LeaderboardPage = () => {
   const [searchParams] = useSearchParams();
   const player = searchParams.get("player");
-  const gameMode = searchParams.get("gameMode");
+  const gameMode = searchParams.get("gameMode") ?? "1";
 
-  const { leaderboard, placement } = useLeaderboard(player, gameMode ?? "1");
+  const { leaderboard, placement } = useLeaderboard(player, gameMode);
 
   const [playHighscore] = useSound(highscoreSoundFile, {
     volume: 0.25,
@@ -39,7 +39,7 @@ const LeaderboardPage = () => {
 
     const { health, time, rank } = placement;
 
-    if (playerFinished(health, time)) {
+    if (playerFinished(health, time, gameMode)) {
       if (rank <= 5) {
         playHighscore();
       } else {
@@ -52,9 +52,11 @@ const LeaderboardPage = () => {
 
   return (
     <div className="container mx-auto">
-      {placement && <PlacementDisplay {...placement} />}
+      {placement && (
+        <PlacementDisplay gameMode={gameMode} {...placement} />
+      )}
       {leaderboard && (
-        <LeaderboardTable gameMode={gameMode ?? "1"} data={leaderboard} />
+        <LeaderboardTable gameMode={gameMode} data={leaderboard} />
       )}
     </div>
   );
