@@ -13,10 +13,17 @@ import { Link } from "react-router-dom";
 import { LeaderboardEntry } from "hooks/useLeaderboard";
 import { formatTime, playerFinished } from "lib/utils";
 
-type Props = LeaderboardEntry;
+type Props = LeaderboardEntry & { gameMode: string };
 
-const PlacementDisplay = ({ rank, player, time, health, score }: Props) => {
-  const success = playerFinished(health, time);
+const PlacementDisplay = ({
+  rank,
+  player,
+  time,
+  health,
+  score,
+  gameMode,
+}: Props) => {
+  const success = playerFinished(health, time, gameMode);
 
   return (
     <div className="text-gray-50 text-center pt-5 pb-10">

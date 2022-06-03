@@ -15,6 +15,7 @@ import { gameURL } from "lib/config";
 export type GameMode = {
   id: number;
   name: string;
+  description: string;
 };
 
 const getGameModes = async () => {
@@ -27,6 +28,7 @@ const useGameModes = () => {
     {
       id: 1,
       name: "Classic",
+      description: "Visit all the planets in any order.",
     },
   ];
 

@@ -12,8 +12,10 @@ import { useState, useEffect, useRef } from "react";
 
 import useSound from "use-sound";
 import crashSoundFile from "assets/sounds/crash.wav";
+import sunCrashSoundFile from "assets/sounds/sun_crash.wav";
 import scoreSoundFile from "assets/sounds/score.mp3";
 import timerSoundFile from "assets/sounds/timer.mp3";
+import shortTimerSoundFile from "assets/sounds/short_timer.wav";
 
 import useTimer from "./useTimer";
 import useKeyboardControls from "./useKeyboardControls";
@@ -35,6 +37,7 @@ enum Event {
   Start = "startGame",
   Health = "hp",
   Score = "score",
+  PlanetChange = "planetChange",
   End = "endGame",
   Error = "error",
 }
@@ -61,8 +64,10 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
     volume: 0.5,
     playbackRate: 1.5,
   });
+  const [, { sound: sunCrashSound }] = useSound(sunCrashSoundFile);
   const [, { sound: scoreSound }] = useSound(scoreSoundFile);
   const [, { sound: timerSound }] = useSound(timerSoundFile);
+  const [, { sound: shortTimerSound }] = useSound(shortTimerSoundFile);
 
   const {
     formattedTime,
@@ -113,9 +118,13 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
           setGameState(GameState.NotStarted);
           break;
         case Event.Health:
-          const newHealth = parseInt(data);
-          if (newHealth < health) {
-            crashSound.play();
+          const [newHealth, obstacle] = data.split(",");
+          if (parseInt(newHealth) < health) {
+            if (obstacle === "sun") {
+              sunCrashSound.play();
+            } else {
+              crashSound.play();
+            }
           }
           setHealth(newHealth);
           break;
@@ -123,8 +132,12 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
           const newScore = parseInt(data);
           if (newScore > score) {
             scoreSound.play();
+            timerSound.stop();
           }
           setScore(newScore);
+          break;
+        case Event.PlanetChange:
+          shortTimerSound.play();
           break;
         case Event.End:
           stopTimer();

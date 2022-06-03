@@ -66,6 +66,9 @@ const PlayerForm = ({ gameModes, isDisabled, onSubmit }: Props) => {
             &#x25BC;
           </div>
         </div>
+        <div className="text-green-light text-center text-base py-3">
+          {gameModes[parseInt(gameMode) - 1].description}
+        </div>
       </div>
       <div className="flex flex-row gap-2">
         <Link

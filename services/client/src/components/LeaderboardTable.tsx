@@ -27,7 +27,7 @@ const LeaderboardTable = ({ gameMode, data }: Props) => {
   const filteredData = useMemo(() => {
     return data
       .filter((entry) =>
-        showFails || playerFinished(entry.health, entry.time)
+        showFails || playerFinished(entry.health, entry.time, gameMode)
       )
       .filter((entry) =>
         entry.player.toLowerCase().includes(nameFilter.toLowerCase())
@@ -99,7 +99,7 @@ const LeaderboardTable = ({ gameMode, data }: Props) => {
           {paginatedData.map((entry) => (
             <tr
               className={
-                playerFinished(entry.health, entry.time)
+                playerFinished(entry.health, entry.time, gameMode)
                   ? "odd:bg-gray-50 even:bg-gray-200"
                   : "odd:bg-red-200 even:bg-red-300"
               }
