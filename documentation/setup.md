@@ -102,7 +102,7 @@ https://user-images.githubusercontent.com/31871360/162499288-a1d28717-2cb4-4a22-
 In the following section, the Game Board LEDs are split into different naming categories.
 
 * **SUN**: the LEDs encircling the sun in the center of the board
-* **PLANETS**: all planet LEDs, the four 5x5 LED grids inside each planet
+* **PLANETS**: all planet LEDs, the LED rings on each planet
     * **EARTH**: blue planet on the board, configured to have **blue** LEDs
     * **JUPITER**: white planet on the board, configured to have **green** LEDs
     * **VENUS**: yellow planet on the board, configured to have **yellow** LEDs
@@ -113,19 +113,15 @@ The Game Board displays the following light patterns to represent different game
 
 **Blinking Red SUN:** Connecting to WiFi, **One Green Flash of All LEDs:** CONNECTED to WiFi
 
-https://user-images.githubusercontent.com/31871360/162498704-b3f76810-d031-4d85-98d1-fbb172c52ca8.mov
+https://user-images.githubusercontent.com/31871360/171955438-03cb8857-6049-40e6-b550-b4303c9adf22.MOV
 
 **Bursting SUN + PLANETS:** Waiting for a websocket connection
 
-https://user-images.githubusercontent.com/31871360/162498739-14222c5a-c67e-4310-95d4-9841c06d9a96.mov
+https://user-images.githubusercontent.com/31871360/171955445-425cdc56-146a-4461-9e1c-a623965a2abe.MOV
 
 **Solid Blue SUN:**  Websocket connected, waiting for game start
 
-![Websocket connected, waiting for game start](../images/game-board/gb-wsconn-wfgame.png)
-
-**Red SUN + EARTH ON + Red OBSTACLES:** Game Started
-
-![Game Started](../images/game-board/gb-wsconn-gamestarted.png)
+![Websocket connected, waiting for game start](../images/game-board/v2/gb-wsconn-wfgame.png)
 
 ## Mini PC
 
