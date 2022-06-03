@@ -31,7 +31,7 @@ public class Game {
 	protected static final int OBSTACLE_HP_DECREMENT = 10;
 	protected static final int OBSTACLE_SCORE_DECREMENT = OBSTACLE_HP_DECREMENT;
 	protected static final int OBSTACLE_SUN_HP_DECREMENT = 34;
-	protected static final int OBSTACLE_SUN_SCORE_DECREMENT = OBSTACLE_HP_DECREMENT;
+	protected static final int OBSTACLE_SUN_SCORE_DECREMENT = OBSTACLE_SCORE_DECREMENT;
 	private static final int MAX_GAME_TIME_SECONDS = 60 * MAX_GAME_TIME_MINUTES;
 	private String playerId;
 	private Instant startTime;
@@ -53,7 +53,7 @@ public class Game {
 	}
 
 	public Game() {
-		this.eventManager = new GameEventManager(GameEvent.HP, GameEvent.SCORE, GameEvent.GAME_OVER);
+		this.eventManager = new GameEventManager(GameEvent.HP, GameEvent.SCORE, GameEvent.GAME_OVER, GameEvent.HP_SUN);
 	}
 
 	public void startGameSession(String playerId) {
@@ -78,7 +78,10 @@ public class Game {
 		this.health = Math.max(this.health - amount, 0);
 		getEventManager().notify(GameEvent.HP, this.health);
 	}
-
+	public void decrementHPSun(int amount) {
+		this.health = Math.max(this.health - amount, 0);
+		getEventManager().notify(GameEvent.HP_SUN, this.health);
+	}
 	public void decrementScore(int amount) {
 		this.score = this.score - amount;
 		getEventManager().notify(GameEvent.SCORE, this.score);
@@ -148,8 +151,8 @@ public class Game {
 			this.decrementScore(OBSTACLE_SCORE_DECREMENT);
 			this.decrementHP(OBSTACLE_HP_DECREMENT);
 		} else if (msgID.equals(Constants.COLOUR_RED_SUN)) {
-			this.decrementScore(OBSTACLE_SCORE_DECREMENT);
-			this.decrementHP(OBSTACLE_HP_DECREMENT);
+			this.decrementScore(OBSTACLE_SUN_SCORE_DECREMENT);
+			this.decrementHPSun(OBSTACLE_SUN_HP_DECREMENT);
 		} else if (!this.coloursVisited.contains(msgID)) {
 			LOGGER.log(Level.INFO, "Colour visited: {0}", msgID);
 			this.coloursVisited.add(msgID);

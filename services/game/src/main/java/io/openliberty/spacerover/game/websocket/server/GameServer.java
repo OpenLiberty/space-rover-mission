@@ -158,9 +158,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	}
 
 	private void registerSpaceHopEventManager() {
-		this.currentGame.getEventManager().subscribe(GameEvent.HP, this);
-		this.currentGame.getEventManager().subscribe(GameEvent.SCORE, this);
-		this.currentGame.getEventManager().subscribe(GameEvent.GAME_OVER, this);
+		this.registerGameEventManager();
 		this.currentGame.getEventManager().subscribe(GameEvent.FIVE_SECONDS_LEFT, this);
 		this.currentGame.getEventManager().subscribe(GameEvent.PLANET_CHANGED, this);
 
@@ -168,6 +166,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 	private void registerGameEventManager() {
 		this.currentGame.getEventManager().subscribe(GameEvent.HP, this);
+		this.currentGame.getEventManager().subscribe(GameEvent.HP_SUN, this);
 		this.currentGame.getEventManager().subscribe(GameEvent.SCORE, this);
 		this.currentGame.getEventManager().subscribe(GameEvent.GAME_OVER, this);
 
@@ -180,7 +179,6 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 	@Override
 	public void update(final GameEvent eventType, final long value) {
-		System.out.println("update called: event type:" + eventType + "value: " + value);
 		if (eventType == GameEvent.SOCKET_DISCONNECT) {
 			if (!this.stateMachine.hasErrorOccurred()) {
 				this.setErrorStateAndSendError("Socket disconnected");
@@ -192,11 +190,15 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			this.boardClient.sendMessage("blinkColour" + Constants.SOCKET_MESSAGE_DATA_DELIMITER
 					+ this.currentGame.getCurrentPlanetColour());
 		} else if (eventType == GameEvent.PLANET_CHANGED) {
-			this.boardClient.sendMessage("setColour" + Constants.SOCKET_MESSAGE_DATA_DELIMITER
-					+ this.currentGame.getCurrentPlanetColour());
+			this.boardClient.sendMessage(
+					"setColour" + Constants.SOCKET_MESSAGE_DATA_DELIMITER + this.currentGame.getCurrentPlanetColour());
 		} else {
-			this.sendTextToGuiSocket(
-					eventType.toString().toLowerCase() + Constants.SOCKET_MESSAGE_DATA_DELIMITER + value);
+			String msg = eventType.toString().toLowerCase() + Constants.SOCKET_MESSAGE_DATA_DELIMITER + value;
+			if (eventType == GameEvent.HP_SUN) {
+				msg = GameEvent.HP.toString().toLowerCase() + Constants.SOCKET_MESSAGE_DATA_DELIMITER + value
+						+ Constants.SOCKET_MESSAGE_PAYLOAD_DELIMITER + "sun";
+			}
+			this.sendTextToGuiSocket(msg);
 		}
 	}
 
@@ -273,11 +275,10 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 				session.getAsyncRemote().sendText(Constants.GAME_HEALTH_ACK);
 				break;
 			case Constants.COLOUR_RED:
-				if(Constants.SUN_RFID_IDENTIFIERS.contains(parsedMsg[1]))
-				{
+				if (Constants.SUN_RFID_IDENTIFIERS.contains(parsedMsg[1])) {
 					LOGGER.log(Level.WARNING, "Detected sun damage");
 					msgID = Constants.COLOUR_RED_SUN;
-				}				
+				}
 				updateBoardAndGame(msgID);
 				break;
 			default:

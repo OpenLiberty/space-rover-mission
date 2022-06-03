@@ -54,6 +54,12 @@ public class Constants {
 	public static final String GAME_MODE_NAME_CLASSIC = "Classic";
 	public static final String GAME_MODE_NAME_GUIDED = "Guided";
 	public static final String GAME_MODE_NAME_SUDDENDEATH = "Sudden Death";
+	public static final String GAME_MODE_DESC_CLASSIC = "Visit all the planets in any order.";
+	public static final String GAME_MODE_DESC_GUIDED = "Visit planets in specified order.";
+	public static final String GAME_MODE_DESC_SUDDENDEATH= "Instant death Classic mode.";
+	public static final String GAME_MODE_DESC_PLANET_HOP= "Whack-a-mole with planets.";
+	
+	
 
 	public static final Set<String> SUN_RFID_IDENTIFIERS = new HashSet<>(
 			List.of("04 37 9A 02 EC 6E 81", "04 3F 9A 02 EC 6E 81", "04 47 9A 02 EC 6E 81", "04 4F 9A 02 EC 6E 81",

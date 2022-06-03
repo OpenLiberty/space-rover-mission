@@ -12,14 +12,18 @@ public class GuidedGame extends Game {
 	public GuidedGame() {
 		this.nextColourIndex = 0;
 	}
-	
+
 	@Override
 	public void processColour(String msgID) {
 		this.setLastColourVisited(msgID);
 		if (msgID.equals(Constants.COLOUR_RED)) {
 			this.decrementScore(OBSTACLE_SCORE_DECREMENT);
 			this.decrementHP(OBSTACLE_HP_DECREMENT);
-		} else if (!this.getColoursVisited().contains(msgID) && msgID.equals(Constants.COLOURS_EXCLUDING_RED[this.nextColourIndex])) {
+		} else if (msgID.equals(Constants.COLOUR_RED_SUN)) {
+			this.decrementScore(OBSTACLE_SUN_SCORE_DECREMENT);
+			this.decrementHPSun(OBSTACLE_SUN_HP_DECREMENT);
+		} else if (!this.getColoursVisited().contains(msgID)
+				&& msgID.equals(Constants.COLOURS_EXCLUDING_RED[this.nextColourIndex])) {
 			LOGGER.log(Level.INFO, "Colour visited: {0}", msgID);
 			this.getColoursVisited().add(msgID);
 			this.incrementScore(getScore());

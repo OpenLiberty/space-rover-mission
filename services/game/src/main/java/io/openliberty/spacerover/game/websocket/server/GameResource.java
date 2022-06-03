@@ -33,21 +33,27 @@ public class GameResource {
 		GameMode classic = new GameMode();
 		classic.setGameModeID(Integer.parseInt(Constants.INIT_GAME_CLASSIC));
 		classic.setGameModeName(Constants.GAME_MODE_NAME_CLASSIC);
+		classic.setDescription(Constants.GAME_MODE_DESC_CLASSIC);
 		supportedGameModes.add(classic);
 
 		GameMode planetHop = new GameMode();
 		planetHop.setGameModeID(Integer.parseInt(Constants.INIT_GAME_HOP));
 		planetHop.setGameModeName(Constants.GAME_MODE_NAME_PLANET_HOP);
+		planetHop.setDescription(Constants.GAME_MODE_DESC_PLANET_HOP);
 		supportedGameModes.add(planetHop);
 		
 		GameMode guided = new GameMode();
 		guided.setGameModeID(Integer.parseInt(Constants.INIT_GAME_GUIDED));
 		guided.setGameModeName(Constants.GAME_MODE_NAME_GUIDED);
+		guided.setDescription(Constants.GAME_MODE_DESC_GUIDED);
+
 		supportedGameModes.add(guided);
 		
 		GameMode suddenDeath = new GameMode();
 		suddenDeath.setGameModeID(Integer.parseInt(Constants.INIT_GAME_SUDDEN_DEATH));
 		suddenDeath.setGameModeName(Constants.GAME_MODE_NAME_SUDDENDEATH);
+		suddenDeath.setDescription(Constants.GAME_MODE_DESC_SUDDENDEATH);
+
 		supportedGameModes.add(suddenDeath);
 		
 		Jsonb jsonb = JsonbBuilder.create();

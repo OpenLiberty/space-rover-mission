@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import io.openliberty.spacerover.game.models.GameEvent;
 import io.openliberty.spacerover.game.models.Constants;
 
-public class SpaceHop extends Game {	
+public class SpaceHop extends Game {
 	private static final int SCORE_INCREMENT = 10;
 	private static final long MAX_TIMEOUT_SECONDS = 15 * 1000L;
 	private String currentColour;
@@ -44,8 +44,7 @@ public class SpaceHop extends Game {
 		} else {
 
 			while (newColour.equals(prevColour)) {
-				newColour = Constants.COLOURS_EXCLUDING_RED[r
-						.nextInt(Constants.COLOURS_EXCLUDING_RED.length)];
+				newColour = Constants.COLOURS_EXCLUDING_RED[r.nextInt(Constants.COLOURS_EXCLUDING_RED.length)];
 			}
 		}
 		this.setCurrentColour(newColour);
@@ -109,6 +108,9 @@ public class SpaceHop extends Game {
 		if (msgID.equals(Constants.COLOUR_RED)) {
 			this.decrementScore(OBSTACLE_SCORE_DECREMENT);
 			this.decrementHP(OBSTACLE_HP_DECREMENT);
+		} else if (msgID.equals(Constants.COLOUR_RED_SUN)) {
+			this.decrementScore(OBSTACLE_SUN_SCORE_DECREMENT);
+			this.decrementHPSun(OBSTACLE_SUN_HP_DECREMENT);
 		} else if (msgID.equals(getCurrentPlanetColour())) {
 			this.incrementScore(SCORE_INCREMENT);
 			this.chooseNextPlanet();

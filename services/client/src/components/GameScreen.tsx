@@ -39,7 +39,7 @@ const GameScreen = ({ playerName, gameMode, health, score, time }: Props) => {
             {playerName}
           </h2>
           <p className="text-orange text-3xl">
-            {gameModes[parseInt(gameMode) - 1]}
+            {gameModes[parseInt(gameMode) - 1]?.name}
           </p>
         </div>
       </div>

@@ -10,6 +10,12 @@ public class SuddenDeathGame extends Game {
 		this.setHealth(0);
 		getEventManager().notify(GameEvent.HP, this.getHealth());
 	}
+	@Override
+	public void decrementHPSun(int amount) {
+		this.setHealth(0);
+		getEventManager().notify(GameEvent.HP_SUN, this.getHealth());
+	}
+
 
 	@Override
 	protected String getGameMode() {

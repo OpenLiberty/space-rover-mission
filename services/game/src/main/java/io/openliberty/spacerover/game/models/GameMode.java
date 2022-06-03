@@ -7,11 +7,21 @@ public class GameMode {
 	private String gameModeName;
 	@JsonbProperty("id")
 	private int gameModeID;
+	@JsonbProperty("description")
+	private String description;
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	public GameMode() {
-		
+
 	}
-	
+
 	public String getGameModeName() {
 		return gameModeName;
 	}
