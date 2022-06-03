@@ -30,7 +30,7 @@ public class Game {
 	private static final int MAX_GAME_TIME_MINUTES = 5;
 	protected static final int OBSTACLE_HP_DECREMENT = 10;
 	protected static final int OBSTACLE_SCORE_DECREMENT = OBSTACLE_HP_DECREMENT;
-	protected static final int OBSTACLE_SUN_HP_DECREMENT = 34;
+	protected static final int OBSTACLE_SUN_HP_DECREMENT = 2 * OBSTACLE_HP_DECREMENT;
 	protected static final int OBSTACLE_SUN_SCORE_DECREMENT = OBSTACLE_SCORE_DECREMENT;
 	private static final int MAX_GAME_TIME_SECONDS = 60 * MAX_GAME_TIME_MINUTES;
 	private String playerId;
