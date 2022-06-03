@@ -21,3 +21,5 @@ The Game Service is built using Open Liberty. It holds the current game state an
     - Used to record JVM metrics on the game service as well as a SimpleTimer that tracks the amount of time it takes for the GameService to respond to the health check test. This tells us a local round trip latency value determining how long it takes a message to be sent to the server and have the server respond.
 - [MP Rest Client 3.0](https://download.eclipse.org/microprofile/microprofile-rest-client-3.0/microprofile-rest-client-spec-3.0.html)
     - Generates an HTTP client to send game end statistics to the leaderboard's REST server.
+- [MP OpenAPI 3.0](https://download.eclipse.org/microprofile/microprofile-open-api-3.0/microprofile-openapi-spec-3.0.html)
+	- Used for providing REST API documentation and UI for demonstration.

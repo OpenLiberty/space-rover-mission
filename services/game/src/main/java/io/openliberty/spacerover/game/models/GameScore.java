@@ -25,8 +25,19 @@ public class GameScore {
     
     @JsonbProperty("health")
     private int health;
+    
+    @JsonbProperty("gameMode")
+    private String gameMode;
 
-    @NotEmpty(message = "All players must have a player ID!")
+    public String getGameMode() {
+		return gameMode;
+	}
+
+	public void setGameMode(String gameMode) {
+		this.gameMode = gameMode;
+	}
+
+	@NotEmpty(message = "All players must have a player ID!")
 	public String getPlayer() {
 		return player;
 	}

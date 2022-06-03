@@ -22,10 +22,14 @@ public class GameEventManager {
 	 Map<GameEvent, List<GameEventListener>> listeners = new EnumMap<>(GameEvent.class);
 
 	    public GameEventManager(GameEvent... operations) {
-	        for (GameEvent operation : operations) {
+	        addOperations(operations);
+	    }
+
+		public void addOperations(GameEvent... operations) {
+			for (GameEvent operation : operations) {
 	            this.listeners.put(operation, new ArrayList<>());
 	        }
-	    }
+		}
 
 	    public void subscribe(GameEvent eventType, GameEventListener listener) {
 	        List<GameEventListener> users = listeners.get(eventType);
@@ -43,5 +47,5 @@ public class GameEventManager {
 	            listener.update(eventType, details);
 	        }
 	    }
-	    
+
 }

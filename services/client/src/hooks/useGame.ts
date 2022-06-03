@@ -152,7 +152,7 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
           console.log(`Received unknown event: ${event}`);
       }
     };
-  }, [socket, crashSound, scoreSound, timerSound, health, score]);
+  }, [socket, crashSound, scoreSound, timerSound, shortTimerSound, health, score]);
 
   useEffect(() => {
     if (timeRemaining === 10) {

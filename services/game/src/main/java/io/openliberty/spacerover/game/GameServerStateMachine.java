@@ -10,7 +10,7 @@
  *******************************************************************************/
 package io.openliberty.spacerover.game;
 
-import io.openliberty.spacerover.game.models.SocketMessages;
+import io.openliberty.spacerover.game.models.Constants;
 import io.openliberty.spacerover.game.websocket.server.GameServer;
 
 import java.util.logging.Level;
@@ -31,7 +31,7 @@ public class GameServerStateMachine {
 	public void incrementState(String msgID) {
 		GameServerState beforeState = this.currentState;
 		switch (msgID) {
-			case SocketMessages.CONNECT_GUI:
+			case Constants.CONNECT_GUI:
 				if (this.currentState == GameServerState.SERVER_STARTED
 						|| this.currentState == GameServerState.ERROR_OCCURRED) {
 					this.currentState = GameServerState.GUI_CONNECTED;
@@ -39,7 +39,7 @@ public class GameServerStateMachine {
 					this.currentState = GameServerState.GUI_AND_GESTURE_CONNECTED;
 				}
 				break;
-			case SocketMessages.CONNECT_GESTURE:
+			case Constants.CONNECT_GESTURE:
 				if (this.currentState == GameServerState.SERVER_STARTED
 						|| this.currentState == GameServerState.ERROR_OCCURRED) {
 					this.currentState = GameServerState.GESTURE_CONNECTED;
@@ -48,16 +48,16 @@ public class GameServerStateMachine {
 				}
 				break;
 
-			case SocketMessages.ROVER_ACK:
+			case Constants.ROVER_ACK:
 				this.currentState = GameServerState.ROVER_CONNECTED;
 				break;
-			case SocketMessages.GAMEBOARD_ACK:
+			case Constants.GAMEBOARD_ACK:
 				this.currentState = GameServerState.ALL_CONNECTED;
 				break;
-			case SocketMessages.START_GAME:
+			case Constants.START_GAME:
 				this.currentState = GameServerState.GAME_STARTED;
 				break;
-			case SocketMessages.END_GAME:
+			case Constants.END_GAME:
 				this.currentState = GameServerState.GUI_AND_GESTURE_CONNECTED;
 				break;
 			default:
@@ -68,33 +68,33 @@ public class GameServerStateMachine {
 
 	public boolean isValidState(String msgID) {
 		boolean isValid = true;
-		if (msgID.equals(SocketMessages.CONNECT_GUI)) {
+		if (msgID.equals(Constants.CONNECT_GUI)) {
 			if (this.currentState != GameServerState.SERVER_STARTED
 					&& this.currentState != GameServerState.GESTURE_CONNECTED
 					&& this.currentState != GameServerState.ERROR_OCCURRED) {
 				isValid = false;
 			}
-		} else if (msgID.equals(SocketMessages.CONNECT_GESTURE)) {
+		} else if (msgID.equals(Constants.CONNECT_GESTURE)) {
 			if (this.currentState != GameServerState.SERVER_STARTED
 					&& this.currentState != GameServerState.GUI_CONNECTED
 					&& this.currentState != GameServerState.ERROR_OCCURRED) {
 				isValid = false;
 			}
-		} else if (msgID.equals(SocketMessages.ROVER_ACK)) {
+		} else if (msgID.equals(Constants.ROVER_ACK)) {
 			if (this.currentState != GameServerState.ROVER_CONNECT_TEST) {
 				isValid = false;
 			}
 
-		} else if (msgID.equals(SocketMessages.GAMEBOARD_ACK)) {
+		} else if (msgID.equals(Constants.GAMEBOARD_ACK)) {
 			if (this.currentState != GameServerState.GAMEBOARD_CONNECT_TEST) {
 				isValid = false;
 			}
 
-		} else if (msgID.equals(SocketMessages.START_GAME)) {
+		} else if (msgID.equals(Constants.START_GAME)) {
 			if (this.currentState != GameServerState.ALL_CONNECTED && this.currentState != GameServerState.GAME_ENDED) {
 				isValid = false;
 			}
-		} else if (msgID.equals(SocketMessages.END_GAME)) {
+		} else if (msgID.equals(Constants.END_GAME)) {
 			if (this.currentState != GameServerState.GAME_STARTED) {
 				isValid = false;
 			}

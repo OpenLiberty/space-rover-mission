@@ -14,27 +14,27 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import io.openliberty.spacerover.game.models.SocketMessages;
+import io.openliberty.spacerover.game.models.Constants;
 
 public class GameServerStateMachineTest {
     @Test
     void testIncrementState() {
         GameServerStateMachine machine = new GameServerStateMachine();
-        verifyAndIncrement(machine, SocketMessages.CONNECT_GUI);
-        verifyAndIncrement(machine, SocketMessages.CONNECT_GESTURE);
+        verifyAndIncrement(machine, Constants.CONNECT_GUI);
+        verifyAndIncrement(machine, Constants.CONNECT_GESTURE);
         assertTrue(machine.isReadyToConnectGamePieces());
         machine.attachLeaderboard();
         machine.attachRover();
-        verifyAndIncrement(machine, SocketMessages.ROVER_ACK);
+        verifyAndIncrement(machine, Constants.ROVER_ACK);
         machine.attachGameBoard();
-        verifyAndIncrement(machine, SocketMessages.GAMEBOARD_ACK);
-        verifyAndIncrement(machine, SocketMessages.START_GAME);
-        verifyAndIncrement(machine, SocketMessages.LEFT);
-        verifyAndIncrement(machine, SocketMessages.RIGHT);
-        verifyAndIncrement(machine, SocketMessages.FORWARD);
-        verifyAndIncrement(machine, SocketMessages.BACKWARD);
-        verifyAndIncrement(machine, SocketMessages.STOP);
-        verifyAndIncrement(machine, SocketMessages.END_GAME);
+        verifyAndIncrement(machine, Constants.GAMEBOARD_ACK);
+        verifyAndIncrement(machine, Constants.START_GAME);
+        verifyAndIncrement(machine, Constants.LEFT);
+        verifyAndIncrement(machine, Constants.RIGHT);
+        verifyAndIncrement(machine, Constants.FORWARD);
+        verifyAndIncrement(machine, Constants.BACKWARD);
+        verifyAndIncrement(machine, Constants.STOP);
+        verifyAndIncrement(machine, Constants.END_GAME);
         assertTrue(machine.isReadyToConnectGamePieces());
     }
 

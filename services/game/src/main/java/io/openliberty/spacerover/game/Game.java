@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 
 import io.openliberty.spacerover.game.models.GameEvent;
 import io.openliberty.spacerover.game.models.GameScore;
-import io.openliberty.spacerover.game.models.SocketMessages;
+import io.openliberty.spacerover.game.models.Constants;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
@@ -28,8 +28,10 @@ public class Game {
 	private static final Logger LOGGER = Logger.getLogger(Game.class.getName());
 
 	private static final int MAX_GAME_TIME_MINUTES = 5;
-	private static final int OBSTACLE_HP_DECREMENT = 10;
-	private static final int OBSTACLE_SCORE_DECREMENT = OBSTACLE_HP_DECREMENT;
+	protected static final int OBSTACLE_HP_DECREMENT = 10;
+	protected static final int OBSTACLE_SCORE_DECREMENT = OBSTACLE_HP_DECREMENT;
+	protected static final int OBSTACLE_SUN_HP_DECREMENT = 2 * OBSTACLE_HP_DECREMENT;
+	protected static final int OBSTACLE_SUN_SCORE_DECREMENT = OBSTACLE_SCORE_DECREMENT;
 	private static final int MAX_GAME_TIME_SECONDS = 60 * MAX_GAME_TIME_MINUTES;
 	private String playerId;
 	private Instant startTime;
@@ -37,9 +39,22 @@ public class Game {
 	private boolean inProgress = false;
 	private int score;
 	private int health;
+	private int startingHealth;
 	private GameEventManager eventManager = null;
 	private Set<String> coloursVisited;
-	private static final String[] COLOURS = new String[] {SocketMessages.COLOUR_BLUE, SocketMessages.COLOUR_GREEN, SocketMessages.COLOUR_YELLOW, SocketMessages.COLOUR_PURPLE};
+	private String lastColourVisited;
+
+	public String getLastColourVisited() {
+		return lastColourVisited;
+	}
+
+	public void setLastColourVisited(String lastColourVisited) {
+		this.lastColourVisited = lastColourVisited;
+	}
+
+	public Game() {
+		this.eventManager = new GameEventManager(GameEvent.HP, GameEvent.SCORE, GameEvent.GAME_OVER, GameEvent.HP_SUN);
+	}
 
 	public void startGameSession(String playerId) {
 		this.startGameSession(playerId, 100);
@@ -51,7 +66,7 @@ public class Game {
 		inProgress = true;
 		this.score = 0;
 		this.health = maxHP;
-		this.eventManager = new GameEventManager(GameEvent.HP, GameEvent.SCORE, GameEvent.GAME_OVER);
+		this.startingHealth = this.health;
 		this.coloursVisited = new HashSet<>();
 	}
 
@@ -63,7 +78,10 @@ public class Game {
 		this.health = Math.max(this.health - amount, 0);
 		getEventManager().notify(GameEvent.HP, this.health);
 	}
-
+	public void decrementHPSun(int amount) {
+		this.health = Math.max(this.health - amount, 0);
+		getEventManager().notify(GameEvent.HP_SUN, this.health);
+	}
 	public void decrementScore(int amount) {
 		this.score = this.score - amount;
 		getEventManager().notify(GameEvent.SCORE, this.score);
@@ -111,13 +129,30 @@ public class Game {
 		currScore.setScore(this.score);
 		currScore.setTime(getGameDuration());
 		currScore.setHealth(this.health);
+		currScore.setGameMode(this.getGameMode());
 		return currScore;
 	}
 
+	protected String getGameMode() {
+		return Constants.INIT_GAME_CLASSIC;
+	}
+
+	public Set<String> getColoursVisited() {
+		return coloursVisited;
+	}
+
+	public void setColoursVisited(Set<String> coloursVisited) {
+		this.coloursVisited = coloursVisited;
+	}
+
 	public void processColour(String msgID) {
-		if (msgID.equals(SocketMessages.COLOUR_RED)) {
+		this.lastColourVisited = msgID;
+		if (msgID.equals(Constants.COLOUR_RED)) {
 			this.decrementScore(OBSTACLE_SCORE_DECREMENT);
 			this.decrementHP(OBSTACLE_HP_DECREMENT);
+		} else if (msgID.equals(Constants.COLOUR_RED_SUN)) {
+			this.decrementScore(OBSTACLE_SUN_SCORE_DECREMENT);
+			this.decrementHPSun(OBSTACLE_SUN_HP_DECREMENT);
 		} else if (!this.coloursVisited.contains(msgID)) {
 			LOGGER.log(Level.INFO, "Colour visited: {0}", msgID);
 			this.coloursVisited.add(msgID);
@@ -128,7 +163,7 @@ public class Game {
 		}
 	}
 
-	private int getScore() {
+	protected int getScore() {
 		return this.coloursVisited.size() * 10;
 	}
 
@@ -146,6 +181,14 @@ public class Game {
 		return isOver;
 	}
 
+	public int getHealth() {
+		return health;
+	}
+
+	public void setHealth(int health) {
+		this.health = health;
+	}
+
 	public void endGameSession(Instant inputEndTime) {
 		if (inProgress) {
 			this.endTime = inputEndTime;
@@ -156,12 +199,11 @@ public class Game {
 		}
 	}
 
-	public boolean hasAlreadyVisitedYellow() {
-		return this.coloursVisited.contains(SocketMessages.COLOUR_YELLOW);
+	public int getDamageTaken() {
+		return this.startingHealth - this.health;
 	}
 
-	public String getColour(String msgID) {
-		return COLOURS[Math.min(this.coloursVisited.size(), 3)];
+	public String getCurrentPlanetColour() {
+		return this.lastColourVisited;
 	}
-
 }

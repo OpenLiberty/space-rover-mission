@@ -30,6 +30,7 @@ services:
             - ./grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
             - ./grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml
             - ./grafana/dashboards/open-liberty_rev5.json:/var/lib/grafana/dashboards/open-liberty_rev5.json
+            - ./grafana/dashboards/space-rover-rev1.json:/var/lib/grafana/dashboards/space-rover-rev1.json
         depends_on:
             - prometheus
         ports:

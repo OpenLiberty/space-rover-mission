@@ -14,9 +14,11 @@ import jakarta.json.bind.annotation.JsonbProperty;
 import jakarta.validation.constraints.NotEmpty;
 
 public class LeaderboardEntry {
-
+	
+	@NotEmpty(message = "All players must have a player ID!")
     @JsonbProperty("player")
 	private String player;
+	
 	@JsonbProperty("score")
 	private int score;
 	@JsonbProperty("time")
@@ -25,12 +27,23 @@ public class LeaderboardEntry {
 	private int health;
 	@JsonbProperty ("timestamp")
 	private String timestamp;
+	
+	@NotEmpty(message = "All entries must have an associated game mode!")
+	@JsonbProperty ("gameMode")
+	private String gameMode;
+	
+	public String getGameMode() {
+		return gameMode;
+	}
+
+	public void setGameMode(String gameMode) {
+		this.gameMode = gameMode;
+	}
 
 	public int getHealth() {
 		return health;
 	}
 
-	@NotEmpty(message = "All players must have a player ID!")
 	public String getPlayer() {
 		return player;
 	}
