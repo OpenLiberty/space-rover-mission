@@ -13,16 +13,19 @@ import { useNavigate } from "react-router-dom";
 import Stat from "./Stat";
 import HealthBar from "./HealthBar";
 import { ReactComponent as Combomark } from "assets/openliberty_combomark.svg";
+import useGameModes from "hooks/useGameModes";
 
 type Props = {
   playerName: string;
+  gameMode: string;
   health: number;
   score: number;
   time: string;
 };
 
-const GameScreen = ({ playerName, health, score, time }: Props) => {
+const GameScreen = ({ playerName, gameMode, health, score, time }: Props) => {
   const navigate = useNavigate();
+  const gameModes = useGameModes();
 
   return (
     <div className="container mx-auto flex flex-col gap-12 justify-center h-full">
@@ -35,7 +38,9 @@ const GameScreen = ({ playerName, health, score, time }: Props) => {
           <h2 className="text-gray-50 text-7xl font-semibold mb-5">
             {playerName}
           </h2>
-          <p className="text-orange text-3xl">Crew Member</p>
+          <p className="text-orange text-3xl">
+            {gameModes[parseInt(gameMode) - 1]?.name}
+          </p>
         </div>
       </div>
       <div className="mx-auto w-4/5">

@@ -19,6 +19,8 @@ import { gameSocketURL, gameDurationSeconds } from "lib/config";
 const PlayPage = () => {
   const {
     playerName,
+    gameMode,
+    gameModes,
     gameState,
     formattedTime,
     health,
@@ -35,6 +37,7 @@ const PlayPage = () => {
       return (
         <div className="flex flex-col gap-7 justify-center h-full">
           <PlayerForm
+            gameModes={gameModes}
             isDisabled={gameState !== GameState.NotStarted}
             onSubmit={startGame}
           />
@@ -48,6 +51,7 @@ const PlayPage = () => {
       return (
         <GameScreen
           playerName={playerName}
+          gameMode={gameMode}
           health={health}
           score={score}
           time={formattedTime}
@@ -56,7 +60,7 @@ const PlayPage = () => {
     case GameState.GameEnded:
       return (
         <Navigate
-          to={`/leaderboard?player=${encodeURIComponent(playerName)}`}
+          to={`/leaderboard?player=${encodeURIComponent(playerName)}&gameMode=${gameMode}`}
         />
       );
     default:

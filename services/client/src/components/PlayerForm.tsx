@@ -11,21 +11,24 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { ReactComponent as Combomark } from "assets/openliberty_combomark.svg";
+import { GameMode } from "hooks/useGameModes";
 
 type Props = {
+  gameModes: GameMode[];
   isDisabled: boolean;
-  onSubmit: (playerName: string) => void;
+  onSubmit: (playerName: string, gameMode: string) => void;
 };
 
-const PlayerForm = ({ isDisabled, onSubmit }: Props) => {
+const PlayerForm = ({ gameModes, isDisabled, onSubmit }: Props) => {
   const [playerName, setPlayerName] = useState("");
-  
+  const [gameMode, setGameMode] = useState("1");
+
   return (
     <form
       className="max-w-screen-md flex flex-col gap-5 mx-auto text-xl"
       onSubmit={(e) => {
         e.preventDefault();
-        onSubmit(playerName);
+        onSubmit(playerName, gameMode);
       }}
     >
       <div className="flex flex-col items-center">
@@ -44,6 +47,28 @@ const PlayerForm = ({ isDisabled, onSubmit }: Props) => {
           value={playerName}
           onChange={(e) => setPlayerName(e.target.value)}
         />
+      </div>
+      <div>
+        <label className="block text-gray-300 text-2xl">Select game mode</label>
+        <div className="relative">
+          <select
+            className="w-full rounded-lg px-5 py-5 appearance-none"
+            value={gameMode}
+            onChange={(e) => setGameMode(e.target.value)}
+          >
+            {gameModes.map((gameMode) => (
+              <option key={gameMode.id} value={gameMode.id}>
+                {gameMode.name}
+              </option>
+            ))}
+          </select>
+          <div className="absolute right-0 inset-y-0 flex items-center mx-3">
+            &#x25BC;
+          </div>
+        </div>
+        <div className="text-green-light text-center text-base py-3">
+          {gameModes[parseInt(gameMode) - 1].description}
+        </div>
       </div>
       <div className="flex flex-row gap-2">
         <Link

@@ -20,6 +20,9 @@ export const formatTime = (time: number) => {
   return `${formattedMinutes}:${formattedSeconds}`;
 };
 
-export const playerFinished = (health: number, time: number) => {
+export const playerFinished = (health: number, time: number, gameMode: string) => {
+  if (gameMode === "2") { // planet hop
+    return health > 0 && time === gameDurationSeconds;
+  }
   return health > 0 && time < gameDurationSeconds;
 }

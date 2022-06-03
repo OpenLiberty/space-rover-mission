@@ -22,16 +22,19 @@ export type LeaderboardEntry = {
   timestamp: string;
 };
 
-const getLeaderboard = async () => {
-  const { data } = await axios.get<LeaderboardEntry[]>(`${leaderboardURL}/`);
+const getLeaderboard = async (gameMode: string) => {
+  const { data } = await axios.get<LeaderboardEntry[]>(`${leaderboardURL}/${gameMode}`);
   data.forEach((entry, i) => {
     entry.rank = i + 1;
   });
   return data;
 };
 
-const useLeaderboard = (player: string | null) => {
-  const { data: leaderboard, ...rest } = useQuery("leaderboard", getLeaderboard);
+const useLeaderboard = (player: string | null, gameMode: string) => {
+  const { data: leaderboard, ...rest } = useQuery(
+    ["leaderboard", gameMode],
+    () => getLeaderboard(gameMode)
+  );
 
   const placement = useMemo(() => {
     if (player) {

@@ -27,10 +27,10 @@ This project can also be started on its own in development mode by running `npm 
 
 ![InGame](images/game.png)
 
-### GameEnd: `/leaderboard?player={name}`
+### GameEnd: `/leaderboard?player={name}&gameMode={gameMode}`
 
 ![GameEnd](images/finish.png)
 
-### Leaderboard: `/leaderboard`
+### Leaderboard: `/leaderboard?gameMode={gameMode}`
 
 ![Leaderboard](images/leaderboard.png)
