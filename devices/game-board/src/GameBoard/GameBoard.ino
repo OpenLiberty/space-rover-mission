@@ -538,6 +538,7 @@ void endGame() {
   isPlanet2Retrieved = false;
   isPlanet3Retrieved = false;
   isPlanetOLRetrieved = false;
+  stopPlanetBlinking();
 }
 
 void blinkOnce(int startLed, int numLeds, RgbColor color) {
