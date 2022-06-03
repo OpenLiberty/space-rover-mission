@@ -1,6 +1,6 @@
 # Open Liberty Space Rover Mission
 
-Open Liberty Space Rover Mission is an interactive IoT game designed to showcase microservices with modern Java technologies in a fun way. The mission is to guide the Space Rover using hand gestures to its home while visiting planets along the way to gather supplies. Make sure to avoid any obstacles (asteroids, black-hole, etc.) in your path. 🚨 Beware of strong winds on Venus and Open Liberty 🚨
+Open Liberty Space Rover Mission is an interactive IoT game designed to showcase microservices with modern Java technologies in a fun way. The mission is to guide the Space Rover using hand gestures to its home while visiting planets along the way to gather supplies. Make sure to avoid any obstacles (asteroids, black-hole, etc.) in your path. 🚨 Beware of extra damage on the Sun! 🚨
 
 ![Teaser](/images/teaser.jpg)
 
@@ -18,7 +18,7 @@ The gesture detection is built upon using popular open sourced computer vision l
 ## Setup, Cleanup, and Troubleshooting
 For setup, cleanup, and troubleshooting instructions, see [documentation](https://github.com/OpenLiberty/space-rover-mission/tree/main/documentation).
 
-![GameBoard](/images/gameboard.jpg)
+![GameBoard](/images/gameboard-v2.png)
 
 ## Gameplay
 
