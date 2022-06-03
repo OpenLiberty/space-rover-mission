@@ -113,11 +113,11 @@ The Game Board displays the following light patterns to represent different game
 
 **Blinking Red SUN:** Connecting to WiFi, **One Green Flash of All LEDs:** CONNECTED to WiFi
 
-https://user-images.githubusercontent.com/31871360/162498704-b3f76810-d031-4d85-98d1-fbb172c52ca8.mov
+https://user-images.githubusercontent.com/31871360/171955438-03cb8857-6049-40e6-b550-b4303c9adf22.MOV
 
 **Bursting SUN + PLANETS:** Waiting for a websocket connection
 
-https://user-images.githubusercontent.com/31871360/162498739-14222c5a-c67e-4310-95d4-9841c06d9a96.mov
+https://user-images.githubusercontent.com/31871360/171955445-425cdc56-146a-4461-9e1c-a623965a2abe.MOV
 
 **Solid Blue SUN:**  Websocket connected, waiting for game start
 
