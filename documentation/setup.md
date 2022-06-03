@@ -152,7 +152,12 @@ The following instructions detail how to setup the Mini PC used to run the game 
     * **Leaderboard Health** => localhost:9080/health
         <br><br>&nbsp; ![Leaderboard Health](../images/four-tab-leaderboard-health.png)
     * **Grafana** => localhost:3010/
+    * There are two dashboards: Liberty Metrics Dashboard and Space Rover Mission statistics Dashboard
+        Liberty Metrics Dashboard:
         <br>&nbsp; ![Grafana](../images/four-tab-grafana.png)
+        
+        Space Rover Mission statistics Dashboard:
+        ![image (7)](https://user-images.githubusercontent.com/29461649/171951797-f668f7b5-0aab-4418-b856-453d333c1b64.png)
         
         If needed, login into Grafana with:
         * username: admin
