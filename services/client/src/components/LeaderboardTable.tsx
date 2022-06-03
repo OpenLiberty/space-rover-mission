@@ -113,45 +113,43 @@ const LeaderboardTable = ({ gameMode, data }: Props) => {
           ))}
         </tbody>
       </table>
-      {filteredData.length > 0 && (
-        <div className="flex flex-row justify-between items-center px-1 bg-blue-dark text-white rounded-b-md">
-          <div className="flex flex-row items-center">
-            <label className="mx-5">
-              <input
-                className="accent-green h-3 w-3 mr-2"
-                type="checkbox"
-                checked={showFails}
-                onChange={(e) => setShowFails(e.target.checked)}
-              />
-              Show failed missions
-            </label>
-          </div>
-          <div className="flex flex-row items-center">
-            <button
-              className="px-5 py-1 text-xl disabled:text-gray-500"
-              onClick={() => changePage(page - 1)}
-              disabled={page === 1}
-            >
-              &#x25C0;
-            </button>
-            <div>
-              Page {page} of {totalPages}
-            </div>
-            <button
-              className="px-5 py-3 text-xl disabled:text-gray-500"
-              onClick={() => changePage(page + 1)}
-              disabled={page === totalPages}
-            >
-              &#x25B6;
-            </button>
-          </div>
-        </div>
-      )}
       {filteredData.length === 0 && (
-        <div className="text-center text-xl text-gray-200 py-5">
+        <div className="text-center text-xl bg-gray-50 py-3">
           No players to show
         </div>
       )}
+      <div className="flex flex-row justify-between items-center px-1 bg-blue-dark text-white rounded-b-md">
+        <div className="flex flex-row items-center">
+          <label className="mx-5">
+            <input
+              className="accent-green h-3 w-3 mr-2"
+              type="checkbox"
+              checked={showFails}
+              onChange={(e) => setShowFails(e.target.checked)}
+            />
+            Show failed missions
+          </label>
+        </div>
+        <div className="flex flex-row items-center">
+          <button
+            className="px-5 py-1 text-xl disabled:text-gray-500"
+            onClick={() => changePage(page - 1)}
+            disabled={page === 1}
+          >
+            &#x25C0;
+          </button>
+          <div>
+            Page {page} of {totalPages}
+          </div>
+          <button
+            className="px-5 py-3 text-xl disabled:text-gray-500"
+            onClick={() => changePage(page + 1)}
+            disabled={page === totalPages}
+          >
+            &#x25B6;
+          </button>
+        </div>
+      </div>
     </>
   );
 };
