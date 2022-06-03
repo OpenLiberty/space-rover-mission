@@ -53,7 +53,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	private Game currentGame = new Game();
 	/* statistics kept for metrics */
 	private long aggregateDamage = 0;
-	private long numberOfGamesCompleted = 0;
+	private long numberOfGamesPlayed = 0;
 	private long totalScorePoints = 0;
 	private long totalGameTimeInSeconds = 0;
 	private long numberOfClassicGamesPlayed = 0; 
@@ -144,7 +144,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		int gameMode = Integer.parseInt(properties[1]);
 		LOGGER.log(Level.INFO, "Start Game received for player ID: {0}, GameMode: {1}",
 				new Object[] { playerId, gameMode });
-		this.numberOfGamesCompleted++;
+		this.numberOfGamesPlayed++;
 		if (gameMode == Integer.parseInt(Constants.INIT_GAME_CLASSIC)) {
 			this.currentGame = new Game();
 			registerGameEventManager();
@@ -468,7 +468,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 	@Gauge(unit = MetricUnits.NONE, name = "totalNumberOfGames", absolute = true, description = "The total number of games played since server start.")
 	public long getNumberOfGamesCompleted() {
-		return this.numberOfGamesCompleted;
+		return this.numberOfGamesPlayed;
 	}
 	
 	@Gauge(unit = MetricUnits.NONE, name = "numberOfClassicGamesPlayed", absolute = true, description = "The aggregate amount of classic games played.")
