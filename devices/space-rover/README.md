@@ -1,6 +1,6 @@
 # Open Liberty Space Rover
 
-![PXL_20220328_193253574 PORTRAIT](https://user-images.githubusercontent.com/29461649/162758191-b390cb2c-bb63-493b-b101-556ff0d4ab51.jpg)
+![PXL_20220601_195408183 PORTRAIT](https://user-images.githubusercontent.com/29461649/171947809-2c4b5d0b-51a4-471a-8e71-2164c8137d4f.jpg)
 
 The Space Rover has 6 addressable (WS2811) LEDs underneath the spaceship model, one white head light LED, and two red tail light LEDs. The "front" of the Space Rover is designated by the white head light, and all directions for gesture control/keyboard control movement of the Rover follow that convention; for example, FORWARD will drive in the direction the white head light LED is facing.
 
