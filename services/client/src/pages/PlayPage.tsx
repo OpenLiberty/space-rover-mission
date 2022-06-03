@@ -51,6 +51,7 @@ const PlayPage = () => {
       return (
         <GameScreen
           playerName={playerName}
+          gameMode={gameMode}
           health={health}
           score={score}
           time={formattedTime}
