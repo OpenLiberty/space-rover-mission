@@ -132,7 +132,7 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
           const newScore = parseInt(data);
           if (newScore > score) {
             scoreSound.play();
-            timerSound.stop();
+            shortTimerSound.stop();
           }
           setScore(newScore);
           break;
