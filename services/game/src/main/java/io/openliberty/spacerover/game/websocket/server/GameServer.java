@@ -189,6 +189,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		} else if (eventType == GameEvent.FIVE_SECONDS_LEFT) {
 			this.boardClient.sendMessage("blinkColour" + Constants.SOCKET_MESSAGE_DATA_DELIMITER
 					+ this.currentGame.getCurrentPlanetColour());
+			this.sendTextToGuiSocket("planetChange");
 		} else if (eventType == GameEvent.PLANET_CHANGED) {
 			this.boardClient.sendMessage(
 					"setColour" + Constants.SOCKET_MESSAGE_DATA_DELIMITER + this.currentGame.getCurrentPlanetColour());
