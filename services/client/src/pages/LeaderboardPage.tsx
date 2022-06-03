@@ -17,7 +17,7 @@ import failureSoundFile from "assets/sounds/failure.wav";
 import useLeaderboard from "hooks/useLeaderboard";
 import PlacementDisplay from "components/PlacementDisplay";
 import LeaderboardTable from "components/LeaderboardTable";
-import { gameDurationSeconds } from "lib/config";
+import { playerFinished } from "lib/utils";
 
 const LeaderboardPage = () => {
   const [searchParams] = useSearchParams();
@@ -39,7 +39,7 @@ const LeaderboardPage = () => {
 
     const { health, time, rank } = placement;
 
-    if (health > 0 && time < gameDurationSeconds) {
+    if (playerFinished(health, time)) {
       if (rank <= 5) {
         playHighscore();
       } else {
@@ -53,7 +53,9 @@ const LeaderboardPage = () => {
   return (
     <div className="container mx-auto">
       {placement && <PlacementDisplay {...placement} />}
-      {leaderboard && <LeaderboardTable data={leaderboard} />}
+      {leaderboard && (
+        <LeaderboardTable gameMode={gameMode ?? "1"} data={leaderboard} />
+      )}
     </div>
   );
 };
