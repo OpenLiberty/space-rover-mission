@@ -37,3 +37,7 @@ LeaderboardEntry
     -	Used to add a /health endpoint that determines if MongoDB is up and running.
 - [MP Config 3.0](https://download.eclipse.org/microprofile/microprofile-config-3.0/microprofile-config-spec-3.0.html)
     - Used to store connection information to MongoDB such as the username, port, and encrypted password.
+- [MP FaultTolerance 4.0](https://download.eclipse.org/microprofile/microprofile-fault-tolerance-4.0/microprofile-fault-tolerance-spec-4.0.html)
+	- Used to retry connection attempts to MongoDB if they are not successful. 
+- [MP OpenAPI 3.0](https://download.eclipse.org/microprofile/microprofile-open-api-3.0/microprofile-openapi-spec-3.0.html)
+	- Used for providing REST API documentation and UI for demonstration.
