@@ -144,7 +144,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		int gameMode = Integer.parseInt(properties[1]);
 		LOGGER.log(Level.INFO, "Start Game received for player ID: {0}, GameMode: {1}",
 				new Object[] { playerId, gameMode });
-
+		this.numberOfGamesCompleted++;
 		if (gameMode == Integer.parseInt(Constants.INIT_GAME_CLASSIC)) {
 			this.currentGame = new Game();
 			registerGameEventManager();
@@ -220,7 +220,6 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			GameScore leaderboardEntry = this.currentGame.getGameLeaderboardStat();
 
 			this.aggregateDamage += this.currentGame.getDamageTaken();
-			this.numberOfGamesCompleted += 1;
 			this.totalScorePoints += leaderboardEntry.getScore();
 			this.totalGameTimeInSeconds += leaderboardEntry.getTime();
 			this.getLeaderboard().updateLeaderboard(leaderboardEntry);
