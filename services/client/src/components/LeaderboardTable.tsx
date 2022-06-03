@@ -93,7 +93,7 @@ const LeaderboardTable = ({ data }: Props) => {
                 checked={showFails}
                 onChange={(e) => setShowFails(e.target.checked)}
               />
-              Show fails
+              Show failed missions
             </label>
           </div>
           <div className="flex flex-row items-center">
