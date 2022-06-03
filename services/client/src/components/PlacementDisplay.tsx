@@ -11,13 +11,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { LeaderboardEntry } from "hooks/useLeaderboard";
-import { formatTime } from "lib/utils";
-import { gameDurationSeconds } from "lib/config";
+import { formatTime, playerFinished } from "lib/utils";
 
 type Props = LeaderboardEntry;
 
 const PlacementDisplay = ({ rank, player, time, health, score }: Props) => {
-  const success = health > 0 && time < gameDurationSeconds;
+  const success = playerFinished(health, time);
 
   return (
     <div className="text-gray-50 text-center pt-5 pb-10">

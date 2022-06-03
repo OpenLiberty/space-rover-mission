@@ -8,6 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+import { gameDurationSeconds } from "./config"; 
+
 export const formatTime = (time: number) => {
   const seconds = time % 60;
   const minutes = Math.floor(time / 60);
@@ -17,3 +19,7 @@ export const formatTime = (time: number) => {
 
   return `${formattedMinutes}:${formattedSeconds}`;
 };
+
+export const playerFinished = (health: number, time: number) => {
+  return health > 0 && time < gameDurationSeconds;
+}
