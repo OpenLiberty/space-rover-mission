@@ -77,6 +77,10 @@ The Game Map is the physical game board which the Space Rover roams on. It emits
     -	Used to add a /health endpoint that determines if MongoDB is up and running.
 - [MP Config 3.0](https://download.eclipse.org/microprofile/microprofile-config-3.0/microprofile-config-spec-3.0.html)
     - Used to store connection information to MongoDB such as the username, port, and encrypted password.
+- [MP FaultTolerance 4.0](https://download.eclipse.org/microprofile/microprofile-fault-tolerance-4.0/microprofile-fault-tolerance-spec-4.0.html)
+	- Used to retry connection attempts to MongoDB if they are not successful. 
+- [MP OpenAPI 3.0](https://download.eclipse.org/microprofile/microprofile-open-api-3.0/microprofile-openapi-spec-3.0.html)
+	- Used for providing REST API documentation and UI for demonstration.
 
 ### Docker Container 3 – Game service
 
@@ -93,3 +97,5 @@ The Game Map is the physical game board which the Space Rover roams on. It emits
     - Used to record JVM metrics on the game service as well as a SimpleTimer that tracks the amount of time it takes for the GameService to respond to the health check test. This tells us a local round trip latency value determining how long it takes a message to be sent to the server and have the server respond.
 - [MP Rest Client 3.0](https://download.eclipse.org/microprofile/microprofile-rest-client-3.0/microprofile-rest-client-spec-3.0.html)
     - Generates an HTTP client to send game end statistics to the leaderboard's REST server.
+- [MP OpenAPI 3.0](https://download.eclipse.org/microprofile/microprofile-open-api-3.0/microprofile-openapi-spec-3.0.html)
+	- Used for providing REST API documentation and UI for demonstration.
