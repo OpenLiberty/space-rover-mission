@@ -65,7 +65,7 @@ RgbColor sun_MiddleRing(69, 255, 0);
 RgbColor sun_InnerRing(30, 255, 0);
 
 char ssid[] = "OL_DEMO";  // use your own network ssid and password
-char pass[] = "was4ever";
+char pass[] = "######"; // UPDATE WI-FI PASSWORD
 
 //connection booleans
 boolean isWifiConnected = false;
