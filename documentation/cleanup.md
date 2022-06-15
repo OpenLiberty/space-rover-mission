@@ -35,9 +35,11 @@ This document covers the cleanup process for the OpenLiberty Space Rover mission
 2. Return to the homepage of the game.
 3. Shut down the Mini PC.
 
-## Gesture Control
+## Laptop/Gesture Control
 
-1. Shut down the laptop hosting the gesture control.
+1. Espace from the Gesture Control GUI by pressing `Escape` key on the Laptop Keyboard.
+2. If the console is still running, press `Control` + `C` keys after clicking the console.
+3. Once the python script is no longer running, shut down the laptop hosting the gesture control.
 
 ## Full Item List
 
