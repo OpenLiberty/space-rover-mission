@@ -72,8 +72,10 @@ If there are any issues when connecting the Gestures to the Game Service, verify
 
 If the gesture control is connected to the game service, but the Space Rover is not moving, verify the following:
 
+  - Is the Laptop Connected to the OL_DEMO internet?
   - Are the hardware components (Space Rover and Game Board) setup correctly?
   - Has the game started on the Front-End GUI by clicking `Begin Mission`?
+  - Does the console logs on VS Code recieve messages about the hnad gestures dectected signs?
 
     If you still have a problem after verifying this, please restart the Python Script to re-establish connection to the game service.
 
