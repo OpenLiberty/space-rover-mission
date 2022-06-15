@@ -170,15 +170,13 @@ The following instructions detail how to setup the Laptop used to run the Gestur
 
 1. Power on the Laptop by pressing the power button.
 
-2. Once the Laptop is on and the login page is up, log in using the following credentials:
-    * username: Space Rover 
-    * password:  sp^ceR0ver
+2. Once the Laptop is on and the login page is up, log in using valid credentials.
 
 3. Ensure that the Laptop is connected to the **OL_DEMO** internet.
  
-4. Open VSCode application on the Laptop
+4. Open VSCode application on the Laptop.
 
-5. Run the file labelled Version2.py by running in the console `/usr/local/bin/python3 "/Users/spacerover/Desktop/Space Rover/Version2.py"`
+5. Run the file labelled Version2.py by running in the console `/usr/local/bin/python3 "/Users/spacerover/Desktop/Space Rover/Version2.py"`.
 
 6. Check the console output, and wait for a Connected console output. This indicates a successful connection to the backend service.
 
