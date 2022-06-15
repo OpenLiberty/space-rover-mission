@@ -161,3 +161,29 @@ The following instructions detail how to setup the Mini PC used to run the game 
         * password: admin
 
 6. Return to the webapp tab's game page and leave it in the home page with the play button.
+
+## Laptop with a Camera
+
+The following instructions detail how to setup the Laptop used to run the Gesture Recognition GUI for the player.
+
+![IMG_9970](https://user-images.githubusercontent.com/45052124/173878545-9f261913-e8f5-4d22-ab79-cbb58c2a7198.jpg)
+
+1. Power on the Laptop by pressing the power button.
+
+2. Once the Laptop is on and the login page is up, log in using the following credentials:
+    * username: Space Rover 
+    * password:  sp^ceR0ver
+
+3. Ensure that the Laptop is connected to the **OL_DEMO** internet.
+ 
+4. Open VSCode application on the Laptop
+
+5. Run the file labelled Version2.py by running in the console `/usr/local/bin/python3 "/Users/spacerover/Desktop/Space Rover/Version2.py"`
+
+6. Check the console output, and wait for a Connected console output. This indicates a successful connection to the backend service.
+
+7. A GUI application pictured as a Rocket will startup, put this application in full screen.
+
+8. User can now test hand gestures prior to starting the game on the Front End GUI. After the game starts on the Front End GUI, you will be able to control and move the car with the hand gestures.
+
+<img width="1438" alt="image" src="https://user-images.githubusercontent.com/45052124/173881716-2c94fa08-a0d1-43a7-b14c-0486b1ca7b1f.png">
