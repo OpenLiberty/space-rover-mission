@@ -5,9 +5,10 @@ Open Liberty Space Rover Mission is an interactive IoT game designed to showcase
 ![Teaser](/images/teaser.jpg)
 
 ### Five Hand Gestures
-These five hand gestures are used to move the Space Rover across the game board. <img width="698" alt="image" src="https://user-images.githubusercontent.com/45052124/162534430-7287d744-f4ad-4fce-a9b3-4e076557b9cf.png">
+These five hand gestures are used to move the Space Rover across the game board. <img width="692" alt="image" src="https://user-images.githubusercontent.com/45052124/173872753-3410f9c0-42ac-49f4-a52a-ebbd8ff6ee70.png">
 
-The gesture detection is built upon using popular open sourced computer vision libraries such as [OpenCV](https://github.com/opencv/opencv-python) and [CVZone](https://github.com/cvzone/cvzone). Computer Vision works by gaining high-level understanding from digital images/videos to understand and automate tasks that the human visual system can do. OpenCV was built to provide a common infrastructure for Computer Vision applications and to accelerate the use of machine perception.
+
+The gesture detection is built upon using popular open sourced computer vision libraries such as [OpenCV](https://github.com/opencv/opencv-python), [CVZone](https://github.com/cvzone/cvzone) and [Mediapipe](https://github.com/google/mediapipe). Computer Vision works by gaining high-level understanding from digital images/videos to understand and automate tasks that the human visual system can do. OpenCV was built to provide a common infrastructure for Computer Vision applications and to accelerate the use of machine perception.
 
 ## Prerequisites
 1. [Space Rover hardware component](https://github.com/OpenLiberty/space-rover-mission/tree/main/devices/space-rover) with the project code compiled and running.

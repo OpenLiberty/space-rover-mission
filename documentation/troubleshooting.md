@@ -56,3 +56,25 @@ docker-compose down
 
 docker-compose up
 ```
+
+## Laptop/Gesture Control
+
+If there are any issues when connecting the Gestures to the Game Service, verify the following:
+
+  - Is the Mini PC connected to the OL_DEMO internet?
+  - Are the Mini PC services up and running?
+  - Is the Laptop Connected to the OL_DEMO internet?
+
+    If you still have a problem after verifying this, please restart the Python Script. 
+
+    If this problem still persists, follow the [cleanup](https://github.com/OpenLiberty/space-rover-mission/blob/main/documentation/cleanup.md#laptopgesture-control) and [startup](https://github.com/OpenLiberty/space-rover-mission/blob/main/documentation/setup.md#laptop-with-a-camera) process for the Laptop again.
+
+
+If the gesture control is connected to the game service, but the Space Rover is not moving, verify the following:
+
+  - Are the hardware components (Space Rover and Game Board) setup correctly?
+  - Has the game started on the Front-End GUI by clicking `Begin Mission`?
+
+    If you still have a problem after verifying this, please restart the Python Script to re-establish connection to the game service.
+
+    If this problem still persists, follow the [cleanup](https://github.com/OpenLiberty/space-rover-mission/blob/main/documentation/cleanup.md#laptopgesture-control) and [startup](https://github.com/OpenLiberty/space-rover-mission/blob/main/documentation/setup.md#laptop-with-a-camera) process for the Laptop again.
