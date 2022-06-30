@@ -18,6 +18,7 @@ import timerSoundFile from "assets/sounds/timer.mp3";
 import shortTimerSoundFile from "assets/sounds/short_timer.wav";
 
 import useTimer from "./useTimer";
+import useKeyboardColours from "./useKeyboardColours";
 import useKeyboardControls from "./useKeyboardControls";
 import useGameModes from "./useGameModes";
 
@@ -76,6 +77,7 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
     stopTimer,
   } = useTimer(durationInSeconds);
 
+  useKeyboardColours(socket.current);
   useKeyboardControls(socket.current);
 
   const gameModes = useGameModes();
