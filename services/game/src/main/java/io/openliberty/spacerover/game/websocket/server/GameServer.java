@@ -56,10 +56,10 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	private long numberOfGamesPlayed = 0;
 	private long totalScorePoints = 0;
 	private long totalGameTimeInSeconds = 0;
-	private long numberOfClassicGamesPlayed = 0; 
+	private long numberOfClassicGamesPlayed = 0;
 	private long numberOfPlanetHopGamesPlayed = 0;
 	private long numberOfGuidedGamesPlayed = 0;
-	private long numberOfSuddenDeathGamesPlayed = 0; 
+	private long numberOfSuddenDeathGamesPlayed = 0;
 
 	@Singleton
 	GameServerStateMachine stateMachine = new GameServerStateMachine();
@@ -283,7 +283,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 				session.getAsyncRemote().sendText(Constants.GAME_HEALTH_ACK);
 				break;
 			case Constants.COLOUR_RED:
-				if (Constants.SUN_RFID_IDENTIFIERS.contains(parsedMsg[1])) {
+				if (parsedMsg.length > 1 && Constants.SUN_RFID_IDENTIFIERS.contains(parsedMsg[1])) {
 					LOGGER.log(Level.WARNING, "Detected sun damage");
 					msgID = Constants.COLOUR_RED_SUN;
 				}
@@ -470,22 +470,22 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	public long getNumberOfGamesCompleted() {
 		return this.numberOfGamesPlayed;
 	}
-	
+
 	@Gauge(unit = MetricUnits.NONE, name = "numberOfClassicGamesPlayed", absolute = true, description = "The aggregate amount of classic games played.")
 	public long getCountClassicGamesPlayed() {
 		return this.numberOfClassicGamesPlayed;
 	}
-	
+
 	@Gauge(unit = MetricUnits.NONE, name = "numberOfPlanetHopGamesPlayed", absolute = true, description = "The aggregate amount of planet hop games played.")
 	public long getCountSpaceHopGamesPlayed() {
 		return this.numberOfPlanetHopGamesPlayed;
 	}
-	
-	@Gauge(unit = MetricUnits.NONE, name = "numberOfGuidedGamesPlayed", absolute = true, description =  "The aggregate amount of guided games played.")
+
+	@Gauge(unit = MetricUnits.NONE, name = "numberOfGuidedGamesPlayed", absolute = true, description = "The aggregate amount of guided games played.")
 	public long getCountGuidedGamesPlayed() {
 		return this.numberOfGuidedGamesPlayed;
 	}
-	
+
 	@Gauge(unit = MetricUnits.NONE, name = "numberOfSuddenDeathGamesPlayed", absolute = true, description = "The aggregate amount of sudden death games played.")
 	public long getCountSuddenDeathGamesPlayed() {
 		return this.numberOfSuddenDeathGamesPlayed;

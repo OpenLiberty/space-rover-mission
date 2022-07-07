@@ -1,0 +1,11 @@
+FROM maven
+
+WORKDIR /usr/src/app
+
+COPY pom.xml .
+
+RUN mvn org.apache.maven.plugins:maven-dependency-plugin:3.3.0:go-offline
+
+COPY src src
+
+CMD  ["mvn", "liberty:dev"]

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="mock rover">
+
+	<!-- Enable features -->
+	<featureManager>
+		<feature>websocket-2.0</feature>
+	</featureManager>
+	<mpMetrics authentication="false" />
+	<!-- To access this server from a remote client add a host attribute to 
+		the following element, e.g. host="*" -->
+	<httpEndpoint id="defaultHttpEndpoint" httpPort="5045"
+		httpsPort="9443" host="*" />
+	<variable name="app.context.root" defaultValue="/" />
+
+
+	<!-- Automatically expand WAR files and EAR files -->
+	<applicationManager autoExpand="true" />
+
+	<!-- Configures the application on a specified context root -->
+	<webApplication contextRoot="/"
+		location="mockrover.war" />
+
+</server>
