@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: leaderboard
+  name: leaderboard
+spec:
+  ports:
+    - name: "9080"
+      port: 9080
+      targetPort: 9080
+  selector:
+    io.kompose.service: leaderboard
+status:
+  loadBalancer: {}
