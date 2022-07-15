@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert
+    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f docker-compose-test.yml
     kompose.version: 1.26.1 (a9d05d509)
   creationTimestamp: null
   labels:
@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       annotations:
-        kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert
+        kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f docker-compose-test.yml
         kompose.version: 1.26.1 (a9d05d509)
       creationTimestamp: null
       labels:
@@ -32,27 +32,27 @@ spec:
           resources: {}
           securityContext:
             runAsUser: 1000
-          volumeMounts:
-            - mountPath: /etc/grafana/provisioning/datasources/datasources.yml
-              name: grafana-claim0
-            - mountPath: /etc/grafana/provisioning/dashboards/dashboards.yml
-              name: grafana-claim1
-            - mountPath: /var/lib/grafana/dashboards/open-liberty_rev5.json
-              name: grafana-claim2
-            - mountPath: /var/lib/grafana/dashboards/space-rover-rev1.json
-              name: grafana-claim3
+      #     volumeMounts:
+      #       - mountPath: /etc/grafana/provisioning/datasources/datasources.yml
+      #         name: grafana-claim0
+      #       - mountPath: /etc/grafana/provisioning/dashboards/dashboards.yml
+      #         name: grafana-claim1
+      #       - mountPath: /var/lib/grafana/dashboards/open-liberty_rev5.json
+      #         name: grafana-claim2
+      #       - mountPath: /var/lib/grafana/dashboards/space-rover-rev1.json
+      #         name: grafana-claim3
       restartPolicy: Always
-      volumes:
-        - name: grafana-claim0
-          persistentVolumeClaim:
-            claimName: grafana-claim0
-        - name: grafana-claim1
-          persistentVolumeClaim:
-            claimName: grafana-claim1
-        - name: grafana-claim2
-          persistentVolumeClaim:
-            claimName: grafana-claim2
-        - name: grafana-claim3
-          persistentVolumeClaim:
-            claimName: grafana-claim3
+      # volumes:
+      #   - name: grafana-claim0
+      #     persistentVolumeClaim:
+      #       claimName: grafana-claim0
+      #   - name: grafana-claim1
+      #     persistentVolumeClaim:
+      #       claimName: grafana-claim1
+      #   - name: grafana-claim2
+      #     persistentVolumeClaim:
+      #       claimName: grafana-claim2
+      #   - name: grafana-claim3
+      #     persistentVolumeClaim:
+      #       claimName: grafana-claim3
 status: {}

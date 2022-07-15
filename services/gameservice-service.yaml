@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert
+    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f docker-compose-test.yml
     kompose.version: 1.26.1 (a9d05d509)
   creationTimestamp: null
   labels:
@@ -12,7 +12,7 @@ spec:
   ports:
     - name: "9070"
       port: 9070
-      targetPort: 9080
+      targetPort: 9080 
   selector:
     io.kompose.service: gameservice
 status:

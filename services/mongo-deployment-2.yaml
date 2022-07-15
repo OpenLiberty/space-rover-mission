@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: mongo
+  name: mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: mongo
+    spec:
+      containers:
+      - image: mongo
+        name: mongo
+        args: ["--dbpath","/data/db"]
+        livenessProbe:
+          exec:
+            command:
+              - mongo
+              - --disableImplicitSessions
+              - --eval
+              - "db.adminCommand('ping')"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 6
+        env:
+          - name: MONGO_INITDB_ROOT_PASSWORD
+            value: openliberty
+          - name: MONGO_INITDB_ROOT_USERNAME
+            value: root
+        readinessProbe:
+          exec:
+            command:
+              - mongo
+              - --disableImplicitSessions
+              - --eval
+              - "db.adminCommand('ping')"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 6
+        # volumeMounts:
+        #     - mountPath: /data/db
+        #       name: mongo-claim0
+        #     - mountPath: /docker-entrypoint-initdb.d/
+        #       name: mongo-claim1
+      restartPolicy: Always
+        # volumes:
+        # - name: mongo-claim0
+        #   persistentVolumeClaim:
+        #     claimName: mongo-claim0
+        # - name: mongo-claim1
+        #   persistentVolumeClaim:
+        #     claimName: mongo-claim1

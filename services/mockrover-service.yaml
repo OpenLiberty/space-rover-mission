@@ -6,14 +6,14 @@ metadata:
     kompose.version: 1.26.1 (a9d05d509)
   creationTimestamp: null
   labels:
-    io.kompose.service: grafana
-  name: grafana
+    io.kompose.service: mockrover
+  name: mockrover
 spec:
   ports:
-    - name: "3010"
-      port: 3010
-      targetPort: 3000
+    - name: "5045"
+      port: 5045
+      targetPort: 5045
   selector:
-    io.kompose.service: grafana
+    io.kompose.service: mockrover
 status:
   loadBalancer: {}
