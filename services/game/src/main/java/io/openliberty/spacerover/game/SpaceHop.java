@@ -103,7 +103,7 @@ public class SpaceHop extends Game {
 	}
 
 	@Override
-	public boolean isInProgressGameOver() {
+	public boolean shouldGameEnd() {
 		boolean isOver = false;
 		if (this.isInProgress() && (this.getHealth() <= 0)) {
 			isOver = true;
@@ -125,7 +125,7 @@ public class SpaceHop extends Game {
 			this.incrementScore(SCORE_INCREMENT);
 			this.chooseNextPlanet();
 		}
-		if (this.isInProgressGameOver()) {
+		if (this.shouldGameEnd()) {
 			this.endGameSession();
 		}
 	}

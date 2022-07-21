@@ -156,15 +156,19 @@ public class Game {
 		} else if (!this.coloursVisited.contains(msgID)) {
 			LOGGER.log(Level.INFO, "Colour visited: {0}", msgID);
 			this.coloursVisited.add(msgID);
-			this.incrementScore(getScore());
+			this.incrementScore(getScoreIncrement());
 		}
-		if (this.isInProgressGameOver()) {
+		if (this.shouldGameEnd()) {
 			this.endGameSession();
 		}
 	}
 
-	protected int getScore() {
+	protected int getScoreIncrement() {
 		return this.coloursVisited.size() * 10;
+	}
+
+	public int getScore() {
+		return score;
 	}
 
 	@Override
@@ -173,7 +177,7 @@ public class Game {
 				+ eventManager + ", duration=" + this.getGameDuration() + "]";
 	}
 
-	public boolean isInProgressGameOver() {
+	public boolean shouldGameEnd() {
 		boolean isOver = false;
 		if (this.isInProgress() && (this.health <= 0 || this.coloursVisited.size() == 4)) {
 			isOver = true;

@@ -36,10 +36,10 @@ public class GuidedGame extends Game {
 				&& msgID.equals(Constants.COLOURS_EXCLUDING_RED[this.nextColourIndex])) {
 			LOGGER.log(Level.INFO, "Colour visited: {0}", msgID);
 			this.getColoursVisited().add(msgID);
-			this.incrementScore(getScore());
+			this.incrementScore(getScoreIncrement());
 			this.nextColourIndex++;
 		}
-		if (this.isInProgressGameOver()) {
+		if (this.shouldGameEnd()) {
 			this.endGameSession();
 		}
 	}
