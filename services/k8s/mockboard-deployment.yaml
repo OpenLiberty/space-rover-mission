@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.service: mockboard
+  name: mockboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.service: mockboard
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app.service: mockboard
+    spec:
+      containers:
+        - image: uhryniuk/mockboard
+          name: mockboard
+          ports:
+            - containerPort: 5045
+          resources: {}
+      restartPolicy: Always
+status: {}

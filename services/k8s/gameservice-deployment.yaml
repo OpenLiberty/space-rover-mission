@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.service: gameservice
+  name: gameservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.service: gameservice
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app.service: gameservice
+    spec:
+      containers:
+        - image: uhryniuk/gameservice-test
+          name: gameservice
+          ports:
+            - containerPort: 9080
+          resources: {}
+      restartPolicy: Always
+status: {}

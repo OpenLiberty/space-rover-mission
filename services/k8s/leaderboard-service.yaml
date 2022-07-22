@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.service: leaderboard
+  name: leaderboard
+spec:
+  ports:
+    - name: "9080"
+      port: 9080
+      targetPort: 9070
+  selector:
+    app.service: leaderboard
+status:
+  loadBalancer: {}

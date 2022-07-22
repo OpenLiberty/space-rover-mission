@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.service: grafana
+  name: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.service: grafana
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.service: grafana
+    spec:
+      containers:
+        - image: uhryniuk/grafana:latest
+          name: grafana
+          ports:
+            - containerPort: 3000
+          resources: {}
+          securityContext:
+            runAsUser: 1000
+      restartPolicy: Always
+status: {}
