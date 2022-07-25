@@ -12,14 +12,13 @@ import org.junit.jupiter.api.Test;
 import io.openliberty.spacerover.game.models.Constants;
 import io.openliberty.spacerover.game.models.GameEvent;
 import io.openliberty.spacerover.game.models.GameScore;
-import jakarta.validation.constraints.AssertTrue;
 
-public class GameTest {
+class GameTest {
 
 	private static final String PLAYER_NAME = "PLAYER1";
 
 	@Test
-	public void testGameEventManager() {
+	void testGameEventManager() {
 		Set<GameEvent> events = new HashSet<>();
 		Game game = new Game();
 		getGameManager(events, game);
@@ -42,7 +41,7 @@ public class GameTest {
 	}
 
 	@Test
-	public void testProcessColour() {
+	void testProcessColour() {
 		Game game = new Game();
 		Set<GameEvent> events = new HashSet<>();
 		getGameManager(events, game);
@@ -111,7 +110,7 @@ public class GameTest {
 	}
 
 	@Test
-	public void endGameBeforeStarted() {
+	void testEndGameBeforeStarted() {
 		boolean success = false;
 		Game game = new Game();
 		try {
@@ -123,7 +122,7 @@ public class GameTest {
 	}
 
 	@Test
-	public void playerHPReachesZero() {
+	void testPlayerHPReachesZero() {
 		Game game = new Game();
 		Set<GameEvent> events = new HashSet<>();
 		getGameManager(events, game);
@@ -143,7 +142,7 @@ public class GameTest {
 	}
 	
 	@Test
-	public void testLeaderboardStats()
+	void testLeaderboardStats()
 	{
 		Game game = new Game();
 		Set<GameEvent> events = new HashSet<>();

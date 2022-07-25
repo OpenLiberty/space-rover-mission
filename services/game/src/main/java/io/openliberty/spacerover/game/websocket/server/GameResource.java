@@ -29,6 +29,14 @@ public class GameResource {
 	@Path("/")
 	@Retry(maxRetries = 5)
 	public Response retrieve() {
+		List<GameMode> supportedGameModes = getSupportedList();
+		
+		Jsonb jsonb = JsonbBuilder.create();
+		return Response.status(Response.Status.OK).entity(jsonb.toJson(supportedGameModes)).build();
+
+	}
+
+	protected List<GameMode> getSupportedList() {
 		List<GameMode> supportedGameModes = new ArrayList<>();
 		GameMode classic = new GameMode();
 		classic.setGameModeID(Integer.parseInt(Constants.INIT_GAME_CLASSIC));
@@ -55,9 +63,6 @@ public class GameResource {
 		suddenDeath.setDescription(Constants.GAME_MODE_DESC_SUDDENDEATH);
 
 		supportedGameModes.add(suddenDeath);
-		
-		Jsonb jsonb = JsonbBuilder.create();
-		return Response.status(Response.Status.OK).entity(jsonb.toJson(supportedGameModes)).build();
-
+		return supportedGameModes;
 	}
 }

@@ -154,7 +154,7 @@ public class Game {
 			this.decrementScore(OBSTACLE_SUN_SCORE_DECREMENT);
 			this.decrementHPSun(OBSTACLE_SUN_HP_DECREMENT);
 		} else if (!this.coloursVisited.contains(msgID)) {
-			LOGGER.log(Level.INFO, "Colour visited: {0}", msgID);
+			LOGGER.log(Level.FINE, "Colour visited: {0}", msgID);
 			this.coloursVisited.add(msgID);
 			this.incrementScore(getScoreIncrement());
 		}
