@@ -12,6 +12,8 @@ package io.openliberty.spacerover.leaderboard.rest;
 
 import java.util.Set;
 import java.util.StringJoiner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static com.mongodb.client.model.Filters.*;
 import org.bson.Document;
@@ -20,6 +22,7 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.metrics.annotation.Counted;
+
 import io.openliberty.spacerover.leaderboard.models.LeaderboardConstants;
 import io.openliberty.spacerover.leaderboard.models.LeaderboardEntry;
 import com.mongodb.BasicDBObject;
@@ -51,6 +54,8 @@ import jakarta.ws.rs.core.Response;
 @ApplicationScoped
 @Path("/")
 public class Leaderboard {
+
+	private static final Logger LOGGER = Logger.getLogger(Leaderboard.class.getName());
 
 	@Inject
 	MongoDatabase db;
@@ -126,7 +131,7 @@ public class Leaderboard {
 			return retrieveEntriesFromMongodb(startTime, endTime, gameMode);
 
 		} catch (Exception e) {
-			e.printStackTrace(System.out);
+			LOGGER.log(Level.SEVERE, "Failed to get entries from MongoDB", e);
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("[\"Unable to list leaderboard!\"]")
 					.build();
 		}
