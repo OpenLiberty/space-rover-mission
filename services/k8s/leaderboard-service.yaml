@@ -5,10 +5,11 @@ metadata:
     app.service: leaderboard
   name: leaderboard
 spec:
+  type: LoadBalancer
   ports:
     - name: "9080"
       port: 9080
-      targetPort: 9070
+      targetPort: 9080
   selector:
     app.service: leaderboard
 status:

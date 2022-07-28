@@ -5,9 +5,10 @@ metadata:
     app.service: mockboard
   name: mockboard
 spec:
+  type: LoadBalancer
   ports:
-    - name: "5046"
-      port: 5046
+    - name: "5045"
+      port: 5045
       targetPort: 5045
   selector:
     app.service: mockboard

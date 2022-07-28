@@ -3,11 +3,11 @@ kind: PersistentVolumeClaim
 metadata:
   labels:
     app: mongo
-  name: mongo-claim1
+  name: mongo-pvc-0
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 100Mi
+      storage: 500Mi
 status: {}

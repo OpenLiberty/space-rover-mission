@@ -5,6 +5,7 @@ metadata:
     app.service: mockrover
   name: mockrover
 spec:
+  type: LoadBalancer
   ports:
     - name: "5045"
       port: 5045
