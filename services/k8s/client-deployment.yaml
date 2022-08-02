@@ -16,9 +16,11 @@ spec:
         app.service: client
     spec:
       containers:
-        - image: uhryniuk/client-test
+        - image: ca.icr.io/space-rover/client-test
           name: client
           ports:
             - containerPort: 80
           resources: {}
+      imagePullSecrets:
+        - name: space-rover
 status: {}

@@ -16,10 +16,12 @@ spec:
         app.service: mockrover
     spec:
       containers:
-        - image: uhryniuk/mockrover
+        - image: ca.icr.io/space-rover/mockrover
           name: mockrover
           ports:
             - containerPort: 5045
           resources: {}
+      imagePullSecrets:
+        - name: space-rover
       restartPolicy: Always
 status: {}

@@ -19,10 +19,12 @@ spec:
       containers:
         - args:
             - --config.file=/etc/prometheus/prometheus.yml
-          image: uhryniuk/prometheus:latest
+          image: ca.icr.io/space-rover/prometheus:latest
           name: prometheus
           ports:
             - containerPort: 9090
           resources: {}
+      imagePullSecrets:
+        - name: space-rover
       restartPolicy: Always
 status: {}

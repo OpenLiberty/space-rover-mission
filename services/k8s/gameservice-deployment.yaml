@@ -16,10 +16,12 @@ spec:
         app.service: gameservice
     spec:
       containers:
-        - image: uhryniuk/gameservice-test
+        - image: ca.icr.io/space-rover/gameservice-test
           name: gameservice
           ports:
             - containerPort: 9080
           resources: {}
+      imagePullSecrets:
+        - name: space-rover
       restartPolicy: Always
 status: {}

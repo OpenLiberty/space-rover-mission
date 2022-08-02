@@ -16,10 +16,12 @@ spec:
         app.service: leaderboard
     spec:
       containers:
-        - image: uhryniuk/leaderboard-test
+        - image: ca.icr.io/space-rover/leaderboard-test
           name: leaderboard
           ports:
             - containerPort: 9080
           resources: {}
+      imagePullSecrets:
+        - name: space-rover
       restartPolicy: Always
 status: {}

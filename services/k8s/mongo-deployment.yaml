@@ -24,7 +24,7 @@ spec:
               value: openliberty
             - name: MONGO_INITDB_ROOT_USERNAME
               value: root
-          image: uhryniuk/mongo:latest
+          image: ca.icr.io/space-rover/mongo:latest
           name: mongo
           ports:
             - containerPort: 27017
@@ -32,6 +32,8 @@ spec:
           volumeMounts:
             - mountPath: /data/db
               name: mongo-pvc-0
+      imagePullSecrets:
+        - name: space-rover
       restartPolicy: Always
       volumes:
         - name: mongo-pvc-0

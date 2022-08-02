@@ -17,12 +17,14 @@ spec:
         app.service: grafana
     spec:
       containers:
-        - image: uhryniuk/grafana:latest
+        - image: ca.icr.io/space-rover/grafana:latest
           name: grafana
           ports:
             - containerPort: 3000
           resources: {}
           securityContext:
             runAsUser: 1000
+      imagePullSecrets:
+        - name: space-rover
       restartPolicy: Always
 status: {}
