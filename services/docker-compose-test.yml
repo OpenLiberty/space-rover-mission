@@ -1,7 +1,7 @@
 version: "3.9"
 services:
     mongo:
-        image: mongo:latest
+        image: s390x/mongo
         environment:
             - MONGO_INITDB_ROOT_USERNAME=root
             - MONGO_INITDB_ROOT_PASSWORD=openliberty
@@ -23,7 +23,7 @@ services:
         ports:
             - "9090:9090"
     grafana:
-        image: grafana/grafana:7.3.7
+        image: ubuntu/grafana:7.2-20.04_beta # EDTODO ADD S390X IMAGE
         user: "1000"
         container_name: grafana
         volumes:
