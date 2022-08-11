@@ -5,6 +5,7 @@ metadata:
     app.service: grafana
   name: grafana
 spec:
+  type: LoadBalancer
   ports:
     - name: "3010"
       port: 3010
