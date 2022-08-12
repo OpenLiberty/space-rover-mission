@@ -8,4 +8,6 @@ spec:
   capacity:
     storage: 1Gi
   hostPath:
-    path: C:\data\mongo
+    # Physical path of PV Storage.
+    # path: C:\data\mongo
+    path: /opt/data/mongo
