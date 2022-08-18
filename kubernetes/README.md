@@ -18,7 +18,7 @@ You can now apply your kubernetes files.
 ```
 
 ## Configuring you Kubernetes Files
-By default, the kubernetes files are configured to run from the local images you just built. Alternatively, you can place these images in a container registry such as IBM Container Registry or DockerHub. If you wish to mvoe you containers to a regsitry but don't know where to start, you can go [here](./container-registry-setup.md).
+By default, the kubernetes files are configured to run from the local images you just built. Alternatively, you can place these images in a container registry such as IBM Container Registry or DockerHub.
 
 Otherwise, there shouldn't be any configuration needed to make sure that you services run properly in a Kubernetes cluster.
 
@@ -43,14 +43,14 @@ It takes roughly 20-30 seconds for the Kubernetes to create all the pods and the
 Once all of your pods are in `Running` status and your ouput looks like the following, then you are able to move onto testing your cluster.
 ```
 NAME                           READY   STATUS    RESTARTS   AGE
-client-76bc76b7b4-9qzm2        1/1     Running   0          10s
-gameservice-66857669fc-h24rr   1/1     Running   0          10s
-grafana-6d6c864f76-859hs       1/1     Running   0          10s
-leaderboard-5cd7c966c5-9jvr9   1/1     Running   0          10s
-mockboard-6759556577-jb98n     1/1     Running   0          10s
-mockrover-665cd68d67-smsbm     1/1     Running   0          10s
-mongo-5465cc5bb9-gnvnt         1/1     Running   0          9s
-prometheus-74799df65-4nbxl     1/1     Running   0          9s
+client-76bc76b7b4-9qzm2        1/1     Running   0          20s
+gameservice-66857669fc-h24rr   1/1     Running   0          20s
+grafana-6d6c864f76-859hs       1/1     Running   0          20s
+leaderboard-5cd7c966c5-9jvr9   1/1     Running   0          20s
+mockboard-6759556577-jb98n     1/1     Running   0          20s
+mockrover-665cd68d67-smsbm     1/1     Running   0          20s
+mongo-5465cc5bb9-gnvnt         1/1     Running   0          19s
+prometheus-74799df65-4nbxl     1/1     Running   0          19s
 ```
 
 ## Testing your Cluster
