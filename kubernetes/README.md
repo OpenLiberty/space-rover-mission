@@ -2,18 +2,18 @@
 This document covers the process of configuring the OpenLiberty Space rover to user Kubernetes to manage it's services.
 
 ## Getting started with Kubernetes
-One of the easiest ways to work with Kubernetes locally is with Docker Desktop. In your Docker Desktop settings, you are able to enable your Kubernetes cluster.
+One of the easiest ways to work with Kubernetes locally is with Docker Desktop. In your Docker Desktop settings, you can enable a local Kubernetes cluster.
 
 Alternatively, another option for working with Kubernetes locally is *minikube*. If you are unfamiliar with *minikube*, then you can find the [documentation here](https://minikube.sigs.k8s.io/docs/start/).
 
 ## Building your Images for Kubernetes
-When running the Open Liberty Space Rover with Docker Compose, the service images are created in a build step within the Docker Compose file. This implies to use the images for Kubernetes you will have to rebuild all the images outside of the Docker Compose. You are welcome to do this by hand if you have customizations you wish to make, otherwise you can use the `buildServices.bat` or `buildServices.sh` scripts to build all of the images you will need. 
+When running the Open Liberty Space Rover with Docker Compose, the service images are created in a build step within the Docker Compose file. This implies that to use the images for Kubernetes you will have to build all the images manually. You are welcome to do this by hand if you have customizations you wish to make, otherwise we recommend you use the `buildServices.bat` or `buildServices.sh` scripts to build all of the images. 
 
-If you decide to use the build scripts, ensure you run the script from the Kubernetes directory.
+If you decide to use the build scripts, ensure you run the script from the `kubernetes` directory.
 
 After running the scripts you should see the following to indcate that you images are created.
 ```
-Your Images are Complete!
+Your images are complete!
 You can now apply your kubernetes files.
 ```
 
@@ -23,10 +23,10 @@ By default, the kubernetes files are configured to run from the local images you
 Otherwise, there shouldn't be any configuration needed to make sure that you services run properly in a Kubernetes cluster.
 
 ## Applying you Kubernetes Files to your Cluster
-Once you images are ready, you can now apply the Kubernetes files to your cluster.
-
-Firstly, ensure that your cluster is operating properly with the following command:
-```kubectl get nodes```
+After building you images, you can apply them to your cluster. Firstly, ensure that your cluster is operating properly with the following command:
+```
+kubectl get nodes
+```
 
 You should see the following:
 ```
@@ -35,10 +35,14 @@ docker-desktop   Ready    control-plane   22h   v1.24.2
 ```
 
 When you verify that your cluster is running, it is time to apply the `.yaml` files by navigating to the `services` directory and executing the following command:
-```kubectl apply -f ./k8s```
+```
+kubectl apply -f ./k8s
+```
 
 It takes roughly 20-30 seconds for the Kubernetes to create all the pods and the containers, so be patient. To check on their status you are able to run the following command:
-```kubectl get pods```
+```
+kubectl get pods
+```
 
 Once all of your pods are in `Running` status and your ouput looks like the following, then you are able to move onto testing your cluster.
 ```
