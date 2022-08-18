@@ -17,14 +17,14 @@ spec:
         app.service: mongo
     spec:
       containers:
-        - args:
-            - mongod
-          env:
+        # - args:
+            # - mongod
+        - env:
             - name: MONGO_INITDB_ROOT_PASSWORD
               value: openliberty
             - name: MONGO_INITDB_ROOT_USERNAME
               value: root
-          image: ca.icr.io/space-rover/mongo:latest
+          image: space-rover/mongo
           name: mongo
           ports:
             - containerPort: 27017
@@ -32,8 +32,8 @@ spec:
           volumeMounts:
             - mountPath: /data/db
               name: mongo-pvc-0
-      imagePullSecrets:
-        - name: space-rover
+          # Change Pull Policy for Remote Registry
+          imagePullPolicy: Never
       restartPolicy: Always
       volumes:
         - name: mongo-pvc-0

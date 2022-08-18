@@ -16,11 +16,12 @@ spec:
         app.service: client
     spec:
       containers:
-        - image: ca.icr.io/space-rover/client-test
+        # - image: ca.icr.io/space-rover/client-test
+        - image: space-rover/client
           name: client
           ports:
             - containerPort: 80
           resources: {}
-      imagePullSecrets:
-        - name: space-rover
+          # Change Pull Policy for Remote Registry
+          imagePullPolicy: Never
 status: {}

@@ -16,12 +16,12 @@ spec:
         app.service: mockrover
     spec:
       containers:
-        - image: ca.icr.io/space-rover/mockrover
+        - image: space-rover/rover
           name: mockrover
           ports:
             - containerPort: 5045
           resources: {}
-      imagePullSecrets:
-        - name: space-rover
+          # Change Pull Policy for Remote Registry
+          imagePullPolicy: Never
       restartPolicy: Always
 status: {}

@@ -19,12 +19,12 @@ spec:
       containers:
         - args:
             - --config.file=/etc/prometheus/prometheus.yml
-          image: ca.icr.io/space-rover/prometheus:latest
+          image: space-rover/prometheus:latest
           name: prometheus
           ports:
             - containerPort: 9090
           resources: {}
-      imagePullSecrets:
-        - name: space-rover
+          # Change Pull Policy for Remote Registry
+          imagePullPolicy: Never
       restartPolicy: Always
 status: {}

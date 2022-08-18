@@ -17,14 +17,14 @@ spec:
         app.service: grafana
     spec:
       containers:
-        - image: ca.icr.io/space-rover/grafana:latest
+        - image: space-rover/grafana
           name: grafana
           ports:
             - containerPort: 3000
           resources: {}
           securityContext:
             runAsUser: 1000
-      imagePullSecrets:
-        - name: space-rover
+          # Change Pull Policy for Remote Registry
+          imagePullPolicy: Never
       restartPolicy: Always
 status: {}

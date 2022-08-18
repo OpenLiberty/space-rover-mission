@@ -16,12 +16,13 @@ spec:
         app.service: gameservice
     spec:
       containers:
-        - image: ca.icr.io/space-rover/gameservice-test
+        # - image: ca.icr.io/space-rover/gameservice-test
+        - image: space-rover/gameservice
           name: gameservice
           ports:
             - containerPort: 9080
           resources: {}
-      imagePullSecrets:
-        - name: space-rover
+          # Change Pull Policy for Remote Registry
+          imagePullPolicy: Never
       restartPolicy: Always
 status: {}

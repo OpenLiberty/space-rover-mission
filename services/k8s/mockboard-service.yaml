@@ -8,7 +8,7 @@ spec:
   type: LoadBalancer
   ports:
     - name: "5045"
-      port: 5045
+      port: 5046
       targetPort: 5045
   selector:
     app.service: mockboard
