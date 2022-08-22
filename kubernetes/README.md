@@ -34,7 +34,7 @@ NAME             STATUS   ROLES           AGE   VERSION
 docker-desktop   Ready    control-plane   22h   v1.24.2
 ```
 
-When you verify that your cluster is running, it is time to apply the `.yaml` files by navigating to the `services` directory and executing the following command:
+Next, it is time to apply the `.yaml` files by navigating to the `services` directory and executing the following command:
 ```
 kubectl apply -f ./k8s
 ```

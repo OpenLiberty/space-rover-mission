@@ -16,7 +16,7 @@ spec:
         app.service: mockrover
     spec:
       containers:
-        - image: space-rover/rover
+        - image: space-rover/mockrover
           name: mockrover
           ports:
             - containerPort: 5045

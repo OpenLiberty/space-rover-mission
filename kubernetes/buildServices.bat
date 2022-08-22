@@ -1,41 +1,33 @@
 @echo off
 :: Build all the images
+
 :: client
-cd ../services/client
-docker build -t space-rover/client ^
+START /B /WAIT docker build -t space-rover/client ^
 --build-arg GAME_URL=http://localhost:9070/game ^
 --build-arg GAME_SOCKET_URL=ws://localhost:9070/roversocket ^
 --build-arg GAME_DURATION_SECONDS=120 ^
---build-arg LEADERBOARD_URL=http://localhost:9080/mongo/leaderboard .
+--build-arg LEADERBOARD_URL=http://localhost:9080/mongo/leaderboard ../services/client
 
 :: gameservice
-cd ../game
-docker build -t space-rover/gameservice .
+START /B /WAIT docker build -t space-rover/gameservice ../services/game
 
 :: leaderboard
-cd ../leaderboard
-docker build -t space-rover/leaderboard .
+START /B /WAIT docker build -t space-rover/leaderboard ../services/leaderboard
 
 :: mockboard (if applicable)
-cd ../mock/board
-docker build -t space-rover/mockboard .
+START /B /WAIT docker build -t space-rover/mockboard ../services/mock/board
 
 :: mockrover (if applicable)
-cd ../rover
-docker build -t space-rover/rover .
+START /B /WAIT docker build -t space-rover/mockrover ../services/mock/rover
 
 :: mongo
-cd ../../services/leaderboard/assets
-docker build -t space-rover/mongo .
+START /B /WAIT  docker build -t space-rover/mongo ../services/leaderboard/assets
 
 :: prometheus 
-cd ../../prometheus
-docker build -t space-rover/prometheus .
+START /B /WAIT docker build -t space-rover/prometheus ../services/prometheus
 
 :: grafana
-cd ../grafana
-docker build -t space-rover/grafana .
+START /B /WAIT docker build -t space-rover/grafana ../services/grafana
 
-cd ..
 echo Your Images are Complete!
 echo You can now apply your kubernetes files.

@@ -17,8 +17,6 @@ spec:
         app.service: mongo
     spec:
       containers:
-        # - args:
-            # - mongod
         - env:
             - name: MONGO_INITDB_ROOT_PASSWORD
               value: openliberty

@@ -8,6 +8,6 @@ spec:
   capacity:
     storage: 1Gi
   hostPath:
-    # Physical path of PV Storage, varies for OS.
+    # Physical path of PV Storage on your device running Kubernetes.
     # path: C:\data\mongo
     path: /opt/data/mongo
