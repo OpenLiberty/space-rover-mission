@@ -20,10 +20,31 @@ You can now apply your kubernetes files.
 ## Configuring you Kubernetes Files
 By default, the kubernetes files are configured to run from the local images you just built. Alternatively, you can place these images in a container registry such as IBM Container Registry or DockerHub.
 
-Otherwise, there shouldn't be any configuration needed to make sure that you services run properly in a Kubernetes cluster.
+The first piece configure is enabling the correct properties in `microprofile-config.properties`. To do this, navigate to `services\game\src\main\webapp\META-INF\microprofile-config.properties` where you will see two sets of properties as seen below, one for the physical rover and another for the mock rover.
+Ensure you uncomment the properties you wish to use and comment out the other set.
+```
+# Physical Hardware 
+io.openliberty.spacerover.ip=192.168.0.115
+io.openliberty.spacerover.port=5045
+io.openliberty.gameboard.ip=192.168.0.117
+io.openliberty.gameboard.port=5045
+
+# Test
+# io.openliberty.spacerover.ip=mockrover
+# io.openliberty.spacerover.port=5045
+# io.openliberty.gameboard.ip=mockboard
+# io.openliberty.gameboard.port=5046
+```
+
+Next ensure that the device running the Kubernetes cluster provides an available location to allocate it's persistent volume and configure so in the `mongo-pv.yaml` file. To do this, navigate to `services\k8s\mongo-pv.yaml` and provide an path to a folder on your device that you wish to allocate, as seen below. In addition, folder must already exist at runtime if you specify it.
+```
+hostPath:
+    # Provide the existing directory below to use as Persistent Volume.
+    path: /opt/data/mongo
+```
 
 ## Applying you Kubernetes Files to your Cluster
-After building you images, you can apply them to your cluster. Firstly, ensure that your cluster is operating properly with the following command:
+After your images are built and you have configured repo to your use case, you can apply them to your cluster. Firstly, ensure that your cluster is operating properly with the following command:
 ```
 kubectl get nodes
 ```
