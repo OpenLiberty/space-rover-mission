@@ -1,3 +1,4 @@
+#!/bin/bash
 # Build all the images
 # client
 docker build -t space-rover/client \
@@ -16,7 +17,7 @@ docker build -t space-rover/leaderboard ../services/leaderboard
 docker build -t space-rover/mockboard ../services/mock/board
 
 # mockrover (if applicable)
-docker build -t space-rover/rover ../services/mock/rover
+docker build -t space-rover/mockrover ../services/mock/rover
 
 # mongo
 docker build -t space-rover/mongo ../services/leaderboard/assets
