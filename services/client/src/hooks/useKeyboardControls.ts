@@ -9,6 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 import { useState, useEffect } from "react";
+import { GameState } from "./useGame";
 
 enum ArrowKeys {
   Left = "ArrowLeft",
@@ -25,7 +26,7 @@ enum Commands {
   Stop = "S",
 }
 
-const useKeyboardControls = (websocket: WebSocket | null) => {
+const useKeyboardControls = (websocket: WebSocket | null, gameState: GameState) => {
   const [leftActive, setLeftActive] = useState(false);
   const [rightActive, setRightActive] = useState(false);
   const [upActive, setUpActive] = useState(false);
@@ -36,6 +37,10 @@ const useKeyboardControls = (websocket: WebSocket | null) => {
   useEffect(() => {
     function keydownHandler(event: KeyboardEvent) {
       if (!websocket) {
+        return;
+      }
+
+      if (gameState !== GameState.InGame) {
         return;
       }
 
@@ -115,7 +120,7 @@ const useKeyboardControls = (websocket: WebSocket | null) => {
       window.removeEventListener("keydown", keydownHandler);
       window.removeEventListener("keyup", keyupHandler);
     };
-  }, [websocket, leftActive, rightActive, upActive, downActive, lastCommand]);
+  }, [websocket, leftActive, rightActive, upActive, downActive, lastCommand, gameState]);
 
   return { leftActive, rightActive, upActive, downActive };
 };

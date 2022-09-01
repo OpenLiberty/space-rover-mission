@@ -9,6 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 import { useEffect } from "react";
+import { GameState } from "./useGame";
 
 enum Commands {
   b = "BLU",
@@ -20,10 +21,14 @@ enum Commands {
 
 type K = keyof typeof Commands;
 
-const useKeyboardColours = (websocket: WebSocket | null) => {
+const useKeyboardColours = (websocket: WebSocket | null, gameState: GameState) => {
   useEffect(() => {
     function keydownHandler(event: KeyboardEvent) {
       if (!websocket) {
+        return;
+      }
+
+      if (gameState !== GameState.InGame) {
         return;
       }
 
@@ -40,7 +45,7 @@ const useKeyboardColours = (websocket: WebSocket | null) => {
     return () => {
       window.removeEventListener("keydown", keydownHandler);
     };
-  }, [websocket]);
+  }, [websocket, gameState]);
 };
 
 export default useKeyboardColours;
