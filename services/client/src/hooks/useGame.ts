@@ -77,8 +77,8 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
     stopTimer,
   } = useTimer(durationInSeconds);
 
-  useKeyboardColours(socket.current);
-  useKeyboardControls(socket.current);
+  useKeyboardColours(socket.current, gameState);
+  useKeyboardControls(socket.current, gameState);
 
   const gameModes = useGameModes();
 
