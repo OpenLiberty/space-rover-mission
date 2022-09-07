@@ -28,7 +28,7 @@ public class SuddenDeathGame extends Game {
 
 
 	@Override
-	protected String getGameMode() {
+	public String getGameMode() {
 		return Constants.INIT_GAME_SUDDEN_DEATH;
 	}
 }

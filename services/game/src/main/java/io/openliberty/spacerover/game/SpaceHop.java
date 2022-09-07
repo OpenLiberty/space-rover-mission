@@ -131,7 +131,7 @@ public class SpaceHop extends Game {
 	}
 
 	@Override
-	protected String getGameMode() {
+	public String getGameMode() {
 		return Constants.INIT_GAME_HOP;
 	}
 

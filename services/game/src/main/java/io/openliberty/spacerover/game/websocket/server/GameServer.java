@@ -144,22 +144,17 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		int gameMode = Integer.parseInt(properties[1]);
 		LOGGER.log(Level.INFO, "Start Game received for player ID: {0}, GameMode: {1}",
 				new Object[] { playerId, gameMode });
-		this.numberOfGamesPlayed++;
 		if (gameMode == Integer.parseInt(Constants.INIT_GAME_CLASSIC)) {
 			this.currentGame = new Game();
 			registerGameEventManager();
-			this.numberOfClassicGamesPlayed++;
 		} else if (gameMode == Integer.parseInt(Constants.INIT_GAME_HOP)) {
 			this.currentGame = new SpaceHop();
-			this.numberOfPlanetHopGamesPlayed++;
 			registerSpaceHopEventManager();
 		} else if (gameMode == Integer.parseInt(Constants.INIT_GAME_GUIDED)) {
 			this.currentGame = new GuidedGame();
-			this.numberOfGuidedGamesPlayed++;
 			registerGameEventManager();
 		} else if (gameMode == Integer.parseInt(Constants.INIT_GAME_SUDDEN_DEATH)) {
 			this.currentGame = new SuddenDeathGame();
-			this.numberOfSuddenDeathGamesPlayed++;
 			registerGameEventManager();
 		}
 		this.currentGame.startGameSession(playerId);
@@ -218,13 +213,33 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		} else {
 			LOGGER.log(Level.INFO, "Ending game from server side. {0}", this.currentGame);
 			GameScore leaderboardEntry = this.currentGame.getGameLeaderboardStat();
-
 			this.aggregateDamage += this.currentGame.getDamageTaken();
 			this.totalScorePoints += leaderboardEntry.getScore();
 			this.totalGameTimeInSeconds += leaderboardEntry.getTime();
 			this.getLeaderboard().updateLeaderboard(leaderboardEntry);
+			this.incrementGamesPlayed(this.currentGame.getGameMode());
 			this.sendTextToGuiSocket(Constants.END_GAME);
 		}
+	}
+
+	private void incrementGamesPlayed(String gameMode) {
+		switch (gameMode) {
+		case Constants.INIT_GAME_CLASSIC:
+			this.numberOfClassicGamesPlayed++;
+			break;
+		case Constants.INIT_GAME_GUIDED:
+			this.numberOfGuidedGamesPlayed++;
+			break;
+		case Constants.INIT_GAME_SUDDEN_DEATH:
+			this.numberOfSuddenDeathGamesPlayed++;
+			break;
+		case Constants.INIT_GAME_HOP:
+			this.numberOfPlanetHopGamesPlayed++;
+			break;
+		default: 
+			throw new IllegalStateException("Invalid Game mode Played: " + gameMode);
+		}
+		this.numberOfGamesPlayed++;
 	}
 
 	@Override
@@ -293,10 +308,10 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 				LOGGER.log(Level.INFO, "Unknown Message received <{0}>", msgID);
 			}
 			this.stateMachine.incrementState(msgID);
-		}
 
-		if (!msgID.equals(Constants.END_GAME)) {
-			connectGamePieces();
+			if (!msgID.equals(Constants.END_GAME)) {
+				connectGamePieces();
+			}
 		}
 	}
 
