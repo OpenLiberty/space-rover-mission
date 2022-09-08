@@ -192,7 +192,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(application_totalScore[1d])/rate(application_totalNumberOfGames[1d])",
+          "expr": "application_totalScore/application_totalNumberOfGames",
           "interval": "",
           "legendFormat": "Score",
           "queryType": "randomWalk",
@@ -292,7 +292,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(application_totalDamage[1d]) / rate(application_totalNumberOfGames[1d])",
+          "expr": "application_totalDamage / application_totalNumberOfGames",
           "interval": "",
           "legendFormat": "Damage Average",
           "queryType": "randomWalk",
@@ -392,7 +392,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(application_timeInGame_seconds[1d])/rate(application_totalNumberOfGames[1d])",
+          "expr": "application_timeInGame_seconds/application_totalNumberOfGames",
           "interval": "",
           "legendFormat": "Game length seconds",
           "queryType": "randomWalk",
