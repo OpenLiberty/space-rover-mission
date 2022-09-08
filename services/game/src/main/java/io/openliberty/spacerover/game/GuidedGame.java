@@ -45,7 +45,7 @@ public class GuidedGame extends Game {
 	}
 
 	@Override
-	protected String getGameMode() {
+	public String getGameMode() {
 		return Constants.INIT_GAME_GUIDED;
 	}
 }

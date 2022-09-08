@@ -133,7 +133,7 @@ public class Game {
 		return currScore;
 	}
 
-	protected String getGameMode() {
+	public String getGameMode() {
 		return Constants.INIT_GAME_CLASSIC;
 	}
 
