@@ -47,9 +47,9 @@ services:
         build:
             context: ./client
             args:
-                - GAME_URL=http://localhost:9070/game
-                - GAME_SOCKET_URL=ws://localhost:9070/roversocket
+                - GAME_URL=http://128.168.141.145:9070/game
+                - GAME_SOCKET_URL=ws://128.168.141.145:9070/roversocket
                 - GAME_DURATION_SECONDS=120
-                - LEADERBOARD_URL=http://localhost:9080/mongo/leaderboard
+                - LEADERBOARD_URL=http://128.168.141.145:9080/mongo/leaderboard
         ports:
             - "3000:80"
