@@ -1,0 +1,13 @@
+services:
+    rover:
+        image: nginx
+        volumes:
+            - /home/space-sentry/git/space-rover-mission/nginx/nginx_rover.conf:/etc/nginx/nginx.conf
+        ports:
+            - "5045:5045"
+    board:
+        image: nginx
+        volumes:
+            - /home/space-sentry/git/space-rover-mission/nginx/nginx_board.conf:/etc/nginx/nginx.conf
+        ports:
+            - "5047:5047"
