@@ -67,7 +67,7 @@ The Game Map is the physical game board which the Space Rover roams on. It emits
 
 #### Jakarta EE 9.1
 - [RESTful Web Services (JAX-RS) 3.0](https://jakarta.ee/specifications/restful-ws/)
-    -	Used REST endpoints for interfacing with the leaderboard.
+    -	Used for REST endpoints to interface with the leaderboard service.
     -	HTTP GET endpoint used to retrieve stats from MongoDB container.
     -	HTTP POST to update MongoDB with new statistics.
 - [Context Dependency Injection (CDI) 3.0](https://jakarta.ee/specifications/cdi/3.0/)
