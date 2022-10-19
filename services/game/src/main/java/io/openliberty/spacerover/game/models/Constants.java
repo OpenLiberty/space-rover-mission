@@ -56,10 +56,8 @@ public class Constants {
 	public static final String GAME_MODE_NAME_SUDDENDEATH = "Sudden Death";
 	public static final String GAME_MODE_DESC_CLASSIC = "Visit all the planets in any order.";
 	public static final String GAME_MODE_DESC_GUIDED = "Visit planets in specified order.";
-	public static final String GAME_MODE_DESC_SUDDENDEATH= "Instant death Classic mode.";
-	public static final String GAME_MODE_DESC_PLANET_HOP= "Whack-a-mole with planets.";
-	
-	
+	public static final String GAME_MODE_DESC_SUDDENDEATH = "Instant death Classic mode.";
+	public static final String GAME_MODE_DESC_PLANET_HOP = "Whack-a-mole with planets.";
 
 	public static final Set<String> SUN_RFID_IDENTIFIERS = new HashSet<>(
 			List.of("04 37 9A 02 EC 6E 81", "04 3F 9A 02 EC 6E 81", "04 47 9A 02 EC 6E 81", "04 4F 9A 02 EC 6E 81",
@@ -72,6 +70,19 @@ public class Constants {
 					"04 5F 9B 02 EC 6E 80", "04 94 9A 02 EC 6E 80", "04 32 9B 02 EC 6E 81", "04 27 9A 02 EC 6E 81",
 					"04 F6 A7 02 EC 6E 80", "04 D8 A7 02 EC 6E 80", "04 04 AA 02 EC 6E 81", "04 0E A9 02 EC 6E 81",
 					"04 2A 9B 02 EC 6E 81", "04 22 9B 02 EC 6E 81", "04 1A 9B 02 EC 6E 81", "04 0E 9C 02 EC 6E 81",
-					"04 06 9C 02 EC 6E 81", "04 FC 9C 02 EC 6E 80", "04 F4 9C 02 EC 6E 80"));
+					"04 06 9C 02 EC 6E 81", "04 FC 9C 02 EC 6E 80", "04 F4 9C 02 EC 6E 80",
+					// Gameboard 3
+					"04 20 AD 02 EC 6E 80", "04 18 AD 02 EC 6E 80", "04 0C AC 02 EC 6E 80", "04 14 AB 02 EC 6E 80",
+					"04 1B AC 02 EC 6E 80", "04 23 AC 02 EC 6E 80", "04 28 AD 02 EC 6E 80", "04 8D AA 02 EC 6E 80",
+					"04 AE A9 02 EC 6E 80", "04 95 AA 02 EC 6E 80", "04 A4 A8 02 EC 6E 80", "04 9C A8 02 EC 6E 80",
+					"04 4E AA 02 EC 6E 80", "04 46 AA 02 EC 6E 80", "04 B6 A9 02 EC 6E 80", "04 BE A9 02 EC 6E 80",
+					"04 C6 A9 02 EC 6E 80", "04 C7 AA 02 EC 6E 80", "04 BF AA 02 EC 6E 80", "04 51 AD 02 EC 6E 80",
+					"04 64 AC 02 EC 6E 80", "04 59 AD 02 EC 6E 80", "04 62 AD 02 EC 6E 80", "04 3F AE 02 EC 6E 80",
+					"04 47 AB 02 EC 6E 80", "04 4F AB 02 EC 6E 80", "04 57 AB 02 EC 6E 80", "04 5F AB 02 EC 6E 80",
+					"04 66 AA 02 EC 6E 80", "04 55 D8 02 EC 6E 81", "04 56 AA 02 EC 6E 80", "04 39 AF 02 EC 6E 80",
+					"04 41 AF 02 EC 6E 80", "04 48 AE 02 EC 6E 80", "04 50 AE 02 EC 6E 80", "04 58 AE 02 EC 6E 80",
+					"04 3D AC 02 EC 6E 80", "04 45 AD 02 EC 6E 80", "04 54 AC 02 EC 6E 80", "04 4C AC 02 EC 6E 80",
+					"04 5C AC 02 EC 6E 80", "04 33 AC 02 EC 6E 80", "04 76 AB 02 EC 6E 80", "04 60 AE 02 EC 6E 80",
+					"04 58 AE 02 EC 6E 80", "04 76 AB 02 EC 6E 80", "04 6A AF 02 EC 6E 80", "04 6E AB 02 EC 6E 80"));
 
 }
