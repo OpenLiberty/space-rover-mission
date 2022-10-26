@@ -30,7 +30,7 @@ function Test-GameServerHealth {
 }
 
 docker-compose -f services/docker-compose.yml down
-docker-compose -f services/docker-compose.yml up --build -d
+docker-compose -f services/docker-compose.yml up -d
 
 $VenvPath = "$env:TEMP\space-rover-venv"
 if (-not(Test-Path -Path $VenvPath -PathType Leaf)) {
@@ -50,5 +50,3 @@ while (-not(Test-GameServerHealth)) {
 python gestures/openCV_implementation/src/GestureRecognitionCVv2.py
 
 deactivate
-
-docker-compose -f services/docker-compose.yml down

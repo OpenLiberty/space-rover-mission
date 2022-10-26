@@ -19,7 +19,7 @@
 #####################################################################################
 
 docker-compose -f services/docker-compose.yml down
-docker-compose -f services/docker-compose.yml up --build -d
+docker-compose -f services/docker-compose.yml up -d
 if [ ! -d /tmp/space-rover-venv ]
 then
 	echo "Creating venv for space rover gesture control service in /tmp/space-rover-venv"
@@ -36,5 +36,4 @@ done
 
 python3 gestures/openCV_implementation/src/GestureRecognitionCVv2.py
 
-docker-compose -f services/docker-compose.yml down
 
