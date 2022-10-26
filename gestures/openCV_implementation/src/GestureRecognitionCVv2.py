@@ -23,7 +23,7 @@ import sys
 
 print("Starting to connect")
 #uri = "ws://192.168.0.101:9070/roversocket"
-uri = "ws://localhost:9070/roversocket"
+URI = "ws://localhost:9070/roversocket"
 
 # Asynchronously try to connect to the server
 
@@ -34,14 +34,13 @@ def main():
 
     while connecting:
         try:
-            done, pending = yield from asyncio.wait([websockets.connect(uri)])
+            done, pending = yield from asyncio.wait([websockets.connect(URI)])
             # assert not pending
             future, = done
             print(future.result())
         except:
             print("Unable to connect to the machine")
             time.sleep(5)
-            res = None
         else:
             connecting = False
 
@@ -51,44 +50,30 @@ asyncio.get_event_loop().run_until_complete(main())
 
 
 async def repl():
-    async with websockets.connect(uri) as websocket:
+    async with websockets.connect(URI) as websocket:
 
         # Send successful connection message to the server
         print("Connected")
         await websocket.send("connectGesture")
 
         # Speed Control parameters for the Rover
-        slowParamForwardReverse = 20
-        slowParamLeftRight = 15
-        previous = "S" * slowParamForwardReverse
+        previous = "S"
 
         # Font
         font = cv2.FONT_HERSHEY_SIMPLEX
 
         # Set up for fps counter
-        fpsCounter = cvzone.FPS()
-        windowName = "Hand Gesture Recognition Live Capture"
-        is_windows = sys.platform.startswith('win')
+        fps_counter = cvzone.FPS()
+        window_name = "Hand Gesture Recognition Live Capture"
 
-        # Start video stream from your computer camera
-        if is_windows:
-            # On Windows, use WINDOW_NORMAL as resizing does not work on cv2 on Windows at the time this was written.
-            capture = cv2.VideoCapture(0)
+        # Use default capture device with default rendering
+        capture = cv2.VideoCapture(0)
+        # Window name
+        cv2.namedWindow(window_name, cv2.WND_PROP_AUTOSIZE)
 
-            # Window name
-            cv2.namedWindow(windowName, cv2.WINDOW_NORMAL)
-
-            # Show the screen capture as full screen
-            cv2.setWindowProperty(windowName, cv2.WND_PROP_FULLSCREEN,
-                                  cv2.WINDOW_FULLSCREEN)
-        else:
-            # On non-Windows systems use AUTOSIZE window with default webcam resolution.
-            capture = cv2.VideoCapture(0)
-            # Window name
-            cv2.namedWindow(windowName, cv2.WND_PROP_AUTOSIZE)
-            # Show the screen capture as full screen
-            cv2.setWindowProperty(windowName, cv2.WND_PROP_FULLSCREEN,
-                                  cv2.WINDOW_FULLSCREEN)
+        # set to full screen on all OS
+        cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN,
+                              cv2.WINDOW_FULLSCREEN)
 
         # Use 720 manual setting for the webcam. Static resolution values are used below so we must keep the
         # video feed constant.
@@ -98,11 +83,10 @@ async def repl():
         detector = HandDetector(detectionCon=0.6, minTrackCon=0.6, maxHands=1)
 
         # Capture continuous video
-        i = 1
         while True:
 
             # Get image frame
-            ret, image = capture.read()  # read from the video
+            _, image = capture.read()  # read from the video
 
             # Get interruption key from keyboard
             k = cv2.waitKey(1)  # get input from keyboard
@@ -111,7 +95,7 @@ async def repl():
             cv2image1 = cv2.flip(image, 1)
 
             # Show FPS on screen
-            fps, img = fpsCounter.update(cv2image1, pos=(
+            _, img = fps_counter.update(cv2image1, pos=(
                 50, 80), color=(0, 255, 0), scale=3, thickness=3)
 
             # Find the hand and its landmarks
@@ -122,8 +106,6 @@ async def repl():
                 hand1 = hands[0]
                 lmList1 = hand1["lmList"]  # List of 21 Landmark points
                 bbox1 = hand1["bbox"]  # Bounding box info x,y,w,h
-                centerPoint1 = hand1['center']  # center of the hand cx,cy
-                handType1 = hand1["type"]  # Handtype Left or Right
 
                 handXmin = bbox1[0]
                 handXmax = bbox1[0] + bbox1[2]
@@ -131,7 +113,6 @@ async def repl():
                 handYmax = bbox1[1] + bbox1[3]
                 handBoxW = bbox1[2]
                 handBoxH = bbox1[3]
-                fingers1 = detector.fingersUp(hand1)
 
                 # Prevent the user from standing too far
                 if handBoxW * handBoxH < 4000:
@@ -150,97 +131,24 @@ async def repl():
                     # print(lmList1)
 
                     # Index finger
-                    indexLength, indexInfo = detector.findDistance(
+                    _, index_info = detector.findDistance(
                         lmList1[8][0:2], lmList1[5][0:2])  # with draw
 
                     # Second finger
-                    secondLength, secondInfo = detector.findDistance(
+                    _, second_info = detector.findDistance(
                         lmList1[12][0:2], lmList1[9][0:2])  # with draw
-
-                    # print(fingers1)
-
-                    # Go Forward:
-                    if ((indexInfo[3] - indexInfo[1] > 75) and (secondInfo[3] - secondInfo[1] > 75) and (abs(indexInfo[2] - indexInfo[0]) < 75) and (abs(secondInfo[2] - secondInfo[0]) < 75)):
-                        cv2.putText(img, 'Signal Detected: Go Forward',
-                                    (465, 140), font, 1.2, (255, 100, 0), 2, cv2.LINE_AA)
-                        print('Go Forward')
-                        if "F" in previous:
-                            print('Software skipping')
-                            previous = previous[1:] + "S"
-                        else:
-                            previous = previous[1:] + "F"
-                            print(previous)
-                            await websocket.send("F")
-
-                    # Reverse:
-                    elif ((indexInfo[1] - indexInfo[3] > 75) and (secondInfo[1] - secondInfo[3] > 75) and (abs(indexInfo[2] - indexInfo[0]) < 50) and (abs(secondInfo[2] - secondInfo[0]) < 50)):
-                        cv2.putText(img, 'Signal Detected: Reverse', (465, 140),
-                                    font, 1.2, (255, 100, 0), 2, cv2.LINE_AA)
-                        print('Reverse')
-                        if "B" in previous:
-                            print('Software skipping')
-                            previous = previous[1:] + "S"
-                        else:
-                            previous = previous[1:] + "B"
-                            print(previous)
-                            await websocket.send("B")
-
-                    # Turn Left:
-                    elif ((indexInfo[2] - indexInfo[0] > 50) and (secondInfo[2] - secondInfo[0] > 50)):
-                        cv2.putText(img, 'Signal Detected: Turn Left',
-                                    (465, 140), font, 1.2, (255, 100, 0), 2, cv2.LINE_AA)
-                        print('Turn Left')
-                        if "L" in previous[-slowParamLeftRight:]:
-                            print('Software skipping')
-                            previous = previous[1:] + "S"
-                        else:
-                            previous = previous[1:] + "L"
-                            print(previous)
-                            await websocket.send("L")
-
-                    # Turn Right:
-                    elif ((indexInfo[0] - indexInfo[2] > 50) and (secondInfo[0] - secondInfo[2] > 50)):
-                        cv2.putText(img, 'Signal Detected: Turn Right',
-                                    (465, 140), font, 1.2, (255, 100, 0), 2, cv2.LINE_AA)
-                        print('Turn Right')
-                        if "R" in previous[-slowParamLeftRight:]:
-                            print('Software skipping')
-                            previous = previous[1:] + "S"
-                        else:
-                            previous = previous[1:] + "R"
-                            print(previous)
-                            await websocket.send("R")
-
-                    # Stop Moving
-                    elif ((fingers1 == [0, 0, 0, 0, 0]) or (fingers1 == [1, 0, 0, 0, 0]) or (fingers1 == [1, 1, 1, 1, 1]) or (fingers1 == [0, 1, 1, 1, 1])):
-                        cv2.putText(img, 'Signal Detected: Stop Moving',
-                                    (465, 140), font, 1.2, (255, 100, 0), 2, cv2.LINE_AA)
-                        print('Stop Moving')
-                        previous = previous[1:] + "S"
-                        print(previous)
-                        await websocket.send("S")
-
-                    # Unsure
-                    else:
-                        cv2.putText(img, 'Unrecognized gesture. Stoping Car.',
-                                    (465, 140), font, 1.2, (255, 100, 0), 2, cv2.LINE_AA)
-                        print('Car stopped Moving')
-                        previous = previous[1:] + "S"
-                        print(previous)
-                        await websocket.send("S")
+                    network_msg, human_msg = get_direction_msg(
+                        index_info, second_info)
+                    cv2.putText(img, f'Gesture Detected: {human_msg}',
+                                (465, 140), font, 1.2, (255, 100, 0), 2, cv2.LINE_AA)
+                    previous = await send_msg_if_not_previous(websocket, previous, network_msg)
 
             else:
                 # If the user's hand leaves the camera, send the stop signal
                 cv2.putText(img, 'Display your hand in the camera',
                             (400, 140), font, 0.9, (255, 0, 0), 3, cv2.LINE_AA)
 
-                if previous[-1] != "S":
-                    print('Stop Moving')
-                    previous = previous[1:] + "S"
-                    print(previous)
-                    await websocket.send("S")
-
-            cv2.imshow(windowName, img)
+            cv2.imshow(window_name, img)
 
             if k == 27:  # Press 'Esc' key to exit
                 # await websocket.send("Hand Gesture Control connection closed.")
@@ -252,6 +160,31 @@ async def repl():
         cv2.destroyAllWindows()
         # Disable your camera
         capture.release()
+
+
+async def send_msg_if_not_previous(websocket, previous_msg, msg):
+    '''Sends msg to the websocket so long as it is not the same string as 'previous_msg' '''
+    if msg != previous_msg:
+        await websocket.send(msg)
+        print("Sent message", msg)
+        previous_msg = msg
+    return previous_msg
+
+
+def get_direction_msg(first_finger_index, second_finger_index):
+    '''Returns the network message and human readable direction given the first finger and second finger index information based on 720p resolution'''
+    if (first_finger_index[3] - first_finger_index[1] > 75) and (second_finger_index[3] - second_finger_index[1] > 75) and (abs(first_finger_index[2] - first_finger_index[0]) < 75) and (abs(second_finger_index[2] - second_finger_index[0]) < 75):
+        msg = "F", "Forward"
+    elif ((first_finger_index[1] - first_finger_index[3] > 75) and (second_finger_index[1] - second_finger_index[3] > 75) and (abs(first_finger_index[2] - first_finger_index[0]) < 50) and (abs(second_finger_index[2] - second_finger_index[0]) < 50)):
+        msg = "B", "Reverse"
+    elif (first_finger_index[2] - first_finger_index[0] > 50) and (second_finger_index[2] - second_finger_index[0] > 50):
+        msg = "L", "Left"
+    elif (first_finger_index[0] - first_finger_index[2] > 50) and (second_finger_index[0] - second_finger_index[2] > 50):
+        msg = "R", "Right"
+    else:
+        msg = "S", "Stop"
+    return msg
+
 
 # Run the Hand Gesture Recognition ascynchronously after the connection works
 asyncio.get_event_loop().run_until_complete(repl())
