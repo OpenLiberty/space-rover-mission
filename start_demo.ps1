@@ -49,3 +49,6 @@ while (-not(Test-GameServerHealth)) {
 
 python gestures/openCV_implementation/src/GestureRecognitionCVv2.py
 
+deactivate
+
+docker-compose -f services/docker-compose.yml down

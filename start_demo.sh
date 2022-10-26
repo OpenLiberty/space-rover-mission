@@ -35,3 +35,6 @@ do
 done
 
 python3 gestures/openCV_implementation/src/GestureRecognitionCVv2.py
+
+docker-compose -f services/docker-compose.yml down
+
