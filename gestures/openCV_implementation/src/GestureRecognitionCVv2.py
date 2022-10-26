@@ -25,6 +25,7 @@ print("Starting to connect")
 #uri = "ws://192.168.0.101:9070/roversocket"
 URI = "ws://localhost:9070/roversocket"
 
+
 # Asynchronously try to connect to the server
 
 
@@ -34,7 +35,9 @@ def main():
 
     while connecting:
         try:
+
             done, pending = yield from asyncio.wait([websockets.connect(URI)])
+
             # assert not pending
             future, = done
             print(future.result())
@@ -74,6 +77,7 @@ async def repl():
         # set to full screen on all OS
         cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN,
                               cv2.WINDOW_FULLSCREEN)
+
 
         # Use 720 manual setting for the webcam. Static resolution values are used below so we must keep the
         # video feed constant.
