@@ -23,7 +23,7 @@ docker-compose -f services/docker-compose.yml up -d
 if [ ! -d /tmp/space-rover-venv ]
 then
 	echo "Creating venv for space rover gesture control service in /tmp/space-rover-venv"
-	python3 -m venv /tmp/space-rover-venv
+	python3.7 -m venv /tmp/space-rover-venv
 fi
 source /tmp/space-rover-venv/bin/activate
 pip install -r gestures/openCV_implementation/src/requirements.txt

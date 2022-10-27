@@ -36,7 +36,7 @@ $VenvPath = "$env:TEMP\space-rover-venv"
 if (-not(Test-Path -Path $VenvPath -PathType Leaf)) {
 
 	echo "Creating venv for space rover gesture control service in $env:TEMP\space-rover-venv"
-	python3 -m venv $VenvPath
+	python3.7 -m venv $VenvPath
 }
 
 & "$VenvPath\Scripts\Activate.ps1"
