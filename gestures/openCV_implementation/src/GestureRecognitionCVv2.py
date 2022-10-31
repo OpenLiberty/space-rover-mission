@@ -57,7 +57,6 @@ async def repl():
 
         # Send successful connection message to the server
         print("Connected")
-        # await websocket.send("connectGesture")
 
         # Speed Control parameters for the Rover
         previous = "S"
