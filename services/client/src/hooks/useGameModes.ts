@@ -10,7 +10,6 @@
  *******************************************************************************/
 import axios from "axios";
 import { useQuery } from "react-query";
-import { gameURL } from "lib/config";
 
 export type GameMode = {
   id: number;
@@ -19,7 +18,7 @@ export type GameMode = {
 };
 
 const getGameModes = async () => {
-  const { data } = await axios.get<GameMode[]>(`${gameURL}/modes`);
+  const { data } = await axios.get<GameMode[]>(`/api/game/modes`);
   return data;
 };
 

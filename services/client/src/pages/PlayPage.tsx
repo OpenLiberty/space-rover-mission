@@ -14,7 +14,7 @@ import PlayerForm from "components/PlayerForm";
 import GameScreen from "components/GameScreen";
 import GameStateMessage from "components/GameStateMessage";
 import useGame, { GameState } from "hooks/useGame";
-import { gameSocketURL, gameDurationSeconds } from "lib/config";
+import { gameDurationSeconds } from "lib/config";
 
 const PlayPage = () => {
   const {
@@ -27,7 +27,7 @@ const PlayPage = () => {
     score,
     startGame,
     error,
-  } = useGame(gameSocketURL, gameDurationSeconds);
+  } = useGame(gameDurationSeconds);
 
   switch (gameState) {
     case GameState.Connecting:

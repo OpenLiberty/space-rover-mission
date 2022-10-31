@@ -49,7 +49,7 @@ const formatMessage = (event: Event, data: string = "") => {
   return `${event}${MSG_DELMITER}${data}`;
 };
 
-const useGame = (gameSocketURL: string, durationInSeconds: number) => {
+const useGame = (durationInSeconds: number) => {
   const [gameState, setGameState] = useState(GameState.Connecting);
 
   const socket = useRef<WebSocket | null>(null);
@@ -84,13 +84,13 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
 
   // setup socket
   useEffect(() => {
-    socket.current = new WebSocket(gameSocketURL);
+    socket.current = new WebSocket(`ws://${window.location.host}/api/game_socket`);
 
     return () => {
       socket.current?.close();
       socket.current = null;
     };
-  }, [gameSocketURL]);
+  }, []);
 
   // update socket handlers
   useEffect(() => {

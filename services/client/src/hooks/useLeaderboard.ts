@@ -11,7 +11,6 @@
 import { useMemo } from "react";
 import axios from "axios";
 import { useQuery } from "react-query";
-import { leaderboardURL } from "lib/config";
 
 export type LeaderboardEntry = {
   rank: number;
@@ -23,7 +22,7 @@ export type LeaderboardEntry = {
 };
 
 const getLeaderboard = async (gameMode: string) => {
-  const { data } = await axios.get<LeaderboardEntry[]>(`${leaderboardURL}/${gameMode}`);
+  const { data } = await axios.get<LeaderboardEntry[]>(`/api/leaderboard/${gameMode}`);
   data.forEach((entry, i) => {
     entry.rank = i + 1;
   });
