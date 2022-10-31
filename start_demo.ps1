@@ -11,7 +11,7 @@
 
 #####################################################################################
 # Pre-requisites: 
-# Must have python 3.4 installed and 'python3' in your PATH
+# Must have python 3.7 installed and 'python3.7' in your PATH
 # Must have docker-compose on PATH
 # Must have docker service running
 #####################################################################################
@@ -30,13 +30,13 @@ function Test-GameServerHealth {
 }
 
 docker-compose -f services/docker-compose.yml down
-docker-compose -f services/docker-compose.yml up --build -d
+docker-compose -f services/docker-compose.yml up -d
 
 $VenvPath = "$env:TEMP\space-rover-venv"
 if (-not(Test-Path -Path $VenvPath -PathType Leaf)) {
 
 	echo "Creating venv for space rover gesture control service in $env:TEMP\space-rover-venv"
-	python3 -m venv $VenvPath
+	python3.7 -m venv $VenvPath
 }
 
 & "$VenvPath\Scripts\Activate.ps1"
@@ -49,3 +49,4 @@ while (-not(Test-GameServerHealth)) {
 
 python gestures/openCV_implementation/src/GestureRecognitionCVv2.py
 
+deactivate
