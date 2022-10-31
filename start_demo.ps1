@@ -11,7 +11,7 @@
 
 #####################################################################################
 # Pre-requisites: 
-# Must have python 3.4 installed and 'python3' in your PATH
+# Must have python 3.7 installed and 'python3.7' in your PATH
 # Must have docker-compose on PATH
 # Must have docker service running
 #####################################################################################
