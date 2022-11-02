@@ -14,12 +14,12 @@
 /**********************
   Wheel DC Motor PINS
 ***********************/
-#define ENABLE_A 14 // Control Speed of Left Motors
-#define INPUT_1  15 // Left motors
-#define INPUT_2  13 // Left motors
-#define INPUT_3  2 // Right motors
-#define INPUT_4  0 // Right motors
-#define ENABLE_B 12 // Control Speed of Right Motors
+#define ENABLE_A 14 // D5 - Control Speed of Left Motors
+#define INPUT_1  15 // D8 - Left motors
+#define INPUT_2  13 // D7 - Left motors
+#define INPUT_3  2 // D4 - Right motors
+#define INPUT_4  0 // D3 - Right motors
+#define ENABLE_B 12 // D6 - Control Speed of Right Motors
 
 #include <ESP8266WiFi.h>
 #include <WebSocketsServer.h>
@@ -31,7 +31,7 @@ WebSocketsServer webSocket = WebSocketsServer(5045);
   VARIABLES
 ************/
 char ssid[] = "OL_DEMO";  // Dedicated WiFi local network for demo.
-char pass[] = "######"; // UPDATE WI-FI PASSWORD
+char pass[] = "#######"; // UPDATE WI-FI PASSWORD
 
 // Serial Communication between Arduino and NodeMCU
 const byte numChars = 32;
@@ -41,16 +41,21 @@ boolean newData = false;
 // Websocket variables
 uint8_t ws_num = 0;
 
-// Set the Rover speed
-int roverSpeed = 230; //135,195,215,245
+// Set the Overall Rover speed
+int roverSpeed = 200; //230
 
-// Set the Rover speed
-int rover_FW_BW_Speed = 80; //74,85
+// Set the Forward and Backward Rover speed
+int rover_FW_BW_Speed = 115; //105, 115
+
+// Set the Turning Rover speed
+int rover_L_R_Speed = 165; //135
 
 // Color detected
 boolean isColorDetected = false;
 String colorDetected = "NC";
 
+// Rover Headlights
+const int ROVER_HEADLIGHTS = 5;
 
 /*********************************
     GAME CONFIGURATION
@@ -59,16 +64,16 @@ bool isGameStarted = false;
 
 void setup()
 {
-    // Serial UART Communication between Arduino and NodeMCU module
-   Serial.begin(115200);
+  // Serial UART Communication between Arduino and NodeMCU module
+  Serial.begin(115200);
 
-   // DC motor pins assignment
-   pinMode(ENABLE_A, OUTPUT);
-   pinMode(ENABLE_B, OUTPUT);  
-   pinMode(INPUT_1, OUTPUT);
-   pinMode(INPUT_2, OUTPUT);
-   pinMode(INPUT_3, OUTPUT);
-   pinMode(INPUT_4, OUTPUT);
+  // DC motor pins assignment
+  pinMode(ENABLE_A, OUTPUT);
+  pinMode(ENABLE_B, OUTPUT);  
+  pinMode(INPUT_1, OUTPUT);
+  pinMode(INPUT_2, OUTPUT);
+  pinMode(INPUT_3, OUTPUT);
+  pinMode(INPUT_4, OUTPUT);
  
   // Connect to Wifi
   WiFi.begin(ssid,pass);
@@ -166,13 +171,13 @@ void moveForward(){
     if (isGameStarted) {
         analogWrite(ENABLE_A, roverSpeed);
         analogWrite(ENABLE_B, roverSpeed);
-      
-        analogWrite(INPUT_1, 0);
-        analogWrite(INPUT_2, rover_FW_BW_Speed);
 
-        analogWrite(INPUT_3, 0);
-        analogWrite(INPUT_4, rover_FW_BW_Speed);
-    }    
+        analogWrite(INPUT_1, rover_FW_BW_Speed);
+        analogWrite(INPUT_2, 0);
+
+        analogWrite(INPUT_3, rover_FW_BW_Speed);
+        analogWrite(INPUT_4, 0);
+    }     
   }
 
 void moveBackward(){ 
@@ -180,25 +185,25 @@ void moveBackward(){
         analogWrite(ENABLE_A, roverSpeed);
         analogWrite(ENABLE_B, roverSpeed);
 
-        analogWrite(INPUT_1, rover_FW_BW_Speed);
-        analogWrite(INPUT_2, 0);
+        analogWrite(INPUT_1, 0);
+        analogWrite(INPUT_2, rover_FW_BW_Speed);
 
-        analogWrite(INPUT_3, rover_FW_BW_Speed);
-        analogWrite(INPUT_4, 0);
-    }       
+        analogWrite(INPUT_3, 0);
+        analogWrite(INPUT_4, rover_FW_BW_Speed);
+    }      
   }
 
 void moveRight(){
     if (isGameStarted) { 
         analogWrite(ENABLE_A, roverSpeed);
         analogWrite(ENABLE_B, roverSpeed);
-      
-        digitalWrite(INPUT_1, LOW);
-        digitalWrite(INPUT_2, HIGH);
-      
-        digitalWrite(INPUT_3, HIGH);
-        digitalWrite(INPUT_4, LOW);
-    }        
+
+        analogWrite(INPUT_1, 0);
+        analogWrite(INPUT_2, rover_L_R_Speed);
+
+        analogWrite(INPUT_3, rover_L_R_Speed);
+        analogWrite(INPUT_4, 0);
+    }     
   }
 
 void moveLeft(){
@@ -206,12 +211,12 @@ void moveLeft(){
         analogWrite(ENABLE_A, roverSpeed);
         analogWrite(ENABLE_B, roverSpeed);
 
-        digitalWrite(INPUT_1, HIGH);
-        digitalWrite(INPUT_2, LOW);
-      
-        digitalWrite(INPUT_3, LOW);
-        digitalWrite(INPUT_4, HIGH);
-    }        
+        analogWrite(INPUT_1, rover_L_R_Speed);
+        analogWrite(INPUT_2, 0);
+
+        analogWrite(INPUT_3, 0);
+        analogWrite(INPUT_4, rover_L_R_Speed);
+    }
   }
 
 void stopRover(){  
