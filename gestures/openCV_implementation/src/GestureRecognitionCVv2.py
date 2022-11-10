@@ -150,6 +150,7 @@ async def repl():
                 # If the user's hand leaves the camera, send the stop signal
                 cv2.putText(img, 'Display your hand in the camera',
                             (400, 140), font, 0.9, (255, 0, 0), 3, cv2.LINE_AA)
+                previous = await send_msg_if_not_previous(websocket, previous, "S")
 
             cv2.imshow(window_name, img)
 
