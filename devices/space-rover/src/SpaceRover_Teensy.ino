@@ -21,6 +21,7 @@ MFRC522 rfid(SS_SPI, RST);
 
 // Rover Headlights
 const int ROVER_HEADLIGHTS = 7;
+const int ROVER_HEADLIGHTS_RED = 5;
 
 /***********
   VARIABLES
@@ -31,12 +32,12 @@ char receivedMsg[numChars];
 boolean newData = false;
 
 // Color RFID HEX
-String BLUE_COLOR = "8C 31 27 36"; //TEST
-String GREEN_COLOR = "7C A1 36 3D"; //TEST
-//String BLUE_COLOR = "DC D0 D4 5B";
-//String GREEN_COLOR = "CC B0 90 5B";
-String YELLOW_COLOR = "DC 82 32 5B";
-String PURPLE_COLOR = "CC 12 B3 5B";
+//String BLUE_COLOR = "8C 31 27 36"; //TEST
+//String GREEN_COLOR = "7C A1 36 3D"; //TEST
+String BLUE_COLOR = "0C 58 AA 5B";
+String GREEN_COLOR = "FC F8 A1 3C";
+String YELLOW_COLOR = "5C 5C 38 5B";
+String PURPLE_COLOR = "BC 2B 30 5B";
 
 // Rover Lights
 CRGB leds[NUM_LEDS];
@@ -86,6 +87,7 @@ void setup()
   
   // Rover Headlights
   pinMode(ROVER_HEADLIGHTS, OUTPUT);
+  pinMode(ROVER_HEADLIGHTS_RED, OUTPUT);
 
   // Turn off all lights
   turnOffAllLights();
@@ -107,12 +109,12 @@ void loop()
   
   if (isWifiConnected && isWSConnected && !isGameStarted) { // standby mode
     blinkRoverHeadLights();
-    turnOnRoverLeds(CRGB::Turquoise, true);
+    blinkRoverLeds(CRGB::OrangeRed, true); // Turquoise, ForestGreen
   }
   
   if (isWifiConnected && isWSConnected && isGameStarted) { // game started
     turnOnRoverHeadLights();
-    turnOnRoverLeds(CRGB::Turquoise, true);
+    turnOnRoverLeds(CRGB::OrangeRed, true); // Turquoise, ForestGreen
     detectRFIDtag();
   }
   
@@ -322,6 +324,7 @@ void blinkRoverHeadLights() {
 
     // Turn rover headlights on/off depending on LED state
     digitalWrite(ROVER_HEADLIGHTS, headLightState);
+    analogWrite(ROVER_HEADLIGHTS_RED, headLightState);
   }
 }
 
@@ -335,7 +338,7 @@ void activateRoverPlanetCollectionLight(CRGB planetColor) {
     cyclePlanetCaptureLed(planetColor);
     endMillis = millis();
   }
-  turnOnRoverLeds(CRGB::Turquoise, true);
+  turnOnRoverLeds(CRGB::OrangeRed, true); // Turquoise, ForestGreen
 }
 
 void cyclePlanetCaptureLed(CRGB planetColor) {
@@ -350,15 +353,17 @@ void cyclePlanetCaptureLed(CRGB planetColor) {
 void blinkRoverDamageLights() {
   turnOnRoverLeds(CRGB::DarkRed, false);
   delay(1000);
-  turnOnRoverLeds(CRGB::Turquoise, true);
+  turnOnRoverLeds(CRGB::OrangeRed, true); // Turquoise, ForestGreen
 }
 
 void turnOnRoverHeadLights() {
   digitalWrite(ROVER_HEADLIGHTS, HIGH);     // turn on Rover Headlight
+  analogWrite(ROVER_HEADLIGHTS_RED, HIGH);     // turn on Rover Headlight
 }
 
 void turnOffRoverHeadLights() {
   digitalWrite(ROVER_HEADLIGHTS, LOW);     // turn off Rover Headlight
+  analogWrite(ROVER_HEADLIGHTS_RED, LOW);     // turn off Rover Headlight
 }
 
 void turnOffAllLights() {
