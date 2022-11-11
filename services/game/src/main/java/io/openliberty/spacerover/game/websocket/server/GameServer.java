@@ -60,6 +60,7 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	private long numberOfPlanetHopGamesPlayed = 0;
 	private long numberOfGuidedGamesPlayed = 0;
 	private long numberOfSuddenDeathGamesPlayed = 0;
+	private int percentageBatteryLeft = 0;
 
 	@Singleton
 	GameServerStateMachine stateMachine = new GameServerStateMachine();
@@ -224,20 +225,20 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 	private void incrementGamesPlayed(String gameMode) {
 		switch (gameMode) {
-		case Constants.INIT_GAME_CLASSIC:
-			this.numberOfClassicGamesPlayed++;
-			break;
-		case Constants.INIT_GAME_GUIDED:
-			this.numberOfGuidedGamesPlayed++;
-			break;
-		case Constants.INIT_GAME_SUDDEN_DEATH:
-			this.numberOfSuddenDeathGamesPlayed++;
-			break;
-		case Constants.INIT_GAME_HOP:
-			this.numberOfPlanetHopGamesPlayed++;
-			break;
-		default: 
-			throw new IllegalStateException("Invalid Game mode Played: " + gameMode);
+			case Constants.INIT_GAME_CLASSIC:
+				this.numberOfClassicGamesPlayed++;
+				break;
+			case Constants.INIT_GAME_GUIDED:
+				this.numberOfGuidedGamesPlayed++;
+				break;
+			case Constants.INIT_GAME_SUDDEN_DEATH:
+				this.numberOfSuddenDeathGamesPlayed++;
+				break;
+			case Constants.INIT_GAME_HOP:
+				this.numberOfPlanetHopGamesPlayed++;
+				break;
+			default:
+				throw new IllegalStateException("Invalid Game mode Played: " + gameMode);
 		}
 		this.numberOfGamesPlayed++;
 	}
@@ -254,58 +255,67 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 		if (this.stateMachine.isValidState(msgID)) {
 			switch (msgID) {
-			case Constants.CONNECT_GUI:
-				this.guiSession = session;
-				break;
-			case Constants.CONNECT_GESTURE:
-				this.gestureSession = session;
-				break;
-			case Constants.ROVER_ACK:
-				this.roverClient.getEventManager().subscribe(GameEvent.SOCKET_DISCONNECT, this);
-				break;
-			case Constants.GAMEBOARD_ACK:
-				this.boardClient.getEventManager().subscribe(GameEvent.SOCKET_DISCONNECT, this);
-				break;
-			case Constants.START_GAME:
-				assert (parsedMsg.length == 2);
-				String[] properties = parsedMsg[1].split(Constants.SOCKET_MESSAGE_PAYLOAD_DELIMITER);
-				this.roverClient.sendMessage(properties[1]);
-				this.boardClient.sendMessage(properties[1]);
-				startGame(properties);
-				break;
-			case Constants.END_GAME:
-				if (parsedMsg.length == 2) {
-					// timeout
-					this.currentGame.endGameSession(parsedMsg[1]);
-				} else {
-					this.currentGame.endGameSession();
-				}
-				break;
-			case Constants.BACKWARD:
-			case Constants.FORWARD:
-			case Constants.LEFT:
-			case Constants.RIGHT:
-			case Constants.STOP:
-				this.sendRoverDirection(msgID);
-				break;
-			case Constants.COLOUR_BLUE:
-			case Constants.COLOUR_GREEN:
-			case Constants.COLOUR_PURPLE:
-			case Constants.COLOUR_YELLOW:
-				updateBoardAndGame(msgID);
-				break;
-			case Constants.GAME_HEALTH_TEST:
-				session.getAsyncRemote().sendText(Constants.GAME_HEALTH_ACK);
-				break;
-			case Constants.COLOUR_RED:
-				if (parsedMsg.length > 1 && Constants.SUN_RFID_IDENTIFIERS.contains(parsedMsg[1])) {
-					LOGGER.log(Level.WARNING, "Detected sun damage");
-					msgID = Constants.COLOUR_RED_SUN;
-				}
-				updateBoardAndGame(msgID);
-				break;
-			default:
-				LOGGER.log(Level.INFO, "Unknown Message received <{0}>", msgID);
+				case Constants.CONNECT_GUI:
+					this.guiSession = session;
+					break;
+				case Constants.CONNECT_GESTURE:
+					this.gestureSession = session;
+					break;
+				case Constants.ROVER_ACK:
+					if (parsedMsg.length == 2) {
+						String batteryPercentage = parsedMsg[1];
+						try {
+							this.percentageBatteryLeft = Integer.parseInt(batteryPercentage);
+						} catch (NumberFormatException nfe) {
+							LOGGER.log(Level.SEVERE, "Battery Percentage not valid: {0}", batteryPercentage);
+							this.percentageBatteryLeft = 0; 
+						}
+					}
+					this.roverClient.getEventManager().subscribe(GameEvent.SOCKET_DISCONNECT, this);
+					break;
+				case Constants.GAMEBOARD_ACK:
+					this.boardClient.getEventManager().subscribe(GameEvent.SOCKET_DISCONNECT, this);
+					break;
+				case Constants.START_GAME:
+					assert (parsedMsg.length == 2);
+					String[] properties = parsedMsg[1].split(Constants.SOCKET_MESSAGE_PAYLOAD_DELIMITER);
+					this.roverClient.sendMessage(properties[1]);
+					this.boardClient.sendMessage(properties[1]);
+					startGame(properties);
+					break;
+				case Constants.END_GAME:
+					if (parsedMsg.length == 2) {
+						// timeout
+						this.currentGame.endGameSession(parsedMsg[1]);
+					} else {
+						this.currentGame.endGameSession();
+					}
+					break;
+				case Constants.BACKWARD:
+				case Constants.FORWARD:
+				case Constants.LEFT:
+				case Constants.RIGHT:
+				case Constants.STOP:
+					this.sendRoverDirection(msgID);
+					break;
+				case Constants.COLOUR_BLUE:
+				case Constants.COLOUR_GREEN:
+				case Constants.COLOUR_PURPLE:
+				case Constants.COLOUR_YELLOW:
+					updateBoardAndGame(msgID);
+					break;
+				case Constants.GAME_HEALTH_TEST:
+					session.getAsyncRemote().sendText(Constants.GAME_HEALTH_ACK);
+					break;
+				case Constants.COLOUR_RED:
+					if (parsedMsg.length > 1 && Constants.SUN_RFID_IDENTIFIERS.contains(parsedMsg[1])) {
+						LOGGER.log(Level.WARNING, "Detected sun damage");
+						msgID = Constants.COLOUR_RED_SUN;
+					}
+					updateBoardAndGame(msgID);
+					break;
+				default:
+					LOGGER.log(Level.INFO, "Unknown Message received <{0}>", msgID);
 			}
 			this.stateMachine.incrementState(msgID);
 
@@ -504,6 +514,11 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	@Gauge(unit = MetricUnits.NONE, name = "numberOfSuddenDeathGamesPlayed", absolute = true, description = "The aggregate amount of sudden death games played.")
 	public long getCountSuddenDeathGamesPlayed() {
 		return this.numberOfSuddenDeathGamesPlayed;
+	}
+
+	@Gauge(unit = MetricUnits.PERCENT, name = "pctBatteryLevel", absolute = true, description = "Space rover battery level percentage.")
+	public long getBatteryPercentage() {
+		return this.percentageBatteryLeft;
 	}
 
 }
