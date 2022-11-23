@@ -84,5 +84,8 @@ public class Constants {
 					"04 3D AC 02 EC 6E 80", "04 45 AD 02 EC 6E 80", "04 54 AC 02 EC 6E 80", "04 4C AC 02 EC 6E 80",
 					"04 5C AC 02 EC 6E 80", "04 33 AC 02 EC 6E 80", "04 76 AB 02 EC 6E 80", "04 60 AE 02 EC 6E 80",
 					"04 58 AE 02 EC 6E 80", "04 76 AB 02 EC 6E 80", "04 6A AF 02 EC 6E 80", "04 6E AB 02 EC 6E 80"));
+	
+	public static final String ROVER_SOCKET_NAME = "Rover";
+	public static final String BOARD_SOCKET_NAME = "Gameboard";
 
 }

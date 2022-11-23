@@ -39,11 +39,14 @@ public class WebsocketClientEndpoint {
 	private io.openliberty.spacerover.game.websocket.client.MessageHandler messageHandler;
 	private GameEventManager manager;
 	private String uri;
+	private String name;
 
 	public WebsocketClientEndpoint(String uri) {
-		manager = new GameEventManager(GameEvent.SOCKET_DISCONNECT);
-		this.messageHandler = null;
-		this.uri = uri;
+		this(uri, "Unnamed");
+	}
+
+	public WebsocketClientEndpoint(String uri, String name) {
+		this(null, uri, name);
 	}
 
 	public WebsocketClientEndpoint(URI uri) {
@@ -51,18 +54,24 @@ public class WebsocketClientEndpoint {
 	}
 
 	public WebsocketClientEndpoint(io.openliberty.spacerover.game.websocket.client.MessageHandler handler,
-			String uriStr) {
+			String uriStr, String name) {
 		manager = new GameEventManager(GameEvent.SOCKET_DISCONNECT);
 		this.messageHandler = handler;
 		this.uri = uriStr;
+		this.name = name;
 	}
 
 	public GameEventManager getEventManager() {
 		return manager;
 	}
 
+	public String getName() {
+		return name;
+	}
+
 	public void connect() throws IOException {
-		LOGGER.log(Level.WARNING, "Connecting to websocket client on URI {0}", this.uri);
+		LOGGER.log(Level.WARNING, "Connecting to {0} websocket client on URI {1}",
+				new Object[] { this.name, this.uri });
 		WebSocketContainer container = ContainerProvider.getWebSocketContainer();
 		try {
 			container.connectToServer(this, new URI(this.uri));
@@ -89,6 +98,7 @@ public class WebsocketClientEndpoint {
 	 */
 	@OnClose
 	public void onClose(Session userSession, CloseReason reason) {
+		LOGGER.log(Level.WARNING, "{0} Websocket with URI {1} has closed.", new Object[] { this.name, this.uri });
 		this.manager.notify(GameEvent.SOCKET_DISCONNECT, reason.getCloseCode().getCode());
 		this.userSession = null;
 	}
