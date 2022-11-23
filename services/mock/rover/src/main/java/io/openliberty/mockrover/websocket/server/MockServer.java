@@ -37,7 +37,7 @@ public class MockServer {
 	public void onOpen(final Session session, @PathParam("path") final String path) {
 		LOGGER.log(Level.WARNING, "Websocket open! client {0} connected on path {1} timeout: {2}, params{3}",
 				new Object[] { session.getId(), path, session.getMaxIdleTimeout(), session.getRequestParameterMap() });
-		String welcomeText = "Rover Connected" + MSG_DELIMITER + batteryPercentage + MSG_DELIMITER + batteryVoltage;
+		String welcomeText = "Rover Connected" + MSG_DELIMITER + batteryVoltage + MSG_DELIMITER + batteryPercentage;
 		batteryPercentage -= 4;
 		batteryVoltage -= .2;
 		session.getAsyncRemote().sendText(welcomeText);
