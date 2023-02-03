@@ -87,5 +87,6 @@ public class Constants {
 	
 	public static final String ROVER_SOCKET_NAME = "Rover";
 	public static final String BOARD_SOCKET_NAME = "Gameboard";
+	public static final String GUI_BATTERY_PCT = "battery";
 
 }

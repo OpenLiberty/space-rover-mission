@@ -263,19 +263,9 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 					this.gestureSession = session;
 					break;
 				case Constants.ROVER_ACK:
-					if (parsedMsg.length == 3) {
-						String batteryPercentage = parsedMsg[2];
-						String batteryVoltage = parsedMsg[1];
-						try {
-							this.percentageBatteryLeft = Integer.parseInt(batteryPercentage);
-							this.batteryVoltage = Float.parseFloat(batteryVoltage);
-						} catch (NumberFormatException nfe) {
-							LOGGER.log(Level.SEVERE, "Battery voltage {0} or Battery Percentage not valid: {1}",
-									new Object[] { batteryVoltage, batteryPercentage });
-							this.percentageBatteryLeft = 100;
-							this.batteryVoltage = 0.0f;
-						}
-					}
+					parseBatteryMeasurements(parsedMsg);
+					this.sendTextToGuiSocket(Constants.GUI_BATTERY_PCT + Constants.SOCKET_MESSAGE_DATA_DELIMITER
+							+ this.getBatteryPercentage());
 					this.roverClient.getEventManager().subscribe(GameEvent.SOCKET_DISCONNECT, this);
 					break;
 				case Constants.GAMEBOARD_ACK:
@@ -326,6 +316,22 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 			if (!msgID.equals(Constants.END_GAME)) {
 				connectGamePieces();
+			}
+		}
+	}
+
+	private void parseBatteryMeasurements(final String[] parsedMsg) {
+		if (parsedMsg.length == 3) {
+			String batteryPercentage = parsedMsg[2];
+			String batteryVoltage = parsedMsg[1];
+			try {
+				this.percentageBatteryLeft = Integer.parseInt(batteryPercentage);
+				this.batteryVoltage = Float.parseFloat(batteryVoltage);
+			} catch (NumberFormatException nfe) {
+				LOGGER.log(Level.SEVERE, "Battery voltage {0} or Battery Percentage not valid: {1}",
+						new Object[] { batteryVoltage, batteryPercentage });
+				this.percentageBatteryLeft = 100;
+				this.batteryVoltage = 0.0f;
 			}
 		}
 	}
