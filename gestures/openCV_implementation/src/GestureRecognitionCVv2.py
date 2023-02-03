@@ -169,6 +169,9 @@ async def repl():
 async def send_msg_if_not_previous(websocket, previous_msg, msg):
     '''Sends msg to the websocket so long as it is not the same string as 'previous_msg' '''
     if msg != previous_msg:
+        if msg != "S":
+            await websocket.send("S")
+            print("Sent message", "S")
         await websocket.send(msg)
         print("Sent message", msg)
         previous_msg = msg
