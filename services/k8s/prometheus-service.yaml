@@ -5,6 +5,7 @@ metadata:
     app.service: prometheus
   name: prometheus
 spec:
+  type: LoadBalancer
   ports:
     - name: "9090"
       port: 9090
