@@ -4,10 +4,10 @@ This document covers the process of configuring the OpenLiberty Space rover to u
 ## Getting started with Kubernetes
 One of the easiest ways to work with Kubernetes locally is with Docker Desktop. In your Docker Desktop settings, you can enable a local Kubernetes cluster.
 
-Alternatively, another option for working with Kubernetes locally is *minikube*. If you are unfamiliar with *minikube*, then you can find the [documentation here](https://minikube.sigs.k8s.io/docs/start/).
-
 ## Building your Images for Kubernetes
 When running the Open Liberty Space Rover with Docker Compose, the service images are created in a build step within the Docker Compose file. This implies that to use the images for Kubernetes you will have to build all the images manually. You are welcome to do this by hand if you have customizations you wish to make, otherwise we recommend you use the `buildServices.bat` or `buildServices.sh` scripts to build all of the images. 
+
+Users on Mac with Apple Silicon need to enable "Use Rosetta for x86/amd64 emulation on Apple Silicon" in Docker Desktop settings and build images with the `export DOCKER_DEFAULT_PLATFORM=linux/amd64` flag set.
 
 If you decide to use the build scripts, ensure you run the script from the `kubernetes` directory.
 
@@ -17,8 +17,17 @@ Your images are complete!
 You can now apply your kubernetes files.
 ```
 
+## Adding MongoDB Credentials
+Before running your images, create a Secret to initialize credentials for MongoDB.
+
+```
+kubectl create secret generic mongo-secret \
+    --from-literal=MONGO_INITDB_ROOT_USERNAME=<user> \
+    --from-literal=MONGO_INITDB_ROOT_PASSWORD=<password> 
+```
+
 ## Configuring you Kubernetes Files
-By default, the kubernetes files are configured to run from the local images you just built. Alternatively, you can place these images in a container registry such as IBM Container Registry or DockerHub.
+By default, the Kubernetes files are configured to run from the local images you just built. Alternatively, you can place these images in a container registry such as IBM Container Registry or DockerHub.
 
 The first piece configure is enabling the correct properties in `microprofile-config.properties`. To do this, navigate to `services\game\src\main\webapp\META-INF\microprofile-config.properties` where you will see two sets of properties as seen below, one for the physical rover and another for the mock rover.
 Ensure you uncomment the properties you wish to use and comment out the other set.
