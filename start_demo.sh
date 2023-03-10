@@ -30,7 +30,7 @@ fi
 source ${PYTHON_VENV_DIR}/bin/activate
 pip install -r gestures/openCV_implementation/src/requirements.txt
 
-while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9070/health)" != "200" ]];
+while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9080/health)" != "200" ]];
 do
     sleep 5
     echo "waiting for game service to come online"

@@ -18,7 +18,7 @@
 
 function Test-GameServerHealth {
 	try {
-		Invoke-RestMethod -Uri http://localhost:9070/health; 
+		Invoke-RestMethod -Uri http://localhost:9080/health; 
 		return $true;
 	}
 	catch {
