@@ -17,23 +17,22 @@ Your images are complete!
 You can now apply your kubernetes files.
 ```
 
-## Adding MongoDB Credentials
-Before running your images, create a Secret to initialize credentials for MongoDB.
-
-```
-kubectl create secret generic mongo-secret \
-    --from-literal=MONGO_INITDB_ROOT_USERNAME=<user> \
-    --from-literal=MONGO_INITDB_ROOT_PASSWORD=<password> 
-```
-
 ## Configuring you Kubernetes Files
 By default, the Kubernetes files are configured to run from the local images you just built. Alternatively, you can place these images in a container registry such as OpenShift Container Registry.
 
+### Configure MongoDB
 Ensure that the device running the Kubernetes cluster provides an available location to allocate it's persistent volume and configure so in the `mongo-pv.yaml` file. To do this, navigate to `services\k8s\mongo-pv.yaml` and provide an path to a folder on your device that you wish to allocate, as seen below. In addition, folder must already exist at runtime if you specify it.
 ```
 hostPath:
     # Provide the existing directory below to use as Persistent Volume.
     path: /opt/data/mongo
+```
+
+Additionally, create a Secret for the database credentials.
+```
+kubectl create secret generic mongo-secret \
+    --from-literal=MONGO_INITDB_ROOT_USERNAME=<user> \
+    --from-literal=MONGO_INITDB_ROOT_PASSWORD=<password> 
 ```
 
 ## Applying you Kubernetes Files to your Cluster
