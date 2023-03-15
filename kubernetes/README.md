@@ -27,25 +27,9 @@ kubectl create secret generic mongo-secret \
 ```
 
 ## Configuring you Kubernetes Files
-By default, the Kubernetes files are configured to run from the local images you just built. Alternatively, you can place these images in a container registry such as IBM Container Registry or DockerHub.
+By default, the Kubernetes files are configured to run from the local images you just built. Alternatively, you can place these images in a container registry such as OpenShift Container Registry.
 
-The first piece configure is enabling the correct properties in `microprofile-config.properties`. To do this, navigate to `services\game\src\main\webapp\META-INF\microprofile-config.properties` where you will see two sets of properties as seen below, one for the physical rover and another for the mock rover.
-Ensure you uncomment the properties you wish to use and comment out the other set.
-```
-# Physical Hardware 
-io.openliberty.spacerover.ip=192.168.0.115
-io.openliberty.spacerover.port=5045
-io.openliberty.gameboard.ip=192.168.0.117
-io.openliberty.gameboard.port=5045
-
-# Test
-# io.openliberty.spacerover.ip=mockrover
-# io.openliberty.spacerover.port=5045
-# io.openliberty.gameboard.ip=mockboard
-# io.openliberty.gameboard.port=5046
-```
-
-Next ensure that the device running the Kubernetes cluster provides an available location to allocate it's persistent volume and configure so in the `mongo-pv.yaml` file. To do this, navigate to `services\k8s\mongo-pv.yaml` and provide an path to a folder on your device that you wish to allocate, as seen below. In addition, folder must already exist at runtime if you specify it.
+Ensure that the device running the Kubernetes cluster provides an available location to allocate it's persistent volume and configure so in the `mongo-pv.yaml` file. To do this, navigate to `services\k8s\mongo-pv.yaml` and provide an path to a folder on your device that you wish to allocate, as seen below. In addition, folder must already exist at runtime if you specify it.
 ```
 hostPath:
     # Provide the existing directory below to use as Persistent Volume.
@@ -81,10 +65,13 @@ client-76bc76b7b4-9qzm2        1/1     Running   0          20s
 gameservice-66857669fc-h24rr   1/1     Running   0          20s
 grafana-6d6c864f76-859hs       1/1     Running   0          20s
 leaderboard-5cd7c966c5-9jvr9   1/1     Running   0          20s
-mockboard-6759556577-jb98n     1/1     Running   0          20s
-mockrover-665cd68d67-smsbm     1/1     Running   0          20s
-mongo-5465cc5bb9-gnvnt         1/1     Running   0          19s
+mongo-0                        1/1     Running   0          19s
 prometheus-74799df65-4nbxl     1/1     Running   0          19s
+```
+
+To run the `mockboard` and `mockrover` services, use files in the `services/k8s/mock` with a recursive apply command:
+```
+kubectl apply -R -f ./k8s
 ```
 
 ## Testing your Cluster

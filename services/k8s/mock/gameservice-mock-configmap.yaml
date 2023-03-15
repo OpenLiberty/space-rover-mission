@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gameservice-mock-config
+data:
+  io.openliberty.spacerover.ip: mockrover
+  io.openliberty.spacerover.port: "5045"
+  io.openliberty.gameboard.ip: mockboard
+  io.openliberty.gameboard.port: "5045"
