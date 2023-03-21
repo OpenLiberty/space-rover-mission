@@ -42,6 +42,15 @@ services:
             - "9070:9080"
     gameservice:
         build: ./game
+        environment: 
+            - io.openliberty.leaderboard.hostname=leaderboard
+            - io.openliberty.leaderboard.port=9080
+            - io.openliberty.server.hostname=gameservice
+            - io.openliberty.server.port=9080
+            - io.openliberty.spacerover.ip=mockrover
+            - io.openliberty.spacerover.port=5045
+            - io.openliberty.gameboard.ip=mockboard
+            - io.openliberty.gameboard.port=5045
         ports:
             - "9080:9080"
     client:
