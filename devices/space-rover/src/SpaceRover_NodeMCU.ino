@@ -33,7 +33,7 @@ WebSocketsServer webSocket = WebSocketsServer(5045);
   VARIABLES
 ************/
 char ssid[] = "OL_DEMO";  // Dedicated WiFi local network for demo.
-char pass[] = "was4ever"; // UPDATE WI-FI PASSWORD
+char pass[] = "#######"; // UPDATE WI-FI PASSWORD
 
 // Serial Communication between Arduino and NodeMCU
 const byte numChars = 32;
