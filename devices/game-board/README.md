@@ -12,3 +12,5 @@ In the circuit diagram below, you can find the wire connections between the Node
 - WS2812B LED strip -> GPIO3
 
 ![Game Board Circuit Schematic Diagram](../../images/GameBoard_Circuit_Schematic.png)
+
+
