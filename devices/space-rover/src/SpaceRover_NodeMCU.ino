@@ -21,6 +21,8 @@
 #define INPUT_4  0 // D3 - Right motors
 #define ENABLE_B 12 // D6 - Control Speed of Right Motors
 
+#define BATTERY_PIN A0 // Battery analog pin to measure voltage 
+
 #include <ESP8266WiFi.h>
 #include <WebSocketsServer.h>
 
@@ -31,7 +33,7 @@ WebSocketsServer webSocket = WebSocketsServer(5045);
   VARIABLES
 ************/
 char ssid[] = "OL_DEMO";  // Dedicated WiFi local network for demo.
-char pass[] = "#######"; // UPDATE WI-FI PASSWORD
+char pass[] = "was4ever"; // UPDATE WI-FI PASSWORD
 
 // Serial Communication between Arduino and NodeMCU
 const byte numChars = 32;
@@ -42,13 +44,16 @@ boolean newData = false;
 uint8_t ws_num = 0;
 
 // Set the Overall Rover speed
-int roverSpeed = 200; //230
+int roverSpeed = 220; //200
 
 // Set the Forward and Backward Rover speed
-int rover_FW_BW_Speed = 115; //105, 115
+int rover_FW_BW_Speed = 135; //115
 
 // Set the Turning Rover speed
-int rover_L_R_Speed = 165; //135
+int rover_L_R_Speed = 200; //165
+
+// Multiple coefficient to give more turning power.
+int turn_coefficient = 45; //20
 
 // Color detected
 boolean isColorDetected = false;
@@ -57,10 +62,19 @@ String colorDetected = "NC";
 // Rover Headlights
 const int ROVER_HEADLIGHTS = 5;
 
+// Battery Voltage Measurements
+float BatteryVoltCoef = 1.98; // Coeficient ratio
+float cutoff_volt = 5.5; // Voltage that requires re-charge
+float battery_volt = 7.2; // Source Battery voltage
+float actualVoltage = 0.0;
+int batteryPercent = 0;
+
 /*********************************
     GAME CONFIGURATION
 **********************************/
 bool isGameStarted = false;
+String roverConnMsg = "Rover Connected";
+String connected = "";
 
 void setup()
 {
@@ -126,7 +140,9 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
         case WStype_CONNECTED:
         {
           ws_num=num;
-          webSocket.sendTXT(num, "Rover Connected"); // Send to Client
+          batteryPercent = getBatteryVoltage();
+          connected = roverConnMsg + "|" + actualVoltage + "|" + batteryPercent;
+          webSocket.sendTXT(num, connected); // Send to Client with the battery life at initial connection.
           Serial.println("<WSC>"); // Send to Arduino that the Websocket connection has been established.
           break;
         }
@@ -165,70 +181,50 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
 }
 
 // Use analogWrite to control the forward/backward speed of the rover.
-// Use digitalWrite to control the left/right speed of the rover, set to highest (255),
+// Use analogWrite to control the left/right speed of the rover, set to highest (255),
 // to have smooth turning motion.
 void moveForward(){ 
     if (isGameStarted) {
-        analogWrite(ENABLE_A, roverSpeed);
-        analogWrite(ENABLE_B, roverSpeed);
-
         analogWrite(INPUT_1, rover_FW_BW_Speed);
-        analogWrite(INPUT_2, 0);
-
+        analogWrite(ENABLE_A, roverSpeed);
         analogWrite(INPUT_3, rover_FW_BW_Speed);
-        analogWrite(INPUT_4, 0);
+        analogWrite(ENABLE_B, roverSpeed);
     }     
   }
 
 void moveBackward(){ 
     if (isGameStarted) {
-        analogWrite(ENABLE_A, roverSpeed);
-        analogWrite(ENABLE_B, roverSpeed);
-
-        analogWrite(INPUT_1, 0);
         analogWrite(INPUT_2, rover_FW_BW_Speed);
-
-        analogWrite(INPUT_3, 0);
+        analogWrite(ENABLE_A, roverSpeed);
         analogWrite(INPUT_4, rover_FW_BW_Speed);
+        analogWrite(ENABLE_B, roverSpeed);
     }      
   }
 
 void moveRight(){
     if (isGameStarted) { 
-        analogWrite(ENABLE_A, roverSpeed);
-        analogWrite(ENABLE_B, roverSpeed);
-
-        analogWrite(INPUT_1, 0);
         analogWrite(INPUT_2, rover_L_R_Speed);
-
+        analogWrite(ENABLE_A, roverSpeed);
         analogWrite(INPUT_3, rover_L_R_Speed);
-        analogWrite(INPUT_4, 0);
+        analogWrite(ENABLE_B, roverSpeed);
     }     
   }
 
 void moveLeft(){
     if (isGameStarted) {
+        analogWrite(INPUT_1, rover_L_R_Speed+turn_coefficient);
         analogWrite(ENABLE_A, roverSpeed);
+        analogWrite(INPUT_4, rover_L_R_Speed+turn_coefficient);
         analogWrite(ENABLE_B, roverSpeed);
-
-        analogWrite(INPUT_1, rover_L_R_Speed);
-        analogWrite(INPUT_2, 0);
-
-        analogWrite(INPUT_3, 0);
-        analogWrite(INPUT_4, rover_L_R_Speed);
     }
   }
 
 void stopRover(){  
     if (isGameStarted) {
-        analogWrite(ENABLE_A, roverSpeed);
-        analogWrite(ENABLE_B, roverSpeed);
-      
-        digitalWrite(INPUT_1, LOW);
-        digitalWrite(INPUT_2, LOW);
-        
-        digitalWrite(INPUT_3, LOW);
-        digitalWrite(INPUT_4, LOW);
+        analogWrite(INPUT_1, 0);
+        analogWrite(INPUT_2, 0);
+        analogWrite(INPUT_3, 0);
+        analogWrite(INPUT_4, 0);
     }
  }
 
@@ -303,4 +299,35 @@ void sendDetectedColor() {
       isColorDetected = false;
       colorDetected = "NC";
   }
+}
+
+int getBatteryVoltage() {
+ float analogVoltageValue = 0.0;
+ int batteryPercentage = 0;
+
+ for(unsigned int i=0; i<10; i++){
+    analogVoltageValue=analogVoltageValue+analogRead(BATTERY_PIN);
+    delay(5);                              
+ }
+
+ analogVoltageValue = (float)analogVoltageValue/10.0; // Get the average voltage measurement to be accurate.
+ actualVoltage = (float)((analogVoltageValue/1024.0)*5)*BatteryVoltCoef;
+
+ batteryPercentage = getVoltageInPercentage(actualVoltage); // Get the percentage value.
+
+ // Ensure the percent is between 0-100%
+ if (batteryPercentage >= 100) {
+  batteryPercentage = 100;
+ }
+ else if (batteryPercentage <= 0) {
+  batteryPercentage = 0;
+ }
+
+ return batteryPercentage;
+}
+
+int getVoltageInPercentage(float actualVoltage) {
+  int percentDiff = 0;
+  percentDiff = ((actualVoltage - cutoff_volt) / (battery_volt - cutoff_volt)) * 100; // Calculate the percentage difference between the cutoff voltage and the actual voltage.
+  return percentDiff;
 }
