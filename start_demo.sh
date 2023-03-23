@@ -37,3 +37,5 @@ do
 done
 
 python3 gestures/openCV_implementation/src/GestureRecognitionCVv2.py
+
+
