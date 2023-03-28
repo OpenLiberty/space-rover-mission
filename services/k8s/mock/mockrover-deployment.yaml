@@ -14,6 +14,7 @@ spec:
     metadata:
       labels:
         app.service: mockrover
+        app.name: space-rover
     spec:
       containers:
         - image: space-rover/mockrover

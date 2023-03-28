@@ -15,6 +15,7 @@ spec:
     metadata:
       labels:
         app.service: grafana
+        app.name: space-rover
     spec:
       containers:
         - image: space-rover/grafana
