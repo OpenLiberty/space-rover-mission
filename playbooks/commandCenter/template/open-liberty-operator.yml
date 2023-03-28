@@ -1,0 +1,11 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: {{ open_liberty_subscription }}
+  namespace: {{ ocp_project_name }}
+spec:
+  channel: {{ open_liberty_channel }}
+  name: {{ open_liberty }}
+  source: {{ open_liberty_catalog_source }}
+  sourceNamespace: {{ open_liberty_catalog_source_namespace }}
+  installPlanApproval: Automatic

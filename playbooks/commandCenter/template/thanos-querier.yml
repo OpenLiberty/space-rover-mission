@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thanos-querier
+  labels:
+    app: thanos-querier
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: thanos-querier
+  template:
+    metadata:
+      labels:
+        app: thanos-querier
+    spec:
+      serviceAccountName: thanos-querier-thanos
+      containers:
+      - args:
+        - -provider=openshift
+        - -https-address=:9091
+        - -http-address=
+        - -email-domain=*
+        - -upstream=http://localhost:10902
+        - -openshift-service-account=thanos-querier-thanos
+        - '-openshift-sar={"resource": "namespaces", "verb": "get"}'
+        - '-openshift-delegate-urls={"/": {"resource": "namespaces", "verb": "get"}}'
+        - -tls-cert=/etc/tls/private/tls.crt
+        - -tls-key=/etc/tls/private/tls.key
+        - -client-secret-file=/var/run/secrets/kubernetes.io/serviceaccount/token
+        - -cookie-secret-file=/etc/proxy/secrets/session_secret
+        - '-openshift-ca=/etc/pki/tls/cert.pem'
+        - '-openshift-ca=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt'
+        - '-bypass-auth-for=^/-/(healthy|ready)$'
+        - -skip-auth-regex=^/metrics
+        image: registry.redhat.io/openshift4/ose-oauth-proxy:latest
+        name: oauth-proxy
+        ports:
+        - containerPort: 9091
+          name: web-proxy
+        volumeMounts:
+        - mountPath: /etc/tls/private
+          name: secret-thanos-querier-tls
+        - mountPath: /etc/proxy/secrets
+          name: secret-thanos-querier-proxy 
+        - mountPath: /etc/pki/ca-trust/extracted/pem/
+          name: thanos-querier-trusted-ca-bundle
+          readOnly: true
+      - name: thanos
+        image: quay.io/thanos/thanos:v0.30.2
+        args:
+        - query
+        - --query.replica-label=replica
+        # Discover local store APIs using DNS SRV.
+        - --store=dnssrv+thanos-store-gateway.{{ ocp_thanos_project_name }}.svc.cluster.local
+        - --store=dns+thanos-receive.{{ ocp_thanos_project_name }}.svc.cluster.local:19891
+        ports:
+        - name: http
+          containerPort: 10902
+        - name: grpc
+          containerPort: 10901
+        livenessProbe:
+          httpGet:
+            path: /-/healthy
+            port: http
+      volumes:
+      - name: secret-thanos-querier-tls
+        secret:
+          secretName: thanos-querier-tls
+      - name: secret-thanos-querier-proxy 
+        secret:
+          secretName: thanos-querier-proxy 
+      - name: thanos-querier-trusted-ca-bundle
+        configMap:
+          name: "{{ ocp_monitoring_trusted_ca_bundle.stdout }}"
+          items:
+            - key: ca-bundle.crt
+              path: tls-ca-bundle.pem
+          defaultMode: 420
+          optional: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.alpha.openshift.io/serving-cert-secret-name: thanos-querier-tls
+  labels:
+    app: thanos-querier
+  name: thanos-querier
+spec:
+  ports:
+  - port: 9091
+    protocol: TCP
+    targetPort: web-proxy
+    name: web-proxy
+  - port: 9090
+    protocol: TCP
+    targetPort: http
+    name: grafana-access
+  selector:
+    app: thanos-querier
+  type: ClusterIP

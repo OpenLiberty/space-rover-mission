@@ -1,0 +1,25 @@
+---
+  - name: Generate Token from Command Center
+    hosts: localhost
+    connection: local 
+    vars:
+      ocp_token: "{{ lookup('env', 'OCP_TOKEN') }}"
+      ocp_hostname: "{{ lookup('env', 'OCP_HOSTNAME') }}"
+      ocp_project_name: "{{ lookup('env', 'OCP_PROJECT_NAME') }}"
+      ocp_thanos_project_name: "{{ lookup('env', 'OCP_THANOS_PROJECT_NAME') }}"
+      machine_name: "{{ lookup('env', 'MACHINE_NAME') }}"
+    tasks:
+      - name: Create client serviceaccount
+        shell: "oc create serviceaccount {{ machine_name }} -n {{ ocp_thanos_project_name }}"
+      - name: Add view role to client serviceaccount
+        shell: "oc adm policy add-role-to-user view -z {{ machine_name }} -n {{ ocp_thanos_project_name }}"
+      - name: Generate token for client serviceaccount
+        shell: "oc create token {{ machine_name }} --duration=8760h -n {{ ocp_thanos_project_name }}"
+        register: client_serviceaccount_token
+      - name: Display Token Information
+        debug:
+          msg: 
+            - "Client serviceaccount name: {{ machine_name }}"
+            - "Set the THANOS_RECEIVE_CREDENTIALS in your .env file to the token below"
+            - "{{ client_serviceaccount_token.stdout }}"
+            

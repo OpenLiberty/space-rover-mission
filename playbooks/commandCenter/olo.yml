@@ -1,0 +1,7 @@
+---
+- name: Generate Open Liberty Operator resources
+  template:
+    src: template/open-liberty-operator.yml
+    dest: dest/open-liberty-operator.yml
+- name: Create Open Liberty Operator
+  shell: "oc apply -f dest/open-liberty-operator.yml"
