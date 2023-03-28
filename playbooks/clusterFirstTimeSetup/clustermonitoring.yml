@@ -1,13 +1,13 @@
 ---
 # Cluster monitoring
 - name: Setup cluster monitoring
-  shell: "oc apply -f config/enable-cluster-monitoring-config.yml"
+  shell: "oc apply -f config/cluster-monitoring-config.yml"
 - name: Setup user workload monitoring
-  shell: "oc apply -f config/enable-user-workload-monitoring-config.yml"
+  shell: "oc apply -f config/user-workload-monitoring-config.yml"
 # Wait for monitoring
 - name: Wait for prometheus-operator
   shell: "sleep 3; oc wait --namespace=openshift-user-workload-monitoring --for=condition=Ready --selector app.kubernetes.io/name=prometheus-operator pods --timeout=500s"
 - name: Wait for prometheus
   shell: "oc wait --namespace=openshift-user-workload-monitoring --for=condition=Ready --selector app.kubernetes.io/name=prometheus pods --timeout=500s"
-- name: Wait for thanos
+- name: Wait for thanos-ruler
   shell: "oc wait --namespace=openshift-user-workload-monitoring --for=condition=Ready --selector app.kubernetes.io/name=thanos-ruler pods --timeout=500s"

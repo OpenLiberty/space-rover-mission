@@ -1,0 +1,29 @@
+---
+  - name: Cluster First Time Setup
+    hosts: localhost
+    connection: local 
+    vars:
+      ocp_token: "{{ lookup('env', 'OCP_TOKEN') }}"
+      ocp_hostname: "{{ lookup('env', 'OCP_HOSTNAME') }}"
+    tasks:
+      # Login to cluster
+      - name: Login to OCP cluster
+        shell: "oc login --insecure-skip-tls-verify=true --token={{ ocp_token }} --server=https://{{ ocp_hostname }}:6443"
+        no_log: True
+      # Setup OpenShift Cluster monitoring
+      - name: Setup OpenShift Cluster Monitoring
+        include_tasks:
+          file: clustermonitoring.yml
+      # Setup OpenShift Internal Registry
+      - name: Check OpenShift Internal Registry
+        shell: "oc patch configs.imageregistry.operator.openshift.io/cluster --patch '{\"spec\":{\"defaultRoute\":true}}' --type=merge"
+      - name: Get OpenShift Internal Registry Host
+        shell: "oc get route default-route -n openshift-image-registry -o jsonpath='{.spec.host}'"
+        register: ocp_internal_registry_host
+      - name: Output log
+        debug:
+          msg:
+            - "Add the OpenShift Internal Registry host to the 'insecure-registries' array in Docker Desktop under 'Settings' > 'Docker Engine'"
+            - "{{ ocp_internal_registry_host.stdout }}"
+            - "Also set the following .env property:"
+            - "OCP_INTERNAL_REGISTRY={{ ocp_internal_registry_host.stdout }}"

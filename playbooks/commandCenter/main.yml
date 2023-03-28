@@ -7,6 +7,7 @@
       ocp_hostname: "{{ lookup('env', 'OCP_HOSTNAME') }}"
       ocp_project_name: "{{ lookup('env', 'OCP_PROJECT_NAME') }}"
       ocp_thanos_project_name: "{{ lookup('env', 'OCP_THANOS_PROJECT_NAME') }}"
+      ocp_internal_registry: "{{ lookup('env', 'OCP_INTERNAL_REGISTRY') }}"
       ocp_grafana_serviceaccount_name: grafana-serviceaccount
       grafana_username: "{{ lookup('env', 'OCP_GRAFANA_USERNAME') }}"
       grafana_password: "{{ lookup('env', 'OCP_GRAFANA_PASSWORD') }}"
@@ -27,10 +28,6 @@
       - name: Login to OCP cluster
         shell: "oc login --insecure-skip-tls-verify=true --token={{ ocp_token }} --server=https://{{ ocp_hostname }}:6443"
         no_log: True
-      # Setup OpenShift Cluster monitoring
-      - name: Setup OpenShift Cluster Monitoring
-        include_tasks:
-          file: clustermonitoring.yml
       # Initialize Space Rover project
       - name: Create project
         shell: "oc new-project {{ ocp_project_name }}"
@@ -45,10 +42,23 @@
           dest: dest/operator-group.yml
       - name: Create Operator Group for project
         shell: "oc apply -f dest/operator-group.yml"
+      # Create Thanos operator group
+      - name: Generate Operator Group for Thanos project
+        template:
+          src: template/thanos-operator-group.yml
+          dest: dest/thanos-operator-group.yml
+        when: ocp_project_name != ocp_thanos_project_name
+      - name: Create Operator Group for Thanos project
+        shell: "oc apply -f dest/thanos-operator-group.yml"
+        when: ocp_project_name != ocp_thanos_project_name
       # Open Liberty Operator
       - name: Setup Open Liberty Operator
         include_tasks:
           file: olo.yml
+      # Build Space Rover
+      - name: Setup Space Rover
+        include_tasks:
+          file: space-rover.yml
       # Grafana Operator
       - name: Setup Grafana Operator
         include_tasks:
