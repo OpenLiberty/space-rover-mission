@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ enum Event {
   PlanetChange = "planetChange",
   End = "endGame",
   Error = "error",
+  Battery = "battery",
 }
 
 const MSG_DELMITER = "|";
@@ -58,6 +59,7 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
   const [gameMode, setGameMode] = useState("1");
   const [health, setHealth] = useState(100);
   const [score, setScore] = useState(0);
+  const [battery, setBattery] = useState(-1);
 
   const [error, setError] = useState("");
 
@@ -150,11 +152,14 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
           setError(data);
           setGameState(GameState.Error);
           break;
+        case Event.Battery:
+          setBattery(data);
+          break;
         default:
           console.log(`Received unknown event: ${event}`);
       }
     };
-  }, [socket, crashSound, scoreSound, timerSound, shortTimerSound, health, score]);
+  }, [socket, crashSound, scoreSound, timerSound, shortTimerSound, health, score, battery]);
 
   useEffect(() => {
     if (timeRemaining === 10) {
@@ -197,6 +202,7 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
     startGame,
     endGame,
     error,
+    battery,
   };
 };
 
