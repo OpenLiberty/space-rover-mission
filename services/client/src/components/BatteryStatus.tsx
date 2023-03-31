@@ -27,11 +27,14 @@ const BatteryStatus = ({ batteryPercentage }: Props) => {
   return (
     <div className="flex justify-center">
       <div className="bg-gray-200 w-64 rounded-md overflow-hidden">
-        <div
-          className={`py-2 ${color}`}
-          style={{ width: `${batteryPercentage >= 0 ? batteryPercentage : 0}%` }}
-        >
-          <p className="px-5 text-md overflow-visible whitespace-nowrap">
+        <div className="relative h-12 flex justify-center items-center">
+          <div
+            className={`absolute h-12 bottom-0 left-0 ${color}`}
+            style={{
+              width: `${batteryPercentage >= 0 ? batteryPercentage : 0}%`,
+            }}
+          ></div>
+          <p className="relative text-md">
             Rover battery: {batteryPercentage >= 0 ? batteryPercentage : "--"}%
           </p>
         </div>
