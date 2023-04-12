@@ -174,7 +174,7 @@ const useGame = (gameSocketURL: string, durationInSeconds: number) => {
     if (gameState === GameState.NotStarted) {
       setPlayerName(playerName);
       setGameMode(gameMode);
-      sendMessage(Event.Start, [playerName, gameMode].join(","));
+      sendMessage(Event.Start, [encodeURIComponent(playerName), gameMode].join(","));
       setGameState(GameState.InGame);
       startTimer();
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,9 @@
 package io.openliberty.spacerover.game.websocket.server;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -143,6 +146,12 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 
 	private void startGame(final String[] properties) {
 		String playerId = properties[0];
+		try {
+			playerId = URLDecoder.decode(playerId, StandardCharsets.UTF_8.name());
+		} catch (UnsupportedEncodingException e) {
+			// utf-8 always supported
+		}
+
 		int gameMode = Integer.parseInt(properties[1]);
 		LOGGER.log(Level.INFO, "Start Game received for player ID: {0}, GameMode: {1}",
 				new Object[] { playerId, gameMode });
