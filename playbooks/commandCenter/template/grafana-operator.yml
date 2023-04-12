@@ -2,7 +2,7 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: {{ grafana_subscription }}
-  namespace: {{ ocp_project_name }}
+  namespace: {{ ocp_thanos_project_name }}
 spec:
   channel: {{ grafana_channel }}
   name: {{ grafana }}

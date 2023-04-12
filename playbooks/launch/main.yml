@@ -4,7 +4,7 @@
     connection: local 
     vars:
       is_mock: true
-      machine_name: "{{ lookup('env', 'MACHINE_NAME') }}"
+      rover_name: "{{ lookup('env', 'ROVER_NAME') }}"
       url: "{{ lookup('env', 'THANOS_RECEIVE_URL') }}"
       credentials: "{{ lookup('env', 'THANOS_RECEIVE_CREDENTIALS') }}"
       context: docker-desktop
@@ -28,4 +28,3 @@
         shell: "kubectl delete pod -l app.service=prometheus"
       - name: Wait for space rover pods
         shell: "kubectl wait --namespace={{ namespace }} --for=condition=Ready --selector app.name=space-rover pods --timeout=500s"
-      

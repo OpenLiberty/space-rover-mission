@@ -22,7 +22,7 @@
 - **Prerequisite**: You must have access to an OpenShift Container Platform cluster (>= v4.11) and have ran the `./clusterFirstTimeSetup` script
 - Run `./buildCommandCenter` to provision OpenShift Container Platform cluster that is ready to aggregate Prometheus Metrics from multiple Space Rover games with Thanos
   -  Distribute the `THANOS_RECEIVE_URL` value to individuals who want to run Space Rover into their local environment's `.env`
-  -  For each local Space Rover game, update `MACHINE_NAME` in `.env` to a unique lowercase + alphanumeric value and run `./generateToken`
+  -  For each local Space Rover game, update `ROVER_NAME` in `.env` to a unique lowercase + alphanumeric value and run `./generateToken`
     - This generates a `THANOS_RECEIVE_CREDENTIALS` value that the client can use to authenticate to the OpenShift cluster
 
 # User

@@ -2,12 +2,41 @@
 # Cluster monitoring
 - name: Setup cluster monitoring
   shell: "oc apply -f config/cluster-monitoring-config.yml"
+- name: Wait for cluster monitoring (prometheus-k8s-0)
+  shell: "oc get pod prometheus-k8s-0 -n openshift-monitoring -o jsonpath='{.status.conditions[?(@.type==\"Ready\")].status}'"
+  register: prometheus0
+  until: prometheus0.stdout.find('True') != -1
+  retries: 20
+- name: Wait for cluster monitoring (prometheus-k8s-1)
+  shell: "oc get pod prometheus-k8s-1 -n openshift-monitoring -o jsonpath='{.status.conditions[?(@.type==\"Ready\")].status}'"
+  register: prometheus1
+  until: prometheus1.stdout.find('True') != -1
+  retries: 20
+# User Workload Monitoring
 - name: Setup user workload monitoring
   shell: "oc apply -f config/user-workload-monitoring-config.yml"
-# Wait for monitoring
-- name: Wait for prometheus-operator
-  shell: "sleep 3; oc wait --namespace=openshift-user-workload-monitoring --for=condition=Ready --selector app.kubernetes.io/name=prometheus-operator pods --timeout=500s"
-- name: Wait for prometheus
-  shell: "oc wait --namespace=openshift-user-workload-monitoring --for=condition=Ready --selector app.kubernetes.io/name=prometheus pods --timeout=500s"
-- name: Wait for thanos-ruler
-  shell: "oc wait --namespace=openshift-user-workload-monitoring --for=condition=Ready --selector app.kubernetes.io/name=thanos-ruler pods --timeout=500s"
+- name: Wait for user workload monitoring (prometheus-operator)
+  shell: "oc get deployment prometheus-operator -n openshift-user-workload-monitoring -o jsonpath='{.status.conditions[?(@.type==\"Available\")].status}'"
+  register: prometheusoperator
+  until: prometheusoperator.stdout.find('True') != -1
+  retries: 20
+- name: Wait for user workload monitoring (prometheus-user-workload-0)
+  shell: "oc get pod prometheus-user-workload-0 -n openshift-user-workload-monitoring -o jsonpath='{.status.conditions[?(@.type==\"Ready\")].status}'"
+  register: prometheususerworkload0
+  until: prometheususerworkload0.stdout.find('True') != -1
+  retries: 20
+- name: Wait for user workload monitoring (prometheus-user-workload-1)
+  shell: "oc get pod prometheus-user-workload-1 -n openshift-user-workload-monitoring -o jsonpath='{.status.conditions[?(@.type==\"Ready\")].status}'"
+  register: prometheususerworkload1
+  until: prometheususerworkload1.stdout.find('True') != -1
+  retries: 20
+- name: Wait for user workload monitoring (thanos-ruler-user-workload-0)
+  shell: "oc get pod thanos-ruler-user-workload-0 -n openshift-user-workload-monitoring -o jsonpath='{.status.conditions[?(@.type==\"Ready\")].status}'"
+  register: thanosruleruserworkload0
+  until: thanosruleruserworkload0.stdout.find('True') != -1
+  retries: 20
+- name: Wait for user workload monitoring (thanos-ruler-user-workload-1)
+  shell: "oc get pod thanos-ruler-user-workload-1 -n openshift-user-workload-monitoring -o jsonpath='{.status.conditions[?(@.type==\"Ready\")].status}'"
+  register: thanosruleruserworkload1
+  until: thanosruleruserworkload1.stdout.find('True') != -1
+  retries: 20

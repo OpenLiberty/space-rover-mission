@@ -7,19 +7,23 @@
       ocp_hostname: "{{ lookup('env', 'OCP_HOSTNAME') }}"
       ocp_project_name: "{{ lookup('env', 'OCP_PROJECT_NAME') }}"
       ocp_thanos_project_name: "{{ lookup('env', 'OCP_THANOS_PROJECT_NAME') }}"
-      machine_name: "{{ lookup('env', 'MACHINE_NAME') }}"
+      rover_name: "{{ lookup('env', 'ROVER_NAME') }}"
     tasks:
+      # Login to cluster
+      - name: Login to OCP cluster
+        shell: "oc login --insecure-skip-tls-verify=true --token={{ ocp_token }} --server=https://{{ ocp_hostname }}:6443"
+        no_log: True
       - name: Create client serviceaccount
-        shell: "oc create serviceaccount {{ machine_name }} -n {{ ocp_thanos_project_name }}"
+        shell: "oc create serviceaccount {{ rover_name }} -n {{ ocp_thanos_project_name }}"
       - name: Add view role to client serviceaccount
-        shell: "oc adm policy add-role-to-user view -z {{ machine_name }} -n {{ ocp_thanos_project_name }}"
+        shell: "oc adm policy add-role-to-user view -z {{ rover_name }} -n {{ ocp_thanos_project_name }}"
       - name: Generate token for client serviceaccount
-        shell: "oc create token {{ machine_name }} --duration=8760h -n {{ ocp_thanos_project_name }}"
+        shell: "oc create token {{ rover_name }} --duration=8760h -n {{ ocp_thanos_project_name }}"
         register: client_serviceaccount_token
       - name: Display Token Information
         debug:
           msg: 
-            - "Client serviceaccount name: {{ machine_name }}"
+            - "Client serviceaccount name: {{ rover_name }}"
             - "Set the THANOS_RECEIVE_CREDENTIALS in your .env file to the token below"
             - "{{ client_serviceaccount_token.stdout }}"
             

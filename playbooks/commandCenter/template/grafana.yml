@@ -2,7 +2,7 @@ apiVersion: integreatly.org/v1alpha1
 kind: Grafana
 metadata:
   name: example-grafana
-  namespace: {{ ocp_project_name }}
+  namespace: {{ ocp_thanos_project_name }}
 spec:
   client:
     preferService: true

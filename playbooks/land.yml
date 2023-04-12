@@ -4,7 +4,7 @@
     connection: local 
     vars:
       is_mock: true
-      machine_name: machine_name
+      rover_name: rover_name
       url: url
       credentials: credentials
       context: docker-desktop
