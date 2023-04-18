@@ -10,7 +10,7 @@ COPY src src
 
 RUN mvn -o package
 
-FROM icr.io/appcafe/websphere-liberty:22.0.0.8-full-java11-openj9-ubi
+FROM icr.io/appcafe/open-liberty:22.0.0.8-full-java11-openj9-ubi
 
 COPY --chown=1001:0 --from=builder /usr/src/app/target/*.war /config/apps
 
