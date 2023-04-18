@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.service: leaderboard
+  name: leaderboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.service: leaderboard
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app.service: leaderboard
+    spec:
+      containers:
+        - image: space-rover/leaderboard
+          name: leaderboard
+          ports:
+            - containerPort: 9080
+          resources: {}
+          # Change Pull Policy for Remote Registry
+          imagePullPolicy: Never
+      restartPolicy: Always
+status: {}

@@ -22,8 +22,8 @@ import time
 import sys
 
 print("Starting to connect")
-#uri = "ws://192.168.0.101:9070/roversocket"
-URI = "ws://localhost:9070/roversocket"
+#uri = "ws://192.168.0.101:9080/roversocket"
+URI = "ws://localhost:9080/roversocket"
 
 
 # Asynchronously try to connect to the server

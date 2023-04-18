@@ -129,9 +129,9 @@ The following instructions detail how to setup the Mini PC used to run the game 
 
     * **Webapp** => localhost:3000/
         <br>&nbsp; ![Webapp Play Page](../images/four-tab-game-page.png)
-    * **Game Service Health** => localhost:9070/health
+    * **Game Service Health** => localhost:9080/health
         <br><br>&nbsp; ![Game Service Health](../images/four-tab-game-server-health.png)
-    * **Leaderboard Health** => localhost:9080/health
+    * **Leaderboard Health** => localhost:9070/health
         <br><br>&nbsp; ![Leaderboard Health](../images/four-tab-leaderboard-health.png)
     * **Grafana** => localhost:3010/
     * There are two dashboards: Liberty Metrics Dashboard and Space Rover Mission statistics Dashboard

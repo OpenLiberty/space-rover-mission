@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.service: mockrover
+  name: mockrover
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.service: mockrover
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app.service: mockrover
+    spec:
+      containers:
+        - image: space-rover/mockrover
+          name: mockrover
+          ports:
+            - containerPort: 5045
+          resources: {}
+          # Change Pull Policy for Remote Registry
+          imagePullPolicy: Never
+      restartPolicy: Always
+status: {}

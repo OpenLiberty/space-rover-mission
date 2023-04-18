@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.service: gameservice
+  name: gameservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.service: gameservice
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app.service: gameservice
+    spec:
+      containers:
+        # - image: ca.icr.io/space-rover/gameservice-test
+        - image: space-rover/gameservice
+          name: gameservice
+          ports:
+            - containerPort: 9080
+          resources: {}
+          # Change Pull Policy for Remote Registry
+          imagePullPolicy: Never
+          envFrom:
+          - configMapRef:
+              name: gameservice-mock-config
+      restartPolicy: Always
+status: {}

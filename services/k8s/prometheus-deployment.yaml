@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.service: prometheus
+  name: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.service: prometheus
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.service: prometheus
+    spec:
+      containers:
+        - args:
+            - --config.file=/etc/prometheus/prometheus.yml
+          image: space-rover/prometheus:latest
+          name: prometheus
+          ports:
+            - containerPort: 9090
+          resources: {}
+          # Change Pull Policy for Remote Registry
+          imagePullPolicy: Never
+      restartPolicy: Always
+status: {}

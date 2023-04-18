@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app.service: mongo
+  name: mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.service: mongo
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.service: mongo
+    spec:
+      containers:
+        - image: space-rover/mongo
+          name: mongo
+          ports:
+            - containerPort: 27017
+          resources: {}
+          envFrom:
+            - secretRef:
+                name: mongo-secret 
+          volumeMounts:
+            - mountPath: /data/db
+              name: mongo-pvc-0
+          # Change Pull Policy for Remote Registry
+          imagePullPolicy: Never
+      restartPolicy: Always
+      volumes:
+        - name: mongo-pvc-0
+          persistentVolumeClaim:
+            claimName: mongo-pvc-0
+status: {}
+
+

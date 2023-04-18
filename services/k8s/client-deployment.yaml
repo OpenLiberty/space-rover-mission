@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.service: client
+  name: client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.service: client
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app.service: client
+    spec:
+      containers:
+        # - image: ca.icr.io/space-rover/client-test
+        - image: space-rover/client
+          name: client
+          ports:
+            - containerPort: 80
+          resources: {}
+          # Change Pull Policy for Remote Registry
+          imagePullPolicy: Never
+status: {}
