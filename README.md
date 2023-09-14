@@ -100,3 +100,5 @@ The Game Map is the physical game board which the Space Rover roams on. It emits
     - Generates an HTTP client to send game end statistics to the leaderboard's REST server.
 - [MP OpenAPI 3.0](https://download.eclipse.org/microprofile/microprofile-open-api-3.0/microprofile-openapi-spec-3.0.html)
 	- Used for providing REST API documentation and UI for demonstration.
+
+[![Gitter](https://badges.gitter.im/YourGitterRoom/community.svg)](https://gitter.im/openliberty-spacerover/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
