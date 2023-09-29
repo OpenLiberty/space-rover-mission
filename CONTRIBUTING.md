@@ -1,18 +1,18 @@
-# Contributing to Open Liberty guides
+# Contributing to Open Liberty Space Rover Mission
 
-Anyone can contribute to the Open Liberty guides and we welcome your contributions!
+Anyone can contribute to the Open Liberty Space Rover Mission and we welcome your contributions!
 
 There are multiple ways to contribute: report bugs, fix bugs, contribute code, improve upon documentation, etc.
 
 ## Raising issues
 
-Please raise any bug reports in this [guide repository](../../issues). For new topics, large updates to existing guides, or general suggestions and ideas, report your issue in the [Open Liberty common guides repository](https://github.com/OpenLiberty/guides-common/issues). Be sure to search the list of open issues to see if your issue has already been raised.
+Please raise any bug reports in this [repository](../../issues). Be sure to search the list of open issues to see if your issue has already been raised.
 
 A good bug report makes it easy for everyone to understand what you were trying to do and what went wrong. Provide as much context as possible so we can try to recreate the issue.
 
 ## Contributions
 
-Contributing to an Open Liberty guide is simple. Each guide is maintained in its own GitHub repository. To contribute, just fork from the `prod` branch for your chosen guide.  Then create a branch in your forked repository to include your contribution and open a pull request to the `staging` branch for the guide.
+Contributing to the Open Liberty Space Rover Mission is simple. To contribute, just fork from the `prod` branch.  Then create a branch in your forked repository to include your contribution and open a pull request to the `main` branch .
 Certify the originality of your work by following the [Developer Certificate of Origin (DCO)](https://developercertificate.org) approach and adding a line to the end of the Git commit message to sign your work:
 
 ```text
@@ -37,4 +37,4 @@ The team is then notified and your contribution is reviewed according to the fol
 
 ## Questions and concerns
 
-If you have any questions or concerns about the guides or about Open Liberty, you can visit [Gitter for Open Liberty](https://gitter.im/OpenLiberty/) and post your questions in the relevant rooms. You can also join the Open Liberty group on [Groups.io](https://groups.io/g/openliberty) to discuss any issues you have.
+If you have any questions or concerns about Space Rover mission project, you can visit [Gitter for Open Liberty Space Rover Mission](https://app.gitter.im/#/room/#openliberty-spacerover:gitter.im) and post your questions in the relevant rooms. You can also join the Open Liberty group on [Groups.io](https://groups.io/g/openliberty) to discuss any issues you have.
