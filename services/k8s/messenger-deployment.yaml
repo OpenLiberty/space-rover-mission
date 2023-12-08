@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.service: messenger
+  name: messenger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.service: messenger
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app.service: messenger
+        app.name: space-rover
+    spec:
+      containers:
+        - image: space-rover/messenger
+          name: messenger
+          ports:
+            - containerPort: 9085
+          resources: {}
+          # Change Pull Policy for Remote Registry
+          env:
+            - name: MP_MESSAGING_CONNECTOR_LIBERTY_KAFKA_BOOTSTRAP_SERVERS
+              value: my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092
+          imagePullPolicy: Never
+      restartPolicy: Always
+status: {}

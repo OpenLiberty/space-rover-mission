@@ -1,0 +1,6 @@
+---
+- name: Login to OpenShift Internal Registry
+  shell: "podman login -u kubeadmin -p {{ ocp_cluster_token.stdout }} default-route-openshift-image-registry.apps.{{ ocp_hostname }}"
+- name: Pushing Images
+  shell: "podman push default-route-openshift-image-registry.apps.{{ ocp_hostname }}/{{ ocp_project_name }}/{{ item.name }}"
+  loop: "{{ images }}"

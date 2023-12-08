@@ -1,0 +1,20 @@
+---
+- name: Wait for Strimzi Operator
+  shell: "oc get deployments strimzi-cluster-operator-{{ strimzi_version }} -n {{ ocp_project_name }} -o jsonpath='{.status.conditions[?(@.type==\"Available\")].status}'"
+  register: strimzi
+  until: strimzi.stdout.find('True') != -1
+  retries: 10
+- name: Create Kafka cluster
+  shell: "oc apply -f tasks/config/kafka-cluster.yml"
+- name: Create Kafka Topics
+  shell: "oc apply -f tasks/config/kafka-topics.yml"
+# Configure TLS
+- name: Create ca.crt
+  shell: "rm ca.crt; oc extract -n {{ ocp_project_name }} secret/my-cluster-cluster-ca-cert --keys=ca.crt --to=- > ca.crt"
+- name: Create truststore.jks
+  shell: "rm truststore.jks; keytool -import -trustcacerts -alias root -file ca.crt -keystore truststore.jks -storepass password -noprompt"
+- name: Copy truststore.jks to leaderboard's /config folder
+  shell: "cp truststore.jks ../../services/leaderboard/src/main/liberty/config/"
+- name: Get Kafka cluster URL
+  shell: "oc get -n {{ ocp_project_name }} routes my-cluster-kafka-bootstrap -o=jsonpath='{.status.ingress[0].host}'"
+  register: kafka_cluster_url

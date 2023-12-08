@@ -1,0 +1,99 @@
+---
+- name: Create Thanos project
+  shell: "oc new-project {{ ocp_thanos_project_name }} || exit 0"
+- name: Switch to Thanos project
+  shell: "oc project {{ ocp_thanos_project_name }} || exit 0"
+# Thanos store
+- name: Thanos delete store-fs-credentials (if exists)
+  shell: "oc delete secret store-fs-credentials -n {{ ocp_thanos_project_name }} || exit 0"
+- name: Thanos create store-fs-credentials
+  shell: "oc create secret generic store-fs-credentials --from-file=tasks/config/store-fs-secret.yml -n {{ ocp_thanos_project_name }}"
+- name: Thanos delete service account
+  shell: "oc delete serviceaccount thanos-store-gateway -n {{ ocp_thanos_project_name }} || exit 0"
+- name: Thanos create service account
+  shell: "oc create serviceaccount thanos-store-gateway -n {{ ocp_thanos_project_name }}"
+- name: Add anyuid adm policy to thanos-store-gateway
+  shell: "oc adm policy add-scc-to-user anyuid -z thanos-store-gateway -n {{ ocp_thanos_project_name }}"
+- name: Create store gateway
+  shell: "oc apply -f tasks/config/thanos-store-gateway.yml -n {{ ocp_thanos_project_name }}"
+- name: Wait for Thanos Store
+  shell: "oc get statefulset thanos-store-gateway -n {{ ocp_thanos_project_name }} -o jsonpath='{.status.readyReplicas}'"
+  register: thanosstore
+  until: thanosstore.stdout.find('1') != -1
+  retries: 20
+# Thanos receive
+- name: Thanos Receive delete service account (if exists)
+  shell: "oc delete serviceaccount thanos-receive -n {{ ocp_thanos_project_name }} || exit 0"
+- name: Thanos Receive create service account
+  shell: "oc create serviceaccount thanos-receive -n {{ ocp_thanos_project_name }}"
+- name: Thanos Receive delete proxy secret
+  shell: "oc delete secret thanos-receive-proxy -n {{ ocp_thanos_project_name }} || exit 0"
+- name: Thanos Receive create proxy secret
+  shell: "oc create secret generic thanos-receive-proxy -n {{ ocp_thanos_project_name }} --from-literal=session_secret=$(head /dev/urandom | LC_ALL=C tr -dc A-Za-z0-9 | head -c43)"
+- name: Thanos Receive annotate service account
+  shell: "oc annotate serviceaccount thanos-receive -n {{ ocp_thanos_project_name }} --overwrite=true serviceaccounts.openshift.io/oauth-redirectreference.thanos-receive='{\"kind\":\"OAuthRedirectReference\",\"apiVersion\":\"v1\",\"reference\":{\"kind\":\"Route\",\"name\":\"thanos-receive\"}}'"
+- name: Thanos Receive add policy
+  shell: "oc adm policy add-cluster-role-to-user system:auth-delegator -z thanos-receive"
+- name: Generate Thanos Receive 
+  template:
+    src: tasks/template/thanos-receive.yml
+    dest: tasks/dest/thanos-receive.yml
+- name: Delete Thanos Receive (if exists)
+  shell: "oc delete statefulset thanos-receive -n {{ ocp_thanos_project_name }} || exit 0"
+- name: Create Thanos Receive
+  shell: "oc apply -f tasks/dest/thanos-receive.yml -n {{ ocp_thanos_project_name }}"
+- name: Create Thanos Receive Route
+  shell: "oc create route reencrypt thanos-receive -n {{ ocp_thanos_project_name }} --service=thanos-receive --port=web-proxy --insecure-policy=Redirect || exit 0"
+- name: Wait for Thanos Receive
+  shell: "sleep 3; oc wait -n {{ ocp_thanos_project_name }}  --for=condition=Ready --selector app=thanos-receive pods --timeout=500s"
+- name: Wait for Thanos Receive
+  shell: "oc get statefulset thanos-receive -n {{ ocp_thanos_project_name }} -o jsonpath='{.status.readyReplicas}'"
+  register: thanosreceive
+  until: thanosreceive.stdout.find('1') != -1
+  retries: 20
+# Thanos querier
+- name: Thanos Querier delete proxy secret (if exists)
+  shell: "oc delete secret thanos-querier-proxy -n {{ ocp_thanos_project_name }} || exit 0"
+- name: Thanos Querier create proxy secret
+  shell: "oc create secret generic thanos-querier-proxy -n {{ ocp_thanos_project_name }} --from-literal=session_secret=$(head /dev/urandom | LC_ALL=C tr -dc A-Za-z0-9 | head -c43)"
+- name: Thanos Querier delete service account (if exists)
+  shell: "oc delete serviceaccount thanos-querier-thanos -n {{ ocp_thanos_project_name }} || exit 0"
+- name: Thanos Querier create service account
+  shell: "oc create serviceaccount thanos-querier-thanos -n {{ ocp_thanos_project_name }}"
+- name: Thanos Querier annotate service account
+  shell: "oc annotate serviceaccount thanos-querier-thanos -n {{ ocp_thanos_project_name }} --overwrite=true serviceaccounts.openshift.io/oauth-redirectreference.thanos-querier='{\"kind\":\"OAuthRedirectReference\",\"apiVersion\":\"v1\",\"reference\":{\"kind\":\"Route\",\"name\":\"thanos-querier\"}}'"
+- name: Get trusted ca bundle name
+  shell: "oc get configmap --selector monitoring.openshift.io/name=thanos-querier -n openshift-monitoring -o name | cut -d '/' -f2"
+  register: ocp_monitoring_trusted_ca_bundle
+- name: Delete copied trusted ca bundle (if exists)
+  shell: "oc delete configmap {{ ocp_monitoring_trusted_ca_bundle.stdout }} -n {{ ocp_thanos_project_name }} || exit 0"
+- name: Copy trusted ca bundle
+  shell: "oc get configmap {{ ocp_monitoring_trusted_ca_bundle.stdout }} -n openshift-monitoring -o yaml | sed 's/namespace: openshift-monitoring//' | oc apply -n {{ ocp_thanos_project_name }} -f -"
+- name: Generate Thanos Querier ClusterRole and ClusterRoleBinding
+  template:
+    src: tasks/template/thanos-clusterrolebinding.yml
+    dest: tasks/dest/thanos-clusterrolebinding.yml
+- name: Delete Thanos Querier (if exists)
+  shell: "oc delete deployment thanos-querier -n {{ ocp_thanos_project_name }} || exit 0"
+- name: Create Thanos Querier ClusterRole and ClusterRoleBinding
+  shell: "oc apply -f tasks/dest/thanos-clusterrolebinding.yml"
+- name: Generate Thanos Querier 
+  template:
+    src: tasks/template/thanos-querier.yml
+    dest: tasks/dest/thanos-querier.yml
+- name: Create Thanos Querier
+  shell: "oc apply -f tasks/dest/thanos-querier.yml -n {{ ocp_thanos_project_name }}"
+- name: Create Thanos Querier Route
+  shell: "oc create route reencrypt thanos-querier -n {{ ocp_thanos_project_name }} --service=thanos-querier --port=web-proxy --insecure-policy=Redirect || exit 0"
+- name: Wait for Thanos Querier
+  shell: "oc get deployment thanos-querier -n {{ ocp_thanos_project_name }} -o jsonpath='{.status.conditions[?(@.type==\"Available\")].status}'"
+  register: thanosquerier
+  until: thanosquerier.stdout.find('True') != -1
+  retries: 20
+# Get info and print output
+- name: Get Thanos Querier Route
+  shell: "oc get route thanos-querier -n {{ ocp_thanos_project_name }} -o jsonpath='{.spec.host}'"
+  register: ocp_thanos_querier_url
+- name: Get Thanos Receive Route
+  shell: "oc get route thanos-receive -n {{ ocp_thanos_project_name }} -o jsonpath='{.spec.host}'"
+  register: ocp_thanos_receive_url

@@ -31,5 +31,4 @@
 		allowedMethods="GET, POST" />
 
     <mpMetrics authentication="false" />
-
 </server>

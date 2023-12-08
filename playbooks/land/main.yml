@@ -1,0 +1,28 @@
+---
+  - name: Land space rover
+    hosts: localhost
+    connection: local 
+    vars:
+      is_mock: "{{ lookup('env', 'IS_MOCK') }}"
+      rover_name: rover_name
+      url: url
+      credentials: credentials
+      context: docker-desktop
+      namespace: default
+    tasks:
+      - name: Use Docker context
+        shell: "kubectl config use-context {{ context }}"
+      - name: Stop space rover
+        shell: "kubectl delete -f ../services/k8s || exit 0"
+        when: is_mock == "false"
+      - name: Stop space rover mock
+        shell: "kubectl delete -R -f ../services/k8s || exit 0"
+        when: is_mock == "true"
+      - name: Delete Prometheus ConfigMap
+        template:
+          src: template/prometheus-configmap.yml
+          dest: dest/prometheus-configmap.yml
+      - name: Apply Prometheus ConfigMap
+        shell: "kubectl delete -f dest/prometheus-configmap.yml || exit 0"
+      - name: Wait for space rover pods
+        shell: "kubectl wait --namespace={{ namespace }} --for=delete --selector app.name=space-rover pods --timeout=500s"

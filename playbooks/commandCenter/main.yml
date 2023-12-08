@@ -2,94 +2,41 @@
   - name: Build Command Center 
     hosts: localhost
     connection: local 
-    vars:
-      ocp_token: "{{ lookup('env', 'OCP_TOKEN') }}"
-      ocp_hostname: "{{ lookup('env', 'OCP_HOSTNAME') }}"
-      ocp_project_name: "{{ lookup('env', 'OCP_PROJECT_NAME') }}"
-      ocp_thanos_project_name: "{{ lookup('env', 'OCP_THANOS_PROJECT_NAME') }}"
-      ocp_internal_registry: "{{ lookup('env', 'OCP_INTERNAL_REGISTRY') }}"
-      ocp_grafana_serviceaccount_name: grafana-serviceaccount
-      grafana_username: "{{ lookup('env', 'OCP_GRAFANA_USERNAME') }}"
-      grafana_password: "{{ lookup('env', 'OCP_GRAFANA_PASSWORD') }}"
-      # Open Liberty Operator
-      open_liberty: "open-liberty-certified"
-      open_liberty_channel: "beta2"
-      open_liberty_subscription: "open-liberty-operator"
-      open_liberty_catalog_source: "certified-operators"
-      open_liberty_catalog_source_namespace: "openshift-marketplace"
-      # Grafana Operator
-      grafana: "grafana-operator"
-      grafana_channel: "v4"
-      grafana_subscription: "grafana-operator"
-      grafana_catalog_source: "community-operators"
-      grafana_catalog_source_namespace: "openshift-marketplace"
     tasks:
-      # Login to cluster
-      - name: Login to OCP cluster
-        shell: "oc login --insecure-skip-tls-verify=true --token={{ ocp_token }} --server=https://{{ ocp_hostname }}:6443"
-        no_log: True
-      # Initialize Space Rover project
-      - name: Create project
-        shell: "oc new-project {{ ocp_project_name }} || exit 0"
-      - name: Use project
-        shell: "oc project {{ ocp_project_name }} || exit 0"
-      # Create operator group
-      - name: Generate Operator Group for project
-        template:
-          src: template/operator-group.yml
-          dest: dest/operator-group.yml
-      - name: Create Operator Group for project
-        shell: "oc apply -f dest/operator-group.yml"
-      # Create Thanos operator group (if different from project)
-      - name: Create Thanos project
-        shell: "oc new-project {{ ocp_thanos_project_name }} || exit 0"
-        when: ocp_project_name != ocp_thanos_project_name
-      - name: Generate Operator Group for Thanos project
-        template:
-          src: template/thanos-operator-group.yml
-          dest: dest/thanos-operator-group.yml
-        when: ocp_project_name != ocp_thanos_project_name
-      - name: Create Operator Group for Thanos project
-        shell: "oc apply -f dest/thanos-operator-group.yml"
-        when: ocp_project_name != ocp_thanos_project_name
-      # Open Liberty Operator
-      - name: Setup Open Liberty Operator
+      - name: Login to OCP
         include_tasks:
-          file: olo.yml
-      # Build Space Rover
-      - name: Setup Space Rover
+          file: tasks/ocp_login.yml
+      - name: Create project namespaces
         include_tasks:
-          file: space-rover.yml
-      # Grafana Operator
-      - name: Setup Grafana Operator
+          file: tasks/create_namespaces.yml
+      - name: Create operators
         include_tasks:
-          file: grafana.yml
-      # Thanos
-      - name: Setup Thanos Store Gateway, Receive, and Querier
+          file: tasks/create_operators.yml
+      - name: Configure Strimzi Operator
         include_tasks:
-          file: thanos.yml
-      # Get info and print output
-      - name: "Get Grafana Username"
-        shell: "oc get secret grafana-admin-credentials -o jsonpath='{.data.GF_SECURITY_ADMIN_USER}' | base64 -d"
-        register: "ocp_grafana_username"
-      - name: "Get Grafana Password"
-        shell: "oc get secret grafana-admin-credentials -o jsonpath='{.data.GF_SECURITY_ADMIN_PASSWORD}' | base64 -d"
-        register: "ocp_grafana_password"
-      - name: "Get Grafana Route"
-        shell: "oc get route grafana-route -o jsonpath='{.spec.host}'"
-        register: "ocp_grafana_route"
-      - name: Get Thanos Querier Route
-        shell: "oc get route thanos-querier -n {{ ocp_thanos_project_name }} -o jsonpath='{.spec.host}'"
-        register: ocp_thanos_querier_url
-      - name: Get Thanos Receive Route
-        shell: "oc get route thanos-receive -n {{ ocp_thanos_project_name }} -o jsonpath='{.spec.host}'"
-        register: ocp_thanos_receive_url
+          file: tasks/configure_strimzi.yml
+      - name: Configure Grafana Operator
+        include_tasks:
+          file: tasks/configure_grafana.yml
+      - name: Configure OpenLiberty Operator
+        include_tasks:
+          file: tasks/configure_openliberty.yml
+      - name: Configure Thanos Store Gateway, Receive, and Querier
+        include_tasks:
+          file: tasks/configure_thanos.yml
+      # - name: Build and Push All Space Rover Images
+      #   include_tasks:
+      #     file: tasks/build_and_push_all.yml
+      # - name: Create OpenLibertyApplications
+      #   include_tasks:
+      #     file: tasks/create-openlibertyapplications.yml
       - name: Display Cluster Information
         debug:
           msg: 
             - "Grafana URL: {{ ocp_grafana_route.stdout }}"
             - "Grafana Username: {{ ocp_grafana_username.stdout }}"
             - "Grafana Password: {{ ocp_grafana_password.stdout }}"
+            - "Kafka Cluster URL: {{ kafka_cluster_url.stdout }}"
             - "Thanos Querier URL: https://{{ ocp_thanos_querier_url.stdout }}"
             - "Thanos Receive URL: https://{{ ocp_thanos_receive_url.stdout }}/api/v1/receive"
             - "Add the THANOS_RECEIVE_URL=https://{{ ocp_thanos_receive_url.stdout }}/api/v1/receive to your .env file"

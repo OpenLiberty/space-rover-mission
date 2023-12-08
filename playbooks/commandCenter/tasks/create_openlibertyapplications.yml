@@ -1,0 +1,7 @@
+---
+- name: Generate OpenLibertyApplications
+  template:
+    src: tasks/template/space-rover.yml
+    dest: tasks/dest/space-rover.yml
+- name: Create OpenLibertyApplications
+  shell: "oc apply -f tasks/dest/space-rover.yml"

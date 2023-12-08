@@ -1,0 +1,45 @@
+---
+# Install Open Liberty Operator
+- name: Download Open Liberty Operator artifacts 
+  shell: |
+    mkdir -p tasks/dest/olo-base
+    cd tasks/dest/olo-base;
+    curl -O {{ olo_kustomize_base_url }}/kustomization.yaml;
+    sed -i '' 's@namespace: open-liberty@namespace: {{ namespace }}@' kustomization.yaml;
+    curl -O {{ olo_kustomize_base_url }}/open-liberty-crd.yaml;
+    curl -O {{ olo_kustomize_base_url }}/open-liberty-operator.yaml;
+    curl -O {{ olo_kustomize_base_url }}/open-liberty-roles.yaml;
+- name: Pull the Operator Image as AMD64
+  shell: |
+    podman pull --platform=linux/amd64 $(cat tasks/dest/olo-base/open-liberty-operator.yaml | grep 'image: ' | cut -f 2- -d ':')
+    sed -i '' 's@- amd64@- amd64\n                - arm64@' tasks/dest/olo-base/open-liberty-operator.yaml
+- name: Remove finalizer
+  shell: "kubectl patch crd openlibertyapplications.apps.openliberty.io --type=merge -p '{\"metadata\": {\"finalizers\": null}}'"
+  ignore_errors: true
+- name: Delete old install
+  shell: "kubectl delete -n {{ namespace }} -k tasks/dest/olo-base"
+  ignore_errors: true
+- name: Install OLO with Kustomize
+  shell: "kubectl create -n {{ namespace }} -k tasks/dest/olo-base"
+  ignore_errors: true
+# Install Runtime Component Operator
+# - name: Download Runtime Component Operator artifacts 
+#   shell: |
+#     mkdir -p tasks/dest/rco-base
+#     cd tasks/dest/rco-base;
+#     curl -O {{ rco_kustomize_base_url }}/kustomization.yaml;
+#     sed -i '' 's@namespace: runtime-component@namespace: {{ namespace }}@' kustomization.yaml;
+#     curl -O {{ rco_kustomize_base_url }}/runtime-component-crd.yaml;
+#     curl -O {{ rco_kustomize_base_url }}/runtime-component-operator.yaml;
+#     curl -O {{ rco_kustomize_base_url }}/runtime-component-roles.yaml;
+# - name: Pull the Operator Image as AMD64
+#   shell: |
+#     podman pull --platform=linux/amd64 $(cat tasks/dest/rco-base/runtime-component-operator.yaml | grep 'image: ' | cut -f 2- -d ':')
+#     sed -i '' 's@- amd64@- amd64\n                - arm64@' tasks/dest/rco-base/runtime-component-operator.yaml
+# - name: Delete old install
+#   shell: "kubectl delete -n {{ namespace }} -k tasks/dest/rco-base"
+#   ignore_errors: true
+# - name: Install RCO with Kustomize
+#   shell: "kubectl create -n {{ namespace }} -k tasks/dest/rco-base"
+#   ignore_errors: true
+

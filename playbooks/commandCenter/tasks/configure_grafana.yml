@@ -1,0 +1,54 @@
+---
+- name: Wait for Grafana Operator
+  shell: "oc get deployments grafana-operator-controller-manager -n {{ ocp_thanos_project_name }} -o jsonpath='{ .status.conditions[?(@.type==\"Available\")].status }'"
+  register: grafana
+  until: grafana.stdout.find('True') != -1
+  retries: 10
+- name: Delete Grafana service account (if exists)
+  shell: "oc delete sa {{ ocp_grafana_serviceaccount_name }} -n {{ ocp_thanos_project_name }} || exit 0"
+- name: Create Grafana service account
+  shell: "oc create sa {{ ocp_grafana_serviceaccount_name }} -n {{ ocp_thanos_project_name }}"
+- name: Add cluster-monitoring-view to Grafana service account
+  shell: "oc adm policy add-role-to-user cluster-monitoring-view -z {{ ocp_grafana_serviceaccount_name }} -n {{ ocp_thanos_project_name }}"
+- name: Generate Grafana ClusterRoleBinding
+  template:
+    src: tasks/template/grafana-clusterrolebinding.yml
+    dest: tasks/dest/grafana-clusterrolebinding.yml
+- name: Create cluster-monitoring-view ClusterRoleBinding
+  shell: "oc apply -f tasks/dest/grafana-clusterrolebinding.yml"
+- name: Generate token
+  shell: "oc create token {{ ocp_grafana_serviceaccount_name }} --duration=8760h -n {{ ocp_thanos_project_name }}" 
+  register: ocp_grafana_serviceaccount_token
+- name: Generate Grafana
+  template:
+    src: tasks/template/grafana.yml
+    dest: tasks/dest/grafana.yml
+- name: Generate Grafana datasource
+  template:
+    src: tasks/template/grafana-data-source.yml
+    dest: tasks/dest/grafana-data-source.yml
+- name: Cleanup Grafana metadata
+  shell: "oc delete -f tasks/dest/grafana.yml || exit 0"
+- name: Cleanup Grafana Data Source metadata
+  shell: "oc delete -f tasks/dest/grafana-data-source.yml || exit 0"
+- name: Add OCP Grafana dashboards
+  shell: "oc apply -f tasks/dashboards/ -n {{ ocp_thanos_project_name }}"
+- name: Add Grafana
+  shell: "oc apply -f tasks/dest/grafana.yml"
+- name: Add Grafana data source
+  shell: "oc apply -f tasks/dest/grafana-data-source.yml"
+- name: Wait for Grafana
+  shell: "oc get grafana example-grafana -n {{ ocp_thanos_project_name }} -o jsonpath='{.status.phase}'"
+  register: grafanainstance
+  until: grafanainstance.stdout.find('reconciling') != -1
+  retries: 20
+# Get info and print output
+- name: "Get Grafana Username"
+  shell: "oc get secret grafana-admin-credentials -n {{ ocp_thanos_project_name }} -o jsonpath='{.data.GF_SECURITY_ADMIN_USER}' | base64 -d"
+  register: "ocp_grafana_username"
+- name: "Get Grafana Password"
+  shell: "oc get secret grafana-admin-credentials -n {{ ocp_thanos_project_name }} -o jsonpath='{.data.GF_SECURITY_ADMIN_PASSWORD}' | base64 -d"
+  register: "ocp_grafana_password"
+- name: "Get Grafana Route"
+  shell: "oc get route grafana-route -n {{ ocp_thanos_project_name }} -o jsonpath='{.spec.host}'"
+  register: "ocp_grafana_route"

@@ -48,6 +48,18 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import org.apache.kafka.clients.producer.*;
+import org.apache.kafka.common.serialization.StringSerializer;
+import io.openliberty.spacerover.models.LeaderboardEvent;
+import io.openliberty.spacerover.models.LeaderboardEvent.LeaderboardEventSerializer;
+import java.util.Properties;
+
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.apache.kafka.clients.CommonClientConfigs;
+
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
+
 @ApplicationScoped
 @Path("/")
 public class Leaderboard {
@@ -57,6 +69,10 @@ public class Leaderboard {
 
 	@Inject
 	Validator validator;
+
+	@Inject
+	@ConfigProperty(name = "io.openliberty.leaderboard.sendToMessenger", defaultValue = "false")
+	Boolean sendToMessenger;
 
 	private JsonArray getViolations(LeaderboardEntry entry) {
 		Set<ConstraintViolation<LeaderboardEntry>> violations = validator.validate(entry);
@@ -86,19 +102,28 @@ public class Leaderboard {
 		if (!violations.isEmpty()) {
 			return Response.status(Response.Status.BAD_REQUEST).entity(violations.toString()).build();
 		}
-		MongoCollection<Document> document = db.getCollection(LeaderboardConstants.LEADERBOARD_COLLECTION_NAME);
 
 		Document newLeaderboardEntry = new Document();
 		newLeaderboardEntry.put(LeaderboardConstants.MONGO_LEADERBOARD_PLAYER, entry.getPlayer());
 		newLeaderboardEntry.put(LeaderboardConstants.MONGO_LEADERBOARD_SCORE, entry.getScore());
 		newLeaderboardEntry.put(LeaderboardConstants.MONGO_LEADERBOARD_TIME, entry.getTime());
 		newLeaderboardEntry.put(LeaderboardConstants.MONGO_LEADERBOARD_HEALTH, entry.getHealth());
-		newLeaderboardEntry.put(LeaderboardConstants.MONGO_LEADERBOARD_TIMESTAMP,
-				Long.toString(System.currentTimeMillis()));
+		newLeaderboardEntry.put(LeaderboardConstants.MONGO_LEADERBOARD_TIMESTAMP, Long.toString(System.currentTimeMillis()));
 		newLeaderboardEntry.put(LeaderboardConstants.MONGO_LEADERBOARD_GAME_MODE, entry.getGameMode());
 
-		document.insertOne(newLeaderboardEntry);
-
+		// Send "add" action to messenger
+		if (sendToMessenger) {
+			System.out.println("Send to messenger: true");
+			try {
+				runProducer("add", newLeaderboardEntry.toJson());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("Send to messenger: false");
+			MongoCollection<Document> document = db.getCollection(LeaderboardConstants.LEADERBOARD_COLLECTION_NAME);
+			document.insertOne(newLeaderboardEntry);
+		}
 		return Response.status(Response.Status.OK).entity(newLeaderboardEntry.toJson()).build();
 	}
 	@Produces(MediaType.APPLICATION_JSON)
@@ -203,4 +228,45 @@ public class Leaderboard {
 
 	}
 
+	private final static String TOPIC = "leaderboard.event";
+    private final static String BOOTSTRAP_SERVERS = "my-cluster-kafka-bootstrap-space-rover.apps.kc-ocp.cp.fyre.ibm.com:443";
+
+	static String runProducer(final String type, final String message) throws Exception {
+		final Producer<String, LeaderboardEvent> producer = createProducer();
+		long time = System.currentTimeMillis();
+		StringBuilder sb = new StringBuilder();
+		sb.append("test1: ");
+		try {
+			final ProducerRecord<String, LeaderboardEvent> record = 
+				new ProducerRecord<>(TOPIC, String.format("%s", type), new LeaderboardEvent(type, type, message));
+
+			RecordMetadata metadata = producer.send(record).get();
+
+			long elapsedTime = System.currentTimeMillis() - time;
+
+			System.out.printf("sent record(key=%s value=%s) " +
+							"meta(partition=%d, offset=%d) time=%d\n",
+					record.key(), record.value(), metadata.partition(),
+					metadata.offset(), elapsedTime);
+			sb.append(String.format("sent record(key=%s value=%s) " +
+			"meta(partition=%d, offset=%d) time=%d\n", record.key(), 
+			record.value(), metadata.partition(), metadata.offset(), elapsedTime));  
+		} finally {
+			producer.flush();
+			producer.close();
+		}
+		return sb.toString();
+	}
+
+    private static Producer<String, LeaderboardEvent> createProducer() {
+        Properties props = new Properties();
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
+        props.put(ProducerConfig.CLIENT_ID_CONFIG, "KafkaExampleProducer");
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, LeaderboardEventSerializer.class.getName());
+		props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL");
+		props.put("ssl.truststore.location", "/config/truststore.jks");
+		props.put("ssl.truststore.password", "password");
+        return new KafkaProducer<>(props);
+    }
 }

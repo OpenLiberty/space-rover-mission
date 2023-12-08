@@ -2,9 +2,10 @@
 
 # Prerequisites
 - Install `ansible-playbook` CLI
-- Docker Desktop
-  - Enable Kubernetes in settings
-  - If using ARM processor, enable Rosetta emulation
+- Colima
+  - For Mac (Apple Silicon)
+    - `brew install colima`
+    - `colima start --runtime containerd --kubernetes --arch amd64 --vm-type=vz --vz-rosetta`
 
 # Cluster Administrator
 ## 1. Cluster First Time Setup

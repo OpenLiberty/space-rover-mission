@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.service: leaderboard-cloud
+  name: leaderboard-cloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.service: leaderboard-cloud
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app.service: leaderboard-cloud
+        app.name: space-rover
+    spec:
+      containers:
+        - image: space-rover/leaderboard
+          name: leaderboard-cloud
+          ports:
+            - containerPort: 9080
+          resources: {}
+          env:
+            - name: io.openliberty.leaderboard.sendToMessenger
+              value: "false"
+          # Change Pull Policy for Remote Registry
+          imagePullPolicy: Never
+      restartPolicy: Always
+status: {}

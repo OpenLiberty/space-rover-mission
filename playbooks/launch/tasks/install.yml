@@ -1,0 +1,14 @@
+---
+- name: Prepare cluster context and namespace
+  shell: |
+    kubectl config use-context {{ context }}
+    kubectl create namespace {{ namespace }} || exit 0
+    kubectl config set-context --current --namespace {{ namespace }}
+- name: Install dependencies
+  shell:  |
+    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.0/deploy/static/provider/cloud/deploy.yaml
+    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml
+- name: Install operators
+  include_tasks:
+    file: tasks/install_operators.yml
+    

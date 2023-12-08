@@ -1,0 +1,48 @@
+---
+  - name: Launch space rover with local Kafka
+    hosts: localhost
+    connection: local 
+    vars:
+      is_mock: "{{ lookup('env', 'IS_MOCK') }}"
+      build_images: "{{ lookup('env', 'BUILD_IMAGES') }}"
+      rover_name: "{{ lookup('env', 'ROVER_NAME') }}"
+      url: "{{ lookup('env', 'THANOS_RECEIVE_URL') }}"
+      credentials: "{{ lookup('env', 'THANOS_RECEIVE_CREDENTIALS') }}"
+      mongodb_username: "{{ lookup('env', 'MONGODB_USERNAME') }}"
+      mongodb_password: "{{ lookup('env', 'MONGODB_PASSWORD') }}"
+      context: docker-desktop
+      namespace: default
+    tasks:
+      - name: Use Docker Desktop context
+        shell: "kubectl config use-context {{ context }}"
+      - name: Create Kafka namespace
+        shell: "kubectl create namespace kafka || exit 0"
+      # - name: Install Strimzi
+      #   shell: "kubectl create -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka || exit 0"
+      # - name: Install Kafka
+      #   shell: "kubectl apply -f config/kafka-cluster.yml -n kafka"
+      - name: Install Kafka Topic
+        shell: "kubectl apply -f config/kafka-topic-leaderboard-event.yml -n kafka"
+      - name: Delete previous space rover files
+        shell: "kubectl delete -R -f ../../services/k8s || exit 0"
+      - name: Build space rover images
+        shell: "cd ../../kubernetes; ./buildServices.sh"
+        when: build_images == "true"
+      - name: "Add MongoDB credentials"
+        shell: "kubectl create secret generic mongo-secret --from-literal=MONGO_INITDB_ROOT_USERNAME={{ mongodb_username }} --from-literal=MONGO_INITDB_ROOT_PASSWORD={{ mongodb_password }} || exit 0"
+      - name: Start space rover
+        shell: "kubectl apply -f ../../services/k8s"
+        when: is_mock == "false"
+      - name: Start space rover mock
+        shell: "kubectl apply -R -f ../../services/k8s"
+        when: is_mock == "true"
+      - name: Create Prometheus ConfigMap
+        template:
+          src: template/prometheus-configmap.yml
+          dest: dest/prometheus-configmap.yml
+      - name: Apply Prometheus ConfigMap
+        shell: "kubectl apply -f dest/prometheus-configmap.yml"
+      - name: Delete Prometheus pod to re-apply config update
+        shell: "kubectl delete pod -l app.service=prometheus"
+      - name: Wait for space rover pods
+        shell: "kubectl wait --namespace={{ namespace }} --for=condition=Ready --selector app.name=space-rover pods --timeout=500s"

@@ -2,4 +2,4 @@
 echo "==== Space Rover Land ===="
 
 REPO_DIR=$(git rev-parse --show-toplevel)
-ansible-playbook $REPO_DIR/playbooks/land.yml
+ansible-playbook $REPO_DIR/playbooks/land/main.yml

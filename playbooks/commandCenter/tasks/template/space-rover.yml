@@ -1,0 +1,106 @@
+apiVersion: apps.openliberty.io/v1beta2
+kind: OpenLibertyApplication
+metadata:
+  name: leaderboard
+  namespace: {{ ocp_project_name }}
+spec:
+  applicationImage: leaderboard
+  replicas: 1
+  env:
+    - name: io.openliberty.leaderboard.sendToMessenger
+      value: "false"
+  expose: true
+---
+apiVersion: apps.openliberty.io/v1beta2
+kind: OpenLibertyApplication
+metadata:
+  name: messenger
+  namespace: {{ ocp_project_name }}
+spec:
+  applicationImage: messenger
+  replicas: 1
+  env:
+    - name: io.openliberty.messenger.topicName
+      value: leaderboard.event
+    - name: io.openliberty.messenger.bootstrapServers
+      value: my-cluster-kafka-bootstrap:9092
+---
+apiVersion: apps.openliberty.io/v1beta2
+kind: OpenLibertyApplication
+metadata:
+  name: mongo
+  namespace: {{ ocp_project_name }}
+spec:
+  applicationImage: mongo
+  replicas: 1
+  statefulSet:
+    storage:
+      size: "500Mi"
+      mountPath: /data/db
+  service:
+    ports:
+      - name: "27017"
+        port: 27017
+        targetPort: 27017
+  env:
+    - name: MONGO_INITDB_ROOT_USERNAME
+      value: root
+    - name: MONGO_INITDB_ROOT_PASSWORD
+      value: openliberty
+# ---
+# apiVersion: apps.openliberty.io/v1beta2
+# kind: OpenLibertyApplication
+# metadata:
+#   name: client
+#   namespace: {{ ocp_project_name }}
+# spec:
+#   applicationImage: client
+#   replicas: 1
+#   expose: true
+#   service:
+#     port: 3000
+#     targetPort: 80
+# ---
+# apiVersion: apps.openliberty.io/v1beta2
+# kind: OpenLibertyApplication
+# metadata:
+#   name: mockboard
+#   namespace: {{ ocp_project_name }}
+# spec:
+#   applicationImage: mockboard
+#   replicas: 1
+#   service:
+#     port: 5045
+# ---
+# apiVersion: apps.openliberty.io/v1beta2
+# kind: OpenLibertyApplication
+# metadata:
+#   name: mockrover
+#   namespace: {{ ocp_project_name }}
+# spec:
+#   applicationImage: mockrover
+#   replicas: 1
+#   service:
+#     port: 5045
+# ---
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: gameservice-mock-config
+# data:
+#   io.openliberty.spacerover.ip: mockrover
+#   io.openliberty.spacerover.port: "5045"
+#   io.openliberty.gameboard.ip: mockboard
+#   io.openliberty.gameboard.port: "5045"
+# ---
+# apiVersion: apps.openliberty.io/v1beta2
+# kind: OpenLibertyApplication
+# metadata:
+#   name: gameservice
+#   namespace: {{ ocp_project_name }}
+# spec:
+#   applicationImage: gameservice
+#   replicas: 1
+#   envFrom:
+#     - configMapRef:
+#       name: gameservice-mock-config

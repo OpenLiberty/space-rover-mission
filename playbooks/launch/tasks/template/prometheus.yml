@@ -1,0 +1,19 @@
+global:
+  scrape_interval:     15s  # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  external_labels:
+    rover_name: "{{ rover_name }}"
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'gameservice-ol'
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    scrape_interval: 5s
+    static_configs:
+    - targets: ['gameservice:9080']
+remote_write:
+  - url: "{{ url }}"
+    authorization:
+      credentials: "{{ credentials }}"
+    tls_config:
+      insecure_skip_verify: true

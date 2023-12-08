@@ -1,0 +1,7 @@
+---
+- name: Get {{ item.name }} subscription
+  template:
+    src: tasks/template/operator-subscription.yml
+    dest: tasks/dest/operator-subscription.yml
+- name: Creating {{ item.name }}
+  shell: oc apply -f tasks/dest/operator-subscription.yml

@@ -1,0 +1,17 @@
+---
+- name: Create project
+  shell: "oc new-project {{ ocp_project_name }} || exit 0"
+- name: Use project
+  shell: "oc project {{ ocp_project_name }} || exit 0"
+# Create Thanos operator group (if different from project)
+- name: Create Thanos project
+  shell: "oc new-project {{ ocp_thanos_project_name }} || exit 0"
+  when: ocp_project_name != ocp_thanos_project_name
+- name: Generate Operator Group for Thanos project
+  template:
+    src: tasks/template/thanos-operator-group.yml
+    dest: tasks/dest/thanos-operator-group.yml
+  when: ocp_project_name != ocp_thanos_project_name
+- name: Create Operator Group for Thanos project
+  shell: "oc apply -f tasks/dest/thanos-operator-group.yml"
+  when: ocp_project_name != ocp_thanos_project_name

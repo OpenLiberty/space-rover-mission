@@ -1,0 +1,12 @@
+is_mock: "{{ lookup('env', 'IS_MOCK') }}"
+build_images: "{{ lookup('env', 'BUILD_IMAGES') }}"
+rover_name: "{{ lookup('env', 'ROVER_NAME') }}"
+url: "{{ lookup('env', 'THANOS_RECEIVE_URL') }}"
+credentials: "{{ lookup('env', 'THANOS_RECEIVE_CREDENTIALS') }}"
+context: colima
+namespace: space-rover
+mongodb_username: "{{ lookup('env', 'MONGODB_USERNAME') }}"
+mongodb_password: "{{ lookup('env', 'MONGODB_PASSWORD') }}"
+# olo_kustomize_base_url: https://raw.githubusercontent.com/OpenLiberty/open-liberty-operator/main/deploy/releases/1.2.2/kustomize/base
+olo_kustomize_base_url: https://raw.githubusercontent.com/OpenLiberty/open-liberty-operator/kustomize-deprecate/internal/deploy/kustomize/daily/base
+rco_kustomize_base_url: https://raw.githubusercontent.com/application-stacks/runtime-component-operator/main/deploy/releases/1.2.2/kustomize/base

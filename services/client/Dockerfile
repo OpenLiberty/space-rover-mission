@@ -1,4 +1,4 @@
-FROM node:14.17.5 AS builder
+FROM node:16.14-alpine AS builder
 
 WORKDIR /usr/src/app
 
@@ -25,6 +25,6 @@ COPY nginx.conf /etc/nginx/conf.d
 
 COPY --from=builder /usr/src/app/build /usr/share/nginx/html
 
-EXPOSE 80
+EXPOSE 8080
 
 CMD ["nginx", "-g", "daemon off;"]

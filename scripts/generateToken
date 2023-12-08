@@ -5,4 +5,4 @@ REPO_DIR=$(git rev-parse --show-toplevel)
 set -a
 source $REPO_DIR/.env
 set +a
-ansible-playbook $REPO_DIR/playbooks/generateToken.yml
+ansible-playbook $REPO_DIR/playbooks/generateToken/main.yml

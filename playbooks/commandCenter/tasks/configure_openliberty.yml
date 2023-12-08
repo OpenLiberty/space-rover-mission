@@ -1,0 +1,6 @@
+---
+- name: Wait for Open Liberty Operator
+  shell: "oc get deployments olo-controller-manager -n {{ ocp_project_name }} -o jsonpath='{.status.conditions[?(@.type==\"Available\")].status}'"
+  register: olo
+  until: olo.stdout.find('True') != -1
+  retries: 10

@@ -1,0 +1,9 @@
+---
+- name: Get Cluster IP
+  shell: "tasks/scripts/get_cluster_ip.sh {{ ocp_hostname }}"
+  register: ocp_cluster_ip
+- name: Get Cluster Token
+  shell: "tasks/scripts/get_ocp_token.sh {{ ocp_username }} {{ ocp_password }} {{ ocp_hostname }}"
+  register: ocp_cluster_token
+- name: Login to OCP cluster
+  shell: "oc login --insecure-skip-tls-verify=true --token={{ ocp_cluster_token.stdout }} --server=https://{{ ocp_cluster_ip.stdout }}:6443"

@@ -1,0 +1,53 @@
+---
+# Wait for the operators to start
+- name: Wait for Open Liberty Operator
+  shell: "oc get deployments olo-controller-manager -n {{ namespace }} -o jsonpath='{.status.conditions[?(@.type==\"Available\")].status}'"
+  register: olo
+  until: olo.stdout.find('True') != -1
+  retries: 10
+- name: Wait for Runtime Component Operator
+  shell: "oc get deployments rco-controller-manager -n {{ namespace }} -o jsonpath='{.status.conditions[?(@.type==\"Available\")].status}'"
+  register: rco
+  until: rco.stdout.find('True') != -1
+  retries: 10
+# Setup microservice app templates
+- name: Create OpenLibertyApplications and RuntimeComponents
+  template:
+    src: tasks/template/apps.yml
+    dest: tasks/dest/apps.yml
+# Setup Prometheus ConfigMap
+- name: Create Prometheus ConfigMap
+  template:
+    src: tasks/template/prometheus-configmap.yml
+    dest: tasks/dest/prometheus-configmap.yml
+- name: Apply Prometheus ConfigMap
+  shell: "kubectl apply -f tasks/dest/prometheus-configmap.yml"
+# Deploy apps
+- name: Install OpenLibertyApplications and RuntimeComponents
+  shell: "kubectl apply -f tasks/dest/apps.yml"---
+# Wait for the operators to start
+- name: Wait for Open Liberty Operator
+  shell: "oc get deployments olo-controller-manager -n {{ namespace }} -o jsonpath='{.status.conditions[?(@.type==\"Available\")].status}'"
+  register: olo
+  until: olo.stdout.find('True') != -1
+  retries: 10
+- name: Wait for Runtime Component Operator
+  shell: "oc get deployments rco-controller-manager -n {{ namespace }} -o jsonpath='{.status.conditions[?(@.type==\"Available\")].status}'"
+  register: rco
+  until: rco.stdout.find('True') != -1
+  retries: 10
+# Setup microservice app templates
+- name: Create OpenLibertyApplications and RuntimeComponents
+  template:
+    src: tasks/template/apps.yml
+    dest: tasks/dest/apps.yml
+# Setup Prometheus ConfigMap
+- name: Create Prometheus ConfigMap
+  template:
+    src: tasks/template/prometheus-configmap.yml
+    dest: tasks/dest/prometheus-configmap.yml
+- name: Apply Prometheus ConfigMap
+  shell: "kubectl apply -f tasks/dest/prometheus-configmap.yml"
+# Deploy apps
+- name: Install OpenLibertyApplications and RuntimeComponents
+  shell: "kubectl apply -f tasks/dest/apps.yml"

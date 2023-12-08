@@ -1,9 +1,0 @@
-apiVersion: apps.openliberty.io/v1beta2
-kind: OpenLibertyApplication
-metadata:
-  name: leaderboard
-  namespace: {{ ocp_project_name }}
-spec:
-  applicationImage: leaderboard
-  expose: true
-  replicas: 1

@@ -1,0 +1,45 @@
+ocp_hostname: "{{ lookup('env', 'OCP_HOSTNAME') }}"
+ocp_username: "{{ lookup('env', 'OCP_USERNAME') }}"
+ocp_password: "{{ lookup('env', 'OCP_PASSWORD') }}"
+ocp_project_name: "{{ lookup('env', 'OCP_PROJECT_NAME') }}"
+ocp_thanos_project_name: "{{ lookup('env', 'OCP_THANOS_PROJECT_NAME') }}"
+ocp_grafana_serviceaccount_name: grafana-serviceaccount
+grafana_username: "{{ lookup('env', 'OCP_GRAFANA_USERNAME') }}"
+grafana_password: "{{ lookup('env', 'OCP_GRAFANA_PASSWORD') }}"
+strimzi_version: "v0.34.0"
+operators:
+  - name: "open-liberty-certified"
+    channel: "beta2"
+    subscription: "open-liberty-operator"
+    catalog_source: "certified-operators"
+    catalog_source_namespace: "openshift-marketplace"
+  - name: "grafana-operator"
+    channel: "v4"
+    subscription: "grafana-operator"
+    catalog_source: "community-operators"
+    catalog_source_namespace: "openshift-marketplace"
+  - name: "strimzi-kafka-operator"
+    channel: "strimzi-0.34.x"
+    subscription: "strimzi-kafka-operator"
+    catalog_source: "community-operators"
+    catalog_source_namespace: "openshift-marketplace"
+images:
+  - name: leaderboard
+    build_folder: ../../services/leaderboard
+  - name: messenger
+    build_folder: ../../services/messenger
+  - name: mongo
+    build_folder: ../../services/leaderboard/assets
+  - name: gameservice
+    build_folder: ../../services/game
+  # - name: client
+  #   build_folder: ../../services/client
+  #   with_args:
+  #     - GAME_URL=http://gameservice:9080/game
+  #     - GAME_SOCKET_URL=ws://gameservice:9080/roversocket
+  #     - GAME_DURATION_SECONDS=120
+  #     - LEADERBOARD_URL=http://leaderboard:9080/mongo/leaderboard
+  - name: mockboard
+    build_folder: ../../services/mock/board
+  - name: mockrover
+    build_folder: ../../services/mock/rover

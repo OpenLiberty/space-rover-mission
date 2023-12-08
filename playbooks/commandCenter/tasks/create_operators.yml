@@ -1,0 +1,11 @@
+---
+- name: Generate Operator Group for project
+  template:
+    src: tasks/template/operator-group.yml
+    dest: tasks/dest/operator-group.yml
+- name: Create Operator Group for project
+  shell: "oc apply -f tasks/dest/operator-group.yml"
+- name: Creating {{ item.name }}
+  include_tasks:
+    file: create_operator.yml
+  loop: "{{ operators }}"

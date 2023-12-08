@@ -2,29 +2,15 @@
   - name: Launch space rover
     hosts: localhost
     connection: local 
-    vars:
-      is_mock: true
-      rover_name: "{{ lookup('env', 'ROVER_NAME') }}"
-      url: "{{ lookup('env', 'THANOS_RECEIVE_URL') }}"
-      credentials: "{{ lookup('env', 'THANOS_RECEIVE_CREDENTIALS') }}"
-      context: docker-desktop
-      namespace: default
     tasks:
-      - name: Use Docker Desktop context
-        shell: "kubectl config use-context {{ context }}"
-      - name: Start space rover
-        shell: "kubectl apply -f ../../services/k8s"
-        when: is_mock == false
-      - name: Start space rover mock
-        shell: "kubectl apply -R -f ../../services/k8s"
-        when: is_mock == true
-      - name: Create Prometheus ConfigMap
-        template:
-          src: template/prometheus-configmap.yml
-          dest: dest/prometheus-configmap.yml
-      - name: Apply Prometheus ConfigMap
-        shell: "kubectl apply -f dest/prometheus-configmap.yml"
-      - name: Delete Prometheus pod to re-apply config update
-        shell: "kubectl delete pod -l app.service=prometheus"
-      - name: Wait for space rover pods
-        shell: "kubectl wait --namespace={{ namespace }} --for=condition=Ready --selector app.name=space-rover pods --timeout=500s"
+      - name: Install Operators
+        include_tasks:
+          file: tasks/install.yml
+      # - name: Build space rover images
+      #   shell: "cd ../../kubernetes; ./buildServices.sh"
+      #   when: build_images == "true"
+      # - name: Configure the Apps 
+      #   include_tasks:
+      #     file: tasks/configure_apps.yml
+      # - name: Wait for space rover pods
+      #   shell: "kubectl wait --namespace={{ namespace }} --for=condition=Ready --selector app.name=space-rover pods --timeout=500s"

@@ -1,0 +1,16 @@
+---
+- name: Build models JAR, leaderboard.war, and messenger.war
+  shell: "cd ../../services/; mvn -pl models install; mvn package"
+- name: Start Build Image Task
+  include_tasks:
+    file: build_images.yml
+- name: Build client
+  shell: "cd ../../services/client; DOCKER_BUILDKIT=0 docker buildx build --platform=linux/amd64 . -t default-route-openshift-image-registry.apps.{{ ocp_hostname }}/{{ ocp_project_name }}/client --build-arg GAME_URL=http://gameservice:9080/game \
+    --build-arg GAME_SOCKET_URL=ws://gameservice:9080/roversocket \
+    --build-arg GAME_DURATION_SECONDS=120 \
+    --build-arg LEADERBOARD_URL=http://leaderboard:9080/mongo/leaderboard"
+- name: Start Push Image Task
+  include_tasks:
+    file: push_images.yml
+- name: Push client
+  shell: "docker push default-route-openshift-image-registry.apps.{{ ocp_hostname }}/{{ ocp_project_name }}/client"
