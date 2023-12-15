@@ -3,7 +3,7 @@ kind: OpenLibertyApplication
 metadata:
   name: leaderboard
 spec:
-  applicationImage: space-rover/leaderboard:latest
+  applicationImage: space-rover/leaderboard
   env:
     - name: io.openliberty.leaderboard.sendToMessenger
       value: "false"
@@ -54,8 +54,8 @@ metadata:
   name: mongo-secret
 type: Opaque
 stringData:
-  MONGODB_INITDB_ROOT_USERNAME: <username>
-  MONGODB_INITDB_ROOT_PASSWORD: <password>
+  MONGODB_INITDB_ROOT_USERNAME: root
+  MONGODB_INITDB_ROOT_PASSWORD: openliberty
 ---
 apiVersion: apps.openliberty.io/v1
 kind: OpenLibertyApplication
@@ -111,30 +111,6 @@ spec:
   route:
     host: localhost
     path: /rover-backend
-    pathType: ImplementationSpecific
----
-apiVersion: apps.openliberty.io/v1
-kind: OpenLibertyApplication
-metadata:
-  name: board
-spec:
-  applicationImage: space-rover/mock-board
-  pullPolicy: Never
-  expose: true
-  env:
-    - name: app.context.root
-      value: board-backend/
-    - name:  WLP_LOGGING_CONSOLE_LOGLEVEL
-      value: info
-    - name: WLP_LOGGING_CONSOLE_SOURCE
-      value: message,accessLog,ffdc,audit
-    - name: WLP_LOGGING_CONSOLE_FORMAT
-      value: simple
-  service:
-    port: 5045
-  route:
-    host: localhost
-    path: /board-backend
     pathType: ImplementationSpecific
 ---
 apiVersion: apps.openliberty.io/v1

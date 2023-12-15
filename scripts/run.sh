@@ -1,6 +1,10 @@
 #!/bin/bash
 
 NAMESPACE=space-rover
+RUN_WITH_MOCK=true
+
+cd $( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
 kubectl create namespace $NAMESPACE
 kubectl config set-context --current --namespace=$NAMESPACE
 
@@ -15,4 +19,12 @@ curl -L https://raw.githubusercontent.com/OpenLiberty/open-liberty-operator/main
     | kubectl apply -n ${NAMESPACE} -f -
 
 # Apply yaml files
-kubectl apply -n ${NAMESPACE} -f ./yaml/apps.yaml
+kubectl delete -n ${NAMESPACE} -f ../src/rover/yaml/apps.yaml
+if [[ "$RUN_WITH_MOCK" == "true" ]]; then
+    kubectl delete -n ${NAMESPACE} -f ../src/rover/yaml/mock-apps.yaml
+fi
+
+kubectl apply -n ${NAMESPACE} -f ../src/rover/yaml/apps.yaml
+if [[ "$RUN_WITH_MOCK" == "true" ]]; then
+    kubectl apply -n ${NAMESPACE} -f ../src/rover/yaml/mock-apps.yaml
+fi

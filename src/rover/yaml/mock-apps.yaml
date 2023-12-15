@@ -1,0 +1,47 @@
+apiVersion: apps.openliberty.io/v1
+kind: OpenLibertyApplication
+metadata:
+  name: mockboard
+spec:
+  applicationImage: space-rover/mockboard
+  pullPolicy: Never
+  expose: true
+  env:
+    - name: app.context.root
+      value: board-backend/
+    - name:  WLP_LOGGING_CONSOLE_LOGLEVEL
+      value: info
+    - name: WLP_LOGGING_CONSOLE_SOURCE
+      value: message,accessLog,ffdc,audit
+    - name: WLP_LOGGING_CONSOLE_FORMAT
+      value: simple
+  service:
+    port: 5045
+  route:
+    host: localhost
+    path: /board-backend
+    pathType: ImplementationSpecific
+---
+apiVersion: apps.openliberty.io/v1
+kind: OpenLibertyApplication
+metadata:
+  name: mockrover
+spec:
+  applicationImage: space-rover/mockrover
+  pullPolicy: Never
+  expose: true
+  env:
+    - name: app.context.root
+      value: rover-backend/
+    - name:  WLP_LOGGING_CONSOLE_LOGLEVEL
+      value: info
+    - name: WLP_LOGGING_CONSOLE_SOURCE
+      value: message,accessLog,ffdc,audit
+    - name: WLP_LOGGING_CONSOLE_FORMAT
+      value: simple
+  service:
+    port: 5045
+  route:
+    host: localhost
+    path: /rover-backend
+    pathType: ImplementationSpecific

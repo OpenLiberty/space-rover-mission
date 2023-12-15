@@ -14,7 +14,7 @@
         <module>leaderboard</module>
         <module>messenger</module>
         <module>game</module>
-        <module>mock/board</module>
-        <module>mock/rover</module>
+        <module>mockboard</module>
+        <module>mockrover</module>
     </modules>
 </project>
