@@ -1,0 +1,154 @@
+apiVersion: apps.openliberty.io/v1
+kind: OpenLibertyApplication
+metadata:
+  name: leaderboard
+spec:
+  applicationImage: space-rover/leaderboard:latest
+  env:
+    - name: io.openliberty.leaderboard.sendToMessenger
+      value: "false"
+    - name:  WLP_LOGGING_CONSOLE_LOGLEVEL
+      value: info
+    - name: WLP_LOGGING_CONSOLE_SOURCE
+      value: message,accessLog,ffdc,audit
+    - name: WLP_LOGGING_CONSOLE_FORMAT
+      value: simple
+    - name: mongo.port
+      value: "27017"
+    - name: mongo.dbname
+      value: spaceDB
+    - name: mongo.user
+      value: spaceUser
+    - name: mongo.pass.encoded
+      value: "{xor}MC86MTM2PTotKyY="
+  pullPolicy: Never
+  expose: true
+  service:
+    port: 9080
+  route:
+    host: localhost
+    path: /mongo
+    pathType: ImplementationSpecific
+---
+apiVersion: apps.openliberty.io/v1
+kind: OpenLibertyApplication
+metadata:
+  name: mongo
+spec:
+  applicationImage: space-rover/mongo
+  envFrom:
+    - secretRef:
+        name: mongo-secret
+  securityContext:
+    runAsUser: 999
+  statefulSet:
+    storage:
+      size: 2Gi
+      mountPath: "/data/db"
+  service:
+    port: 27017
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mongo-secret
+type: Opaque
+stringData:
+  MONGODB_INITDB_ROOT_USERNAME: <username>
+  MONGODB_INITDB_ROOT_PASSWORD: <password>
+---
+apiVersion: apps.openliberty.io/v1
+kind: OpenLibertyApplication
+metadata:
+  name: gameservice
+spec:
+  applicationImage: space-rover/game
+  pullPolicy: Never
+  expose: true
+  env:
+    - name: app.context.root
+      value: game-backend/
+    - name: io.openliberty.spacerover.ip
+      value: rover
+    - name: io.openliberty.spacerover.port
+      value: "5045"
+    - name: io.openliberty.gameboard.ip
+      value: board
+    - name: io.openliberty.gameboard.port
+      value: "5045"
+    - name:  WLP_LOGGING_CONSOLE_LOGLEVEL
+      value: info
+    - name: WLP_LOGGING_CONSOLE_SOURCE
+      value: message,accessLog,ffdc,audit
+    - name: WLP_LOGGING_CONSOLE_FORMAT
+      value: simple
+  service:
+    port: 9080
+  route:
+    host: localhost
+    path: /game-backend
+    pathType: ImplementationSpecific
+---
+apiVersion: apps.openliberty.io/v1
+kind: OpenLibertyApplication
+metadata:
+  name: rover
+spec:
+  applicationImage: space-rover/mock-rover
+  pullPolicy: Never
+  expose: true
+  env:
+    - name: app.context.root
+      value: rover-backend/
+    - name:  WLP_LOGGING_CONSOLE_LOGLEVEL
+      value: info
+    - name: WLP_LOGGING_CONSOLE_SOURCE
+      value: message,accessLog,ffdc,audit
+    - name: WLP_LOGGING_CONSOLE_FORMAT
+      value: simple
+  service:
+    port: 5045
+  route:
+    host: localhost
+    path: /rover-backend
+    pathType: ImplementationSpecific
+---
+apiVersion: apps.openliberty.io/v1
+kind: OpenLibertyApplication
+metadata:
+  name: board
+spec:
+  applicationImage: space-rover/mock-board
+  pullPolicy: Never
+  expose: true
+  env:
+    - name: app.context.root
+      value: board-backend/
+    - name:  WLP_LOGGING_CONSOLE_LOGLEVEL
+      value: info
+    - name: WLP_LOGGING_CONSOLE_SOURCE
+      value: message,accessLog,ffdc,audit
+    - name: WLP_LOGGING_CONSOLE_FORMAT
+      value: simple
+  service:
+    port: 5045
+  route:
+    host: localhost
+    path: /board-backend
+    pathType: ImplementationSpecific
+---
+apiVersion: apps.openliberty.io/v1
+kind: OpenLibertyApplication
+metadata:
+  name: client
+spec:
+  applicationImage: space-rover/client
+  expose: true
+  service:
+    port: 8080
+  route:
+    host: localhost
+    path: /
+    pathType: ImplementationSpecific
+  pullPolicy: Never
+ 

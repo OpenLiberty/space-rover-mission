@@ -2,7 +2,7 @@
 
 Open Liberty Space Rover Mission is an interactive IoT game designed to showcase microservices with modern Java technologies in a fun way. The mission is to guide the Space Rover using hand gestures to its home while visiting planets along the way to gather supplies. Make sure to avoid any obstacles (asteroids, black-hole, etc.) in your path. 🚨 Beware of extra damage on the Sun! 🚨
 
-![Teaser](/images/teaser.jpg)
+![Teaser](/assets/teaser.jpg)
 
 ### Five Hand Gestures
 These five hand gestures are used to move the Space Rover across the game board. <img width="692" alt="image" src="https://user-images.githubusercontent.com/45052124/173872753-3410f9c0-42ac-49f4-a52a-ebbd8ff6ee70.png">
@@ -19,7 +19,7 @@ The gesture detection is built upon using popular open sourced computer vision l
 ## Setup, Cleanup, and Troubleshooting
 For setup, cleanup, and troubleshooting instructions, see [documentation](https://github.com/OpenLiberty/space-rover-mission/tree/main/documentation).
 
-![GameBoard](/images/gameboard-v2.png)
+![GameBoard](/assets/gameboard-v2.png)
 
 ## Gameplay
 
@@ -32,7 +32,7 @@ Open Liberty Space Rover Mission is playable in four different game modes: Class
 
 ## Architecture Diagram
 
-![ArchitectureDiagram](/images/architecture.png)
+![ArchitectureDiagram](/assets/architecture.png)
 
 #### Container 1 - Client
 The Client is built using React and served using Nginx. The UI is used to enter the player's name, start the game, view current game stats, and view the leaderboard. It interacts with the Game Service using websockets and the Leaderboard Service using HTTP.

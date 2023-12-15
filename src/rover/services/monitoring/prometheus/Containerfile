@@ -1,0 +1,3 @@
+FROM registry.access.redhat.com/rhacm2/prometheus-rhel8
+
+COPY --chown=1001:0 ./prometheus.yml /etc/prometheus/prometheus.yml

@@ -1,0 +1,27 @@
+FROM registry.access.redhat.com/ubi8/nodejs-16-minimal AS builder
+
+WORKDIR /usr/src/app
+
+COPY --chown=1001:1001 package*.json ./
+RUN npm install
+
+COPY --chown=1001:1001 . .
+
+ARG GAME_URL
+ENV REACT_APP_GAME_URL=$GAME_URL
+ARG GAME_SOCKET_URL
+ENV REACT_APP_GAME_SOCKET_URL=$GAME_SOCKET_URL
+ARG GAME_DURATION_SECONDS
+ENV REACT_APP_GAME_DURATION_SECONDS=$GAME_DURATION_SECONDS
+ARG LEADERBOARD_URL
+ENV REACT_APP_LEADERBOARD_URL=$LEADERBOARD_URL
+
+RUN ["npm", "run", "build"]
+
+FROM registry.access.redhat.com/ubi9/nginx-122
+
+COPY --chown=default:root --from=builder /usr/src/app/build /opt/app-root/src
+
+EXPOSE 8080
+
+CMD ["nginx", "-g", "daemon off;"]

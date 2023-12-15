@@ -19,7 +19,7 @@ This document covers the cleanup process for the OpenLiberty Space Rover mission
 4. Untwist the twist-tie on the bottom-left corner of the barrier (leave the twist-tie looped loosely so that it can be used again for future setups).
 5. Remove the barrier from around the Game Board and fold it flat, per the following image:
 
-![Flattened barrier](../images/game-board/gb-flat-barrier.png)
+![Flattened barrier](../assets/game-board/gb-flat-barrier.png)
 
 6. Remove the four clamps from underneath the board intersections. **REMEMBER TO PUT THE FOUR CLAMPS BACK INTO THE ZIPLOCK BAG THEY CAME IN.**
 7. Pull the connected sections of the connectors out of the board holes.

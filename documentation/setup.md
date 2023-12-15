@@ -6,7 +6,7 @@ The following guide goes through how to set up the different components for the 
 
 Connect the WiFi Router into a nearby power supply and wait until the green light starts blinking, which indicates a local WiFi network has been successfully created.
 
-![TP-Link Nano WiFi Router](../images/TP-Link-Nano-Wifi-Router.png)  
+![TP-Link Nano WiFi Router](../assets/TP-Link-Nano-Wifi-Router.png)  
 
 ## Devices
 
@@ -25,7 +25,7 @@ See the light patterns representing the setup, standby, and gameplay states for 
 The following instructions detail how to set up the Space Rover.
 
 1. Plug the Space Rover into a power outlet.
-<br>&nbsp; ![Plug in space rover](../images/space-rover/v2/sr-plug-in-v2.png)
+<br>&nbsp; ![Plug in space rover](../assets/space-rover/v2/sr-plug-in-v2.png)
 
 2. Flip the switch on the power cord to turn the Space Rover on. **Note:** When the rover is initially powered on, it will "jolt".
 
@@ -53,8 +53,8 @@ https://user-images.githubusercontent.com/31871360/171911111-c6d07857-3885-4ef6-
 
 **Solid Turquoise Lights + Solid Head/Tail Lights**: Game Started
 
-![Game Started Headlights](../images/space-rover/v2/sr-wsconn-gamestarted-headlights-v2.png)
-![Game Started Taillights](../images/space-rover/v2/sr-wsconn-gamestarted-taillights-v2.png)
+![Game Started Headlights](../assets/space-rover/v2/sr-wsconn-gamestarted-headlights-v2.png)
+![Game Started Taillights](../assets/space-rover/v2/sr-wsconn-gamestarted-taillights-v2.png)
 
 
 ## Game Board
@@ -63,11 +63,11 @@ The following instructions detail how to set up the Game Board.
 
 1. Set out the four separate boards in the following layout:
 
-![Board Layout](../images/game-board/gb-board-layout.png)
+![Board Layout](../assets/game-board/gb-board-layout.png)
 
 2. Connect the four boards together using the three-pin connectors between the boards. There are eight one-sided connectors in total - two for each board - that will create four connections between the boards. **_Ensure that the wire colours coordinate when the connectors are connected -- the red wires (power), green wires (data line), and black wires (ground) should all line up when connected._**
 
-![Connectors](../images/game-board/gb-connectors.png)
+![Connectors](../assets/game-board/gb-connectors.png)
 
 3. After the connectors are connected, push the connected section into either of the board holes that the connectors come out of (refer to video below).
 
@@ -107,13 +107,13 @@ https://user-images.githubusercontent.com/31871360/171955445-425cdc56-146a-4461-
 
 **Solid Blue SUN:**  Websocket connected, waiting for game start
 
-![Websocket connected, waiting for game start](../images/game-board/v2/gb-wsconn-wfgame.png)
+![Websocket connected, waiting for game start](../assets/game-board/v2/gb-wsconn-wfgame.png)
 
 ## Mini PC
 
 The following instructions detail how to setup the Mini PC used to run the game service, leaderboard service, and game UI.
 
-![mini-pc](../images/mini-pc.png)
+![mini-pc](../assets/mini-pc.png)
 
 1. Plug in the Mini PC and press the red button to turn it on.
 
@@ -128,16 +128,16 @@ The following instructions detail how to setup the Mini PC used to run the game 
 5. Firefox will automatically open; verify that four tabs are generated with the following endpoints:
 
     * **Webapp** => localhost:3000/
-        <br>&nbsp; ![Webapp Play Page](../images/four-tab-game-page.png)
+        <br>&nbsp; ![Webapp Play Page](../assets/four-tab-game-page.png)
     * **Game Service Health** => localhost:9080/health
-        <br><br>&nbsp; ![Game Service Health](../images/four-tab-game-server-health.png)
+        <br><br>&nbsp; ![Game Service Health](../assets/four-tab-game-server-health.png)
     * **Leaderboard Health** => localhost:9070/health
-        <br><br>&nbsp; ![Leaderboard Health](../images/four-tab-leaderboard-health.png)
+        <br><br>&nbsp; ![Leaderboard Health](../assets/four-tab-leaderboard-health.png)
     * **Grafana** => localhost:3010/
     * There are two dashboards: Liberty Metrics Dashboard and Space Rover Mission statistics Dashboard
         
         Liberty Metrics Dashboard:
-        <br>&nbsp; ![Grafana](../images/four-tab-grafana.png)
+        <br>&nbsp; ![Grafana](../assets/four-tab-grafana.png)
         
         Space Rover Mission statistics Dashboard:
         ![image (7)](https://user-images.githubusercontent.com/29461649/171951797-f668f7b5-0aab-4418-b856-453d333c1b64.png)
