@@ -17,8 +17,8 @@
 # Must have docker service running
 #####################################################################################
 
-docker-compose -f services/docker-compose.yml down
-docker-compose -f services/docker-compose.yml up -d
+podman-compose -f services/docker-compose.yml down
+podman-compose -f services/docker-compose.yml up -d
 
 PYTHON_VENV_DIR="./venv"
 if [ ! -d ${PYTHON_VENV_DIR} ]
