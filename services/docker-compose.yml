@@ -11,36 +11,36 @@ services:
             - ~/mongo/data:/data
             - "./leaderboard/assets/:/docker-entrypoint-initdb.d/"
         command: mongod
-    # prometheus:
-    #     image: prom/prometheus:v2.11.1
-    #     user: root
-    #     container_name: prometheus
-    #     image: prom/prometheus:latest
-    #     privileged: true
-    #     container_name: prometheus
-    #     volumes:
-    #         - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    #         - ~/prometheus:/prometheus
-    #     command:
-    #         - "--config.file=/etc/prometheus/prometheus.yml"
-    #     depends_on:
-    #         - gameservice
-    #     ports:
-    #         - "9090:9090"
-    # grafana:
-    #     image: grafana/grafana:7.3.7
-    #     privileged: true
-    #     user: "1000"
-    #     container_name: grafana
-    #     volumes:
-    #         - ./grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
-    #         - ./grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml
-    #         - ./grafana/dashboards/open-liberty_rev5.json:/var/lib/grafana/dashboards/open-liberty_rev5.json
-    #         - ./grafana/dashboards/space-rover-rev1.json:/var/lib/grafana/dashboards/space-rover-rev1.json
-    #     depends_on:
-    #         - prometheus
-    #     ports:
-    #         - "3010:3000"
+    prometheus:
+        image: prom/prometheus:v2.11.1
+        user: root
+        container_name: prometheus
+        image: prom/prometheus:latest
+        privileged: true
+        container_name: prometheus
+        volumes:
+            - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+            - ~/prometheus:/prometheus
+        command:
+            - "--config.file=/etc/prometheus/prometheus.yml"
+        depends_on:
+            - gameservice
+        ports:
+            - "9090:9090"
+    grafana:
+        image: grafana/grafana:7.3.7
+        privileged: true
+        user: "1000"
+        container_name: grafana
+        volumes:
+            - ./grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+            - ./grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml
+            - ./grafana/dashboards/open-liberty_rev5.json:/var/lib/grafana/dashboards/open-liberty_rev5.json
+            - ./grafana/dashboards/space-rover-rev1.json:/var/lib/grafana/dashboards/space-rover-rev1.json
+        depends_on:
+            - prometheus
+        ports:
+            - "3010:3000"
     leaderboard:
         build: ./leaderboard
         ports:
