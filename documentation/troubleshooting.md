@@ -80,3 +80,20 @@ If the gesture control is connected to the game service, but the Space Rover is 
     If you still have a problem after verifying this, please restart the Python Script to re-establish connection to the game service.
 
     If this problem still persists, follow the [cleanup](https://github.com/OpenLiberty/space-rover-mission/blob/main/documentation/cleanup.md#laptopgesture-control) and [startup](https://github.com/OpenLiberty/space-rover-mission/blob/main/documentation/setup.md#laptop-with-a-camera) process for the Laptop again.
+
+# Rancher Desktop
+If you are using Rancher Desktop instead of Docker Desktop you might have issues with the mongodb container starting up with error `chown: changing ownership of '/data/db': Operation not permitted`. 
+
+To fix this, add an override file in this location: `~/Library/Application\ Support/rancher-desktop/lima/_config/override.yaml`
+
+With the following contents:
+```
+mountType: 9p
+mounts:
+  - location: "~"
+    9p:
+      securityModel: mapped-xattr
+      cache: "mmap"
+```
+
+Restart Rancher Desktop for changes to take effect. 
