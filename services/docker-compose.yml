@@ -16,7 +16,6 @@ services:
         container_name: prometheus
         volumes:
             - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-            - ~/prometheus:/prometheus
         command:
             - "--config.file=/etc/prometheus/prometheus.yml"
         depends_on:
