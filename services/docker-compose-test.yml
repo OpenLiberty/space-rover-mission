@@ -12,11 +12,10 @@ services:
             - "./leaderboard/assets/:/docker-entrypoint-initdb.d/"
         command: mongod
     prometheus:
-        image: prom/prometheus:latest
+        image: prom/prometheus:v2.46.0
         container_name: prometheus
         volumes:
             - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-            - ~/prometheus:/prometheus
         command:
             - "--config.file=/etc/prometheus/prometheus.yml"
         depends_on:
@@ -39,7 +38,7 @@ services:
     leaderboard:
         build: ./leaderboard
         ports:
-            - "9080:9080"
+            - "9190:9080"
     gameservice:
         build: ./game
         ports:
@@ -51,7 +50,7 @@ services:
                 - GAME_URL=http://localhost:9070/game
                 - GAME_SOCKET_URL=ws://localhost:9070/roversocket
                 - GAME_DURATION_SECONDS=120
-                - LEADERBOARD_URL=http://localhost:9080/mongo/leaderboard
+                - LEADERBOARD_URL=http://localhost:9190/mongo/leaderboard
         ports:
             - "3000:80"
     mockrover:
