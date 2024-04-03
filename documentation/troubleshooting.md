@@ -82,9 +82,9 @@ If the gesture control is connected to the game service, but the Space Rover is 
     If this problem still persists, follow the [cleanup](https://github.com/OpenLiberty/space-rover-mission/blob/main/documentation/cleanup.md#laptopgesture-control) and [startup](https://github.com/OpenLiberty/space-rover-mission/blob/main/documentation/setup.md#laptop-with-a-camera) process for the Laptop again.
 
 ## Rancher Desktop
+### Volume Mounting
 
-### V1.12 Volume Mounting
-
+#### Rancher V1.12
 If you are using Rancher Desktop instead of Docker Desktop you might have issues with the mongodb container starting up with error `chown: changing ownership of '/data/db': Operation not permitted`. 
 
 To fix this, add an override file in this location: `~/Library/Application\ Support/rancher-desktop/lima/_config/override.yaml`
@@ -101,9 +101,8 @@ mounts:
 
 Restart Rancher Desktop for changes to take effect. 
 
-### V1.13 Volume Mounting
-
-#### MacOS
+#### Rancher V1.13
+##### MacOS
 Rancher versions 1.13+ seem to have fixed volume mounting issues. It is recommended to use the `VZ` Virtualization framework along with `virtiofs` for volume mounting on MacOS. 
-#### Windows
+##### Windows
 Rancher versions 1.13+ have fixed any issues seen with prometheus, mongoDB and Grafana using default settings on windows. 
