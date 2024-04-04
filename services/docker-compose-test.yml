@@ -12,7 +12,7 @@ services:
             - "./leaderboard/assets/:/docker-entrypoint-initdb.d/"
         command: mongod
     prometheus:
-        image: prom/prometheus:v2.46.0
+        image: prom/prometheus:latest
         container_name: prometheus
         volumes:
             - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
