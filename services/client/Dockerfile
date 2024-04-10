@@ -1,4 +1,4 @@
-FROM node:16.14-alpine AS builder
+FROM --platform linux/amd64 node:16.14-alpine AS builder
 
 WORKDIR /usr/src/app
 
@@ -18,7 +18,7 @@ ENV REACT_APP_LEADERBOARD_URL=$LEADERBOARD_URL
 
 RUN ["npm", "run", "build"]
 
-FROM nginx:1.19.0-alpine
+FROM --platform linux/amd64 nginx:1.19.0-alpine
 
 RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d
