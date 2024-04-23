@@ -1,5 +1,5 @@
 cvzone==1.5.6
-mediapipe==0.8.9.1
+mediapipe==0.8.11
 opencv_contrib_python==4.5.5.64
 websockets==10.2
 protobuf==3.17.3
