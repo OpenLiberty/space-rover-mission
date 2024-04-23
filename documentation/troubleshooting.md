@@ -81,6 +81,8 @@ If the gesture control is connected to the game service, but the Space Rover is 
 
     If this problem still persists, follow the [cleanup](https://github.com/OpenLiberty/space-rover-mission/blob/main/documentation/cleanup.md#laptopgesture-control) and [startup](https://github.com/OpenLiberty/space-rover-mission/blob/main/documentation/setup.md#laptop-with-a-camera) process for the Laptop again.
 
+If `gestures/openCV_implementation/src/GestureRecognitionCVv2.py` fails to start with `AttributeError: module 'cv2.dnn' has no attribute 'DictValue'` go to `venv/lib/python3.7/site-packages/cv2/typing/__init__.py` and comment out Line 168 containing `LayerId = cv2.dnn.DictValue` and retry. 
+
 ## Rancher Desktop
 ### Volume Mounting
 
