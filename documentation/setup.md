@@ -59,7 +59,7 @@ https://user-images.githubusercontent.com/31871360/171911111-c6d07857-3885-4ef6-
 
 ## Game Board
 
-The following instructions detail how to set up the Game Board.
+The following instructions detail how to set up the Game Board.  NOTE: The game board dimensions are 26"x 44".
 
 1. Set out the four separate boards in the following layout:
 
