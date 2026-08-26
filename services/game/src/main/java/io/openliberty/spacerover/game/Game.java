@@ -12,19 +12,12 @@ package io.openliberty.spacerover.game;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import io.openliberty.spacerover.game.models.GameEvent;
-import io.openliberty.spacerover.game.models.GameScore;
 import io.openliberty.spacerover.game.models.Constants;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class Game {
-	private static final Logger LOGGER = Logger.getLogger(Game.class.getName());
 
 	private static final int MAX_GAME_TIME_MINUTES = 5;
 	protected static final int OBSTACLE_HP_DECREMENT = 10;
@@ -40,16 +33,6 @@ public class Game {
 	private int health;
 	private int startingHealth;
 	private GameEventManager eventManager = null;
-	private Set<String> coloursVisited;
-	private String lastColourVisited;
-
-	public String getLastColourVisited() {
-		return lastColourVisited;
-	}
-
-	public void setLastColourVisited(String lastColourVisited) {
-		this.lastColourVisited = lastColourVisited;
-	}
 
 	public Game() {
 		this.eventManager = new GameEventManager(GameEvent.HP, GameEvent.SCORE, GameEvent.GAME_OVER, GameEvent.HP_SUN);
@@ -66,7 +49,6 @@ public class Game {
 		this.score = 0;
 		this.health = maxHP;
 		this.startingHealth = this.health;
-		this.coloursVisited = new HashSet<>();
 	}
 
 	public GameEventManager getEventManager() {
@@ -122,48 +104,8 @@ public class Game {
 		return inProgress;
 	}
 
-	public GameScore getGameLeaderboardStat() {
-		GameScore currScore = new GameScore();
-		currScore.setPlayer(this.playerId);
-		currScore.setScore(this.score);
-		currScore.setTime(getGameDuration());
-		currScore.setHealth(this.health);
-		currScore.setGameMode(this.getGameMode());
-		return currScore;
-	}
-
 	public String getGameMode() {
-		return Constants.INIT_GAME_CLASSIC;
-	}
-
-	public Set<String> getColoursVisited() {
-		return coloursVisited;
-	}
-
-	public void setColoursVisited(Set<String> coloursVisited) {
-		this.coloursVisited = coloursVisited;
-	}
-
-	public void processColour(String msgID) {
-		this.lastColourVisited = msgID;
-		if (msgID.equals(Constants.COLOUR_RED)) {
-			this.decrementScore(OBSTACLE_SCORE_DECREMENT);
-			this.decrementHP(OBSTACLE_HP_DECREMENT);
-		} else if (msgID.equals(Constants.COLOUR_RED_SUN)) {
-			this.decrementScore(OBSTACLE_SUN_SCORE_DECREMENT);
-			this.decrementHPSun(OBSTACLE_SUN_HP_DECREMENT);
-		} else if (!this.coloursVisited.contains(msgID)) {
-			LOGGER.log(Level.INFO, "Colour visited: {0}", msgID);
-			this.coloursVisited.add(msgID);
-			this.incrementScore(getScore());
-		}
-		if (this.isInProgressGameOver()) {
-			this.endGameSession();
-		}
-	}
-
-	protected int getScore() {
-		return this.coloursVisited.size() * 10;
+		return Constants.INIT_GAME_FREE_ROAM;
 	}
 
 	@Override
@@ -174,7 +116,7 @@ public class Game {
 
 	public boolean isInProgressGameOver() {
 		boolean isOver = false;
-		if (this.isInProgress() && (this.health <= 0 || this.coloursVisited.size() == 4)) {
+		if (this.isInProgress() && this.health <= 0) {
 			isOver = true;
 		}
 		return isOver;
@@ -200,9 +142,5 @@ public class Game {
 
 	public int getDamageTaken() {
 		return this.startingHealth - this.health;
-	}
-
-	public String getCurrentPlanetColour() {
-		return this.lastColourVisited;
 	}
 }

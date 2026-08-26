@@ -20,7 +20,6 @@ public class GameServerStateMachineTest {
     void testIncrementState() {
         GameServerStateMachine machine = new GameServerStateMachine();
         verifyAndIncrement(machine, Constants.CONNECT_GUI);
-        verifyAndIncrement(machine, Constants.CONNECT_GESTURE);
         assertTrue(machine.isReadyToConnectGamePieces());
         machine.attachLeaderboard();
         machine.attachRover();

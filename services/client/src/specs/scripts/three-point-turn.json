@@ -1,0 +1,12 @@
+{
+  "name": "Three Point Turn",
+  "description": "Drive forward, stop, pivot right 180 degrees, then reverse back.",
+  "steps": [
+    { "command": "F", "durationMs": 1800 },
+    { "command": "S", "durationMs": 0 },
+    { "command": "R", "durationMs": 1440 },
+    { "command": "S", "durationMs": 0 },
+    { "command": "B", "durationMs": 1800 },
+    { "command": "S", "durationMs": 0 }
+  ]
+}

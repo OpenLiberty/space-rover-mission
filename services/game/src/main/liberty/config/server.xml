@@ -6,11 +6,8 @@
 		<feature>jakartaee-9.1</feature>
 		<feature>websocket-2.0</feature>
 		<feature>mpConfig-3.0</feature>
-		<feature>mpHealth-4.0</feature>
-		<feature>mpMetrics-4.0</feature>
 		<feature>mpRestClient-3.0</feature>
 	</featureManager>
-	<mpMetrics authentication="false" />
 	<!-- To access this server from a remote client add a host attribute to 
 		the following element, e.g. host="*" -->
 	<httpEndpoint id="defaultHttpEndpoint" httpPort="9080"
@@ -26,6 +23,9 @@
 		location="gameservice.war" />
 
 	<cors domain="/game"
+		allowedOrigins="*"
+		allowedMethods="GET, POST" />
+	<cors domain="/api"
 		allowedOrigins="*"
 		allowedMethods="GET, POST" />
 </server>

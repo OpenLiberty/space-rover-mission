@@ -25,7 +25,7 @@ enum Commands {
   Stop = "S",
 }
 
-const useKeyboardControls = (websocket: WebSocket | null, gameState: GameState) => {
+const useKeyboardControls = (websocket: WebSocket | null, gameState: GameState, isScriptExecuting: boolean = false) => {
   const [leftActive, setLeftActive] = useState(false);
   const [rightActive, setRightActive] = useState(false);
   const [upActive, setUpActive] = useState(false);
@@ -40,6 +40,10 @@ const useKeyboardControls = (websocket: WebSocket | null, gameState: GameState) 
       }
 
       if (gameState !== GameState.InGame) {
+        return;
+      }
+
+      if (isScriptExecuting) {
         return;
       }
 
@@ -119,7 +123,7 @@ const useKeyboardControls = (websocket: WebSocket | null, gameState: GameState) 
       window.removeEventListener("keydown", keydownHandler);
       window.removeEventListener("keyup", keyupHandler);
     };
-  }, [websocket, leftActive, rightActive, upActive, downActive, lastCommand, gameState]);
+  }, [websocket, leftActive, rightActive, upActive, downActive, lastCommand, gameState, isScriptExecuting]);
 
   return { leftActive, rightActive, upActive, downActive };
 };

@@ -1,0 +1,12 @@
+{
+  "name": "Turn Right",
+  "description": "Drive forward, pivot right 90 degrees, then drive forward again.",
+  "steps": [
+    { "command": "F", "durationMs": 1800 },
+    { "command": "S", "durationMs": 0 },
+    { "command": "R", "durationMs": 1100 },
+    { "command": "S", "durationMs": 0 },
+    { "command": "F", "durationMs": 1800 },
+    { "command": "S", "durationMs": 0 }
+  ]
+}

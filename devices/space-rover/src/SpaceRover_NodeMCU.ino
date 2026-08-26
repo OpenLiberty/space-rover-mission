@@ -148,7 +148,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
         }
         case WStype_TEXT:
         { 
-          if (payload[0] == '1' || payload[0] == '4') { // 1 - Classic Mode, 2 - Planet Hop Mode, 3 - Guided Mode, 4 - Sudden Death
+          if (payload[0] == '1' || payload[0] == '4' || payload[0] == '5') { // 1 - Classic Mode, 2 - Planet Hop Mode, 3 - Guided Mode, 4 - Sudden Death, 5 - Free Roam
             isGameStarted = true;
             Serial.println("<GS>");
           }

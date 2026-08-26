@@ -1,0 +1,10 @@
+{
+  "name": "Figure 8",
+  "description": "Spin left one full circle, then spin right one full circle.",
+  "steps": [
+    { "command": "L", "durationMs": 2880 },
+    { "command": "S", "durationMs": 0 },
+    { "command": "R", "durationMs": 2880 },
+    { "command": "S", "durationMs": 0 }
+  ]
+}

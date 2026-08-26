@@ -1,0 +1,8 @@
+{
+  "name": "Move Backward",
+  "description": "Drive straight backward for approximately 100 cm then stop.",
+  "steps": [
+    { "command": "B", "durationMs": 1800 },
+    { "command": "S", "durationMs": 0 }
+  ]
+}
