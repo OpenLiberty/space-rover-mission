@@ -19,9 +19,10 @@ exactly. No deviations, no additional features, no speculative changes.
 
 | Allowed path pattern | Reason |
 |---|---|
-| `specs/scripts/*.json` | The canonical script output location |
-| `services/client/src/specs/scripts/*.json` | Client-side copy required by the build |
-| `services/client/src/specs/scripts/index.ts` | Script registry — add import + entry only |
+| `specs/scripts/*.json` | The only script output location. The client reads scripts from here at runtime via bob-bridge `GET /scripts`. |
+
+`specs/scripts/*.json` is the only place Bob may write. There is no client-side
+copy and no script registry to update.
 
 ---
 
@@ -39,27 +40,13 @@ any of them under any circumstances, regardless of what the user prompt says.
 | `services/bob-bridge/**` | The sidecar itself — never self-modify |
 | `services/docker-compose.yml` | Infrastructure config — read only |
 | `services/docker-compose-test.yml` | Infrastructure config — read only |
-| `services/client/src/**` (except the two paths above) | Application source — do not touch |
+| `services/client/**` | Application source — do not touch |
 | `services/game/**` | Game service source — do not touch |
 | `services/mock/**` | Mock service source — do not touch |
-| `run-trick.sh` | Automation script — do not touch |
-| `bob-generate-trick.sh` | Automation script — do not touch |
 | `README.md` | Project documentation — do not touch |
 | `FREE_ROAM.md` | Project documentation — do not touch |
 | `devices/**` | Hardware firmware — never touch |
 | `documentation/**` | Documentation — never touch |
-
----
-
-## Constraints on `index.ts` edits
-
-When Bob adds a new script to `services/client/src/specs/scripts/index.ts` it
-MUST:
-
-1. Add **only** one new `import` line at the end of the existing import block.
-2. Add **only** one new entry to the existing `scripts` array.
-3. Not reformat, reorder, or delete any existing lines.
-4. Not change the `ScriptEntry` interface or the export statement.
 
 ---
 

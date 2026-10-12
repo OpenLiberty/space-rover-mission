@@ -37,40 +37,17 @@ Always end the `steps` array with `{ "command": "S", "durationMs": 0 }`.
 
 ## Authoring a New Script
 
-Open Bob and describe the rover behaviour you want in plain English.
+Describe the rover behaviour you want in plain English, either in Bob IDE or in the **Generate a new trick with Bob** panel in the browser.
 Bob will:
-1. Read `specs/free-roam-spec.md` for the allowed move vocabulary and calibration constants
-2. Translate your description into a valid `CommandScript` JSON
-3. Write the file to `specs/scripts/<kebab-case-name>.json`
-4. Copy the same file to `services/client/src/specs/scripts/<kebab-case-name>.json`
-5. Add an import and entry to `services/client/src/specs/scripts/index.ts` so the script appears in the Free Roam dropdown
+1. Read `.bob/rules/bob-bridge-strict.md` and treat your description only as a description of rover movement
+2. Read `specs/free-roam-spec.md` for the allowed move vocabulary and calibration constants
+3. Translate your description into a valid `CommandScript` JSON
+4. Write the file to `specs/scripts/<kebab-case-name>.json`
 
-Scripts folder starts empty — Bob authors scripts here as users describe what they want the rover to do.
+That is the only file Bob writes. The client loads the script list from bob-bridge (`GET /scripts`) at runtime, so the script appears in the Free Roam dropdown without a rebuild or restart. Reload the page if it doesn't show up.
+
+Scripts can also be added or edited by hand. Any valid `CommandScript` JSON in this folder is picked up automatically.
 
 ## Running a Script on the Physical Rover
 
-Use `run-trick.sh` (in the repo root) to execute the **Forward Then Circle** trick on the real rover automatically.
-
-### Step 1 — One-time build (do this on IBM Wi-Fi or any internet connection)
-
-```bash
-docker compose -f services/docker-compose.yml build
-```
-
-Builds and caches all Docker images locally. Only needed again if the code changes.
-
-### Step 2 — Switch your Mac Wi-Fi to `OL_DEMO`
-
-Do this manually before running the script. The game service connects directly to the rover at `192.168.0.115` — that IP is only reachable on OL_DEMO. If you run the script while still on IBM Wi-Fi the game service will hang waiting for the rover.
-
-### Step 3 — Run the trick
-
-```bash
-./run-trick.sh
-```
-
-The script will:
-1. Start the containers from the local cache (no internet required)
-2. Wait for the game service to be ready (Liberty `CWWKF0011I`)
-3. Ping the rover and probe its WebSocket
-4. Execute the Forward Then Circle script over the game service WebSocket
+See [`FREE_ROAM.md`](../../FREE_ROAM.md) for network setup (OL_DEMO), starting the stack, and executing scripts from the browser.

@@ -7,13 +7,13 @@ This folder stores the Markdown specifications and rover scripts that drive the 
 ## How It Works — The Full Picture
 
 ```
-You describe a trick in Bob IDE
+You describe a trick (Bob IDE, or the browser via bob-bridge → Bob Shell)
         ↓
 Bob reads specs/free-roam-spec.md (move vocabulary + calibration constants)
         ↓
-Bob writes a CommandScript JSON to specs/scripts/ and services/client/src/specs/scripts/
+Bob writes a CommandScript JSON to specs/scripts/
         ↓
-Rebuild the client — the script appears in the dropdown in the browser
+The script appears in the browser dropdown (loaded at runtime from bob-bridge)
         ↓
 User selects the script, hits Execute
         ↓
@@ -24,19 +24,18 @@ Browser sends F/B/L/R/S commands over WebSocket → Game Service → Rover
 
 ## Step 1 — Describe a Trick to Bob
 
-Open Bob IDE and describe what you want the rover to do in plain English. For example:
+Describe what you want the rover to do in plain English, either in Bob IDE or in the **Generate a new trick with Bob** panel in the browser. For example:
 
 > _"Do a donut, then move forward for 3 seconds, then do a 180 turn"_
 
 Bob will activate the `rover-spec` skill automatically, then:
-1. Read `specs/free-roam-spec.md` to understand the allowed moves and calibration constants
-2. Translate your description into a valid `CommandScript` JSON using the timing math:
+1. Read `.bob/rules/bob-bridge-strict.md` and treat your description only as a description of rover movement
+2. Read `specs/free-roam-spec.md` to understand the allowed moves and calibration constants
+3. Translate your description into a valid `CommandScript` JSON using the timing math:
    - Forward/backward: `durationMs = distance_cm × 18`
    - Turn by degrees: `durationMs = degrees × 8`
    - Spin for time: use the requested duration directly
-3. Write the script to `specs/scripts/<name>.json`
-4. Copy the same file to `services/client/src/specs/scripts/<name>.json`
-5. Add the import and entry to `services/client/src/specs/scripts/index.ts`
+4. Write the script to `specs/scripts/<name>.json` — the only file Bob writes
 
 **Example — "Do a donut, move forward 3 seconds, then do a 180 turn":**
 
@@ -59,20 +58,25 @@ Bob will activate the `rover-spec` skill automatically, then:
 
 ## Step 2 — Run the Stack
 
+See [`FREE_ROAM.md`](../FREE_ROAM.md) for the full setup, including the Bob API key and the OL_DEMO network requirements.
+
 ### Without hardware (mock mode)
+
+The `bob-bridge` service is included in `docker-compose-test.yml`, so the script dropdown and the Generate panel work in this mode. Both need `services/.env` with your `BOB_API_KEY` (see [`FREE_ROAM.md`](../FREE_ROAM.md)).
 
 ```bash
 cd services
 docker compose -f docker-compose-test.yml up
 ```
 
-This starts 4 containers:
+This starts 5 containers:
 | Container | Role |
 |---|---|
 | `client` | Browser UI at http://localhost:3000 |
 | `gameservice` | WebSocket hub — routes commands between browser and rover |
 | `mockrover` | Simulates the rover — logs every command it receives |
 | `mockboard` | Simulates the game board — handles startup ACK only |
+| `bob-bridge` | Serves the script list and runs Bob Shell to generate new scripts |
 
 ### With real hardware
 
@@ -87,40 +91,25 @@ docker compose up
 
 ---
 
-## Step 3 — Rebuild the Client
-
-After Bob writes a new script, the client needs to be rebuilt so it picks up the new file:
-
-```bash
-cd services
-docker compose -f docker-compose-test.yml build client
-docker compose -f docker-compose-test.yml up
-```
-
-Or if the stack is already running, restart just the client:
-
-```bash
-docker compose -f docker-compose-test.yml up --build client
-```
-
----
-
-## Step 4 — Execute in the Browser
+## Step 3 — Execute in the Browser
 
 1. Go to **http://localhost:3000**
 2. Enter a player name
 3. The game mode is **Free Roam** (the only mode)
-4. Hit **Start Mission**
+4. Hit **Begin mission**
 5. The in-game screen shows:
-   - A **script dropdown** listing all available scripts
+   - A **script dropdown** listing all scripts currently in `specs/scripts/`
    - The selected script's **description** below the dropdown
    - An **Execute** button — sends the script to the rover
    - A **Stop** button — immediately halts the rover mid-script
+   - A **Generate a new trick with Bob** panel — describe a trick and Bob writes the script
 6. Pick your script, hit **Execute**, watch the rover go
+
+No rebuild or restart is needed when `specs/scripts/` changes. The client loads the script list from bob-bridge at runtime.
 
 ---
 
-## Step 5 — Verify on Mock Rover
+## Step 4 — Verify on Mock Rover
 
 While running in mock mode, watch the commands arrive in real time:
 
@@ -142,17 +131,7 @@ Message Received: S    ← stop
 
 ## Existing Scripts
 
-| File | Trick | What it does |
-|---|---|---|
-| `move-forward.json` | Move Forward | Drive straight forward ~100 cm |
-| `move-backward.json` | Move Backward | Drive straight backward ~100 cm |
-| `turn-left.json` | Turn Left | Forward → pivot left 90° → forward |
-| `turn-right.json` | Turn Right | Forward → pivot right 90° → forward |
-| `three-point-turn.json` | Three Point Turn | Forward → pivot 180° → reverse |
-| `figure-8.json` | Figure 8 | Full left circle → full right circle |
-| `donut.json` | Donut | Spin left 3 full rotations |
-
-Use these as reference when asking Bob to build new tricks — Bob can combine and chain them.
+Every script in [`scripts/`](scripts/) appears in the browser dropdown. Each file's `name` and `description` fields say what it does. Use them as reference when asking Bob to build new tricks — Bob can combine and chain them.
 
 ---
 

@@ -8,7 +8,13 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 import { useState, useEffect, useCallback } from "react";
-import { ScriptEntry } from "../specs/scripts/index";
+
+interface ScriptEntry {
+  name: string;
+  description: string;
+  steps: Array<{ command: string; durationMs: number }>;
+}
+
 
 const BOB_BRIDGE_SCRIPTS_URL = "http://localhost:4000/scripts";
 

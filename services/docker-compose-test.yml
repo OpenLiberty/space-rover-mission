@@ -20,3 +20,21 @@ services:
         build: ./mock/board
         ports:
             - "5046:5045"
+    bob-bridge:
+        build: ./bob-bridge
+        ports:
+            - "127.0.0.1:4000:4000"
+        volumes:
+            # Mount the full repo root as /workspace so Bob loads .bob/rules/
+            # and the rover-spec skill, and so scripts written to
+            # specs/scripts/ are served by GET /scripts at runtime.
+            - ../:/workspace
+        env_file:
+            - .env
+        environment:
+            - BOB_BRIDGE_PORT=4000
+            - SCRIPTS_DIR=/workspace/specs/scripts
+            # Bob Shell reads BOBSHELL_API_KEY for headless auth
+            - BOBSHELL_API_KEY=${BOB_API_KEY}
+        restart: unless-stopped
+
