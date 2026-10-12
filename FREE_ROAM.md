@@ -110,7 +110,7 @@ Generation can take a while. Bob Shell has a 10-minute timeout.
 
 ### The specs directory is the source of truth
 
-The spec and the scripts live in [`specs/`](specs/), and the `bob-bridge` container mounts the whole repo as `/workspace`. The client loads the script list from `bob-bridge` at runtime (`GET /scripts`), reading whatever is in `specs/scripts/` at that moment. This means:
+The spec and the scripts live in [`specs/`](specs/). The `bob-bridge` container mounts the repo as `/workspace` **read-only**, with `specs/scripts/` overlaid as the only **read-write** path. Bob Shell can read the spec, rules, and skill, but can only write to `specs/scripts/`. The client loads the script list from `bob-bridge` at runtime (`GET /scripts`), reading whatever is in `specs/scripts/` at that moment. This means:
 
 - You do **not** need to rebuild the client or run `docker compose down` and `up` when scripts or specs change.
 - A script added by Bob (from the IDE or the browser), or edited by hand, shows up the next time the client loads its script list. Reload the page if it doesn't appear.

@@ -24,6 +24,11 @@ exactly. No deviations, no additional features, no speculative changes.
 `specs/scripts/*.json` is the only place Bob may write. There is no client-side
 copy and no script registry to update.
 
+When run through the bridge, this is also enforced by the container: the repo is
+mounted read-only at `/workspace`, and only `specs/scripts/` is mounted
+read-write (see `services/docker-compose.yml`). The rules below still apply for
+any other way Bob is run (for example Bob IDE), where no such mount exists.
+
 ---
 
 ## Files Bob MUST NEVER touch

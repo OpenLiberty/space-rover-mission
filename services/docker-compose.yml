@@ -25,12 +25,12 @@ services:
         ports:
             - "127.0.0.1:4000:4000"
         volumes:
-            # Mount the repo's specs/scripts/ directory so Bob Shell can write
-            # new scripts here and GET /scripts can read them at runtime.
-            - ../specs/scripts:/workspace/specs/scripts
-            # Mount the full repo root as /workspace so Bob loads .bob/rules/
-            # and the rover-spec skill when generating scripts.
-            - ../:/workspace
+            # Mount the full repo root read-only as /workspace so Bob loads
+            # .bob/rules/ and the rover-spec skill, and can read the spec.
+            - ../:/workspace:ro
+            # Overlay specs/scripts/ read-write. This is the only writable path:
+            # Bob Shell writes new scripts here and GET /scripts reads them.
+            - ../specs/scripts:/workspace/specs/scripts:rw
         env_file:
             - .env
         environment:
