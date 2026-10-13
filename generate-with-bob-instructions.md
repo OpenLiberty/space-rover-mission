@@ -22,4 +22,4 @@ docker compose -f services/docker-compose.yml up -d
 Step 4:
 
 Navigate to http://localhost:3000
-Generate commands with Bob.
+Generate commands with Bob in the UI.
