@@ -11,12 +11,12 @@ cp services/.env.example services/.env
 Step 2:
 Build Images (Requires Internet)
 ```bash
-docker compose -f services/docker-compose.yml build
+docker-compose -f services/docker-compose.yml up -d --build
 ```
 
 Step 3:
 ```bash
-docker compose -f services/docker-compose.yml up -d
+docker-compose -f services/docker-compose.yml down
 ```
 
 Step 4:
