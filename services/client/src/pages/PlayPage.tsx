@@ -8,13 +8,12 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 import React from "react";
-import { Navigate } from "react-router-dom";
 import PlayerForm from "components/PlayerForm";
 import GameScreen from "components/GameScreen";
 import GameStateMessage from "components/GameStateMessage";
 import BatteryStatus from "components/BatteryStatus";
 import useGame, { GameState } from "hooks/useGame";
-import { gameSocketURL, gameDurationSeconds } from "lib/config";
+import { gameSocketURL } from "lib/config";
 
 const PlayPage = () => {
   const {
@@ -22,13 +21,11 @@ const PlayPage = () => {
     gameMode,
     gameModes,
     gameState,
-    formattedTime,
-    health,
-    score,
     startGame,
     error,
     battery,
-  } = useGame(gameSocketURL, gameDurationSeconds);
+    socket,
+  } = useGame(gameSocketURL);
 
   switch (gameState) {
     case GameState.Connecting:
@@ -42,13 +39,8 @@ const PlayPage = () => {
             isDisabled={gameState !== GameState.NotStarted}
             onSubmit={startGame}
           />
-          <GameStateMessage
-            state={gameState}
-            errorMessage={error}
-          />
-          <BatteryStatus
-            batteryPercentage={battery}
-          />
+          <GameStateMessage state={gameState} errorMessage={error} />
+          <BatteryStatus batteryPercentage={battery} />
         </div>
       );
     case GameState.InGame:
@@ -56,16 +48,21 @@ const PlayPage = () => {
         <GameScreen
           playerName={playerName}
           gameMode={gameMode}
-          health={health}
-          score={score}
-          time={formattedTime}
+          socket={socket}
+          gameSocketURL={gameSocketURL}
         />
       );
     case GameState.GameEnded:
       return (
-        <Navigate
-          to={`/leaderboard?player=${encodeURIComponent(playerName)}&gameMode=${gameMode}`}
-        />
+        <div className="flex flex-col items-center justify-center h-full gap-6">
+          <p className="text-white text-4xl">Mission complete.</p>
+          <button
+            className="bg-blue-600 hover:bg-blue-500 text-2xl px-8 py-4 rounded-lg"
+            onClick={() => window.location.reload()}
+          >
+            Play again
+          </button>
+        </div>
       );
     default:
       return null;

@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 public class GameServerStateMachine {
 	private static final Logger LOGGER = Logger.getLogger(GameServerStateMachine.class.getName());
 	GameServerState currentState;
-
 	public GameServerStateMachine() {
 		this(GameServerState.SERVER_STARTED);
 	}
@@ -31,20 +30,7 @@ public class GameServerStateMachine {
 		GameServerState beforeState = this.currentState;
 		switch (msgID) {
 			case Constants.CONNECT_GUI:
-				if (this.currentState == GameServerState.SERVER_STARTED
-						|| this.currentState == GameServerState.ERROR_OCCURRED) {
-					this.currentState = GameServerState.GUI_CONNECTED;
-				} else {
-					this.currentState = GameServerState.GUI_AND_GESTURE_CONNECTED;
-				}
-				break;
-			case Constants.CONNECT_GESTURE:
-				if (this.currentState == GameServerState.SERVER_STARTED
-						|| this.currentState == GameServerState.ERROR_OCCURRED) {
-					this.currentState = GameServerState.GESTURE_CONNECTED;
-				} else {
-					this.currentState = GameServerState.GUI_AND_GESTURE_CONNECTED;
-				}
+				this.currentState = GameServerState.GUI_AND_GESTURE_CONNECTED;
 				break;
 
 			case Constants.ROVER_ACK:
@@ -69,13 +55,6 @@ public class GameServerStateMachine {
 		boolean isValid = true;
 		if (msgID.equals(Constants.CONNECT_GUI)) {
 			if (this.currentState != GameServerState.SERVER_STARTED
-					&& this.currentState != GameServerState.GESTURE_CONNECTED
-					&& this.currentState != GameServerState.ERROR_OCCURRED) {
-				isValid = false;
-			}
-		} else if (msgID.equals(Constants.CONNECT_GESTURE)) {
-			if (this.currentState != GameServerState.SERVER_STARTED
-					&& this.currentState != GameServerState.GUI_CONNECTED
 					&& this.currentState != GameServerState.ERROR_OCCURRED) {
 				isValid = false;
 			}
@@ -158,11 +137,11 @@ public class GameServerStateMachine {
 	}
 
 	public boolean isAllConnected() {
-		return this.currentState == GameServerState.ALL_CONNECTED;
+		return this.currentState == GameServerState.ALL_CONNECTED
+				|| this.currentState == GameServerState.ROVER_CONNECTED;
 	}
 
 	public boolean isReadyToConnectBoard() {
-
 		return this.currentState == GameServerState.ROVER_CONNECTED;
 	}
 

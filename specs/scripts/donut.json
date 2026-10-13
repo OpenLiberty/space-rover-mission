@@ -1,0 +1,8 @@
+{
+  "name": "Donut",
+  "description": "Spin left continuously for 3 full rotations then stop.",
+  "steps": [
+    { "command": "L", "durationMs": 8640 },
+    { "command": "S", "durationMs": 0 }
+  ]
+}

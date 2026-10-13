@@ -1,0 +1,8 @@
+{
+  "name": "Move Forward",
+  "description": "Drive straight forward for approximately 100 cm then stop.",
+  "steps": [
+    { "command": "F", "durationMs": 4800 },
+    { "command": "S", "durationMs": 0 }
+  ]
+}

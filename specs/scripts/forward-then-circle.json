@@ -1,0 +1,10 @@
+{
+  "name": "Forward Then Circle",
+  "description": "Drive forward for approximately 100 cm then spin left one full rotation and stop.",
+  "steps": [
+    { "command": "F", "durationMs": 4800 },
+    { "command": "S", "durationMs": 0 },
+    { "command": "L", "durationMs": 4400 },
+    { "command": "S", "durationMs": 0 }
+  ]
+}

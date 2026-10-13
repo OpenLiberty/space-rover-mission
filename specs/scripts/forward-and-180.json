@@ -1,0 +1,10 @@
+{
+  "name": "Forward And 180",
+  "description": "Drive forward 30 cm then spin 180 degrees in place.",
+  "steps": [
+    { "command": "F", "durationMs": 540 },
+    { "command": "S", "durationMs": 0 },
+    { "command": "R", "durationMs": 1440 },
+    { "command": "S", "durationMs": 0 }
+  ]
+}

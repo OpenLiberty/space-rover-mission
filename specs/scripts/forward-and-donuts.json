@@ -1,0 +1,12 @@
+{
+  "name": "Forward And Donuts",
+  "description": "Drive forward for one second, then do a clockwise donut followed by a counterclockwise donut.",
+  "steps": [
+    { "command": "F", "durationMs": 1000 },
+    { "command": "S", "durationMs": 0 },
+    { "command": "R", "durationMs": 8640 },
+    { "command": "S", "durationMs": 0 },
+    { "command": "L", "durationMs": 8640 },
+    { "command": "S", "durationMs": 0 }
+  ]
+}

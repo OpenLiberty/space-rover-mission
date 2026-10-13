@@ -18,20 +18,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.eclipse.microprofile.metrics.MetricUnits;
-import org.eclipse.microprofile.metrics.annotation.Gauge;
 
 import io.openliberty.spacerover.game.Game;
 import io.openliberty.spacerover.game.GameEventListener;
-import io.openliberty.spacerover.game.GameLeaderboard;
 import io.openliberty.spacerover.game.GameServerState;
 import io.openliberty.spacerover.game.GameServerStateMachine;
 import io.openliberty.spacerover.game.GameSession;
-import io.openliberty.spacerover.game.GuidedGame;
-import io.openliberty.spacerover.game.SpaceHop;
-import io.openliberty.spacerover.game.SuddenDeathGame;
 import io.openliberty.spacerover.game.models.GameEvent;
-import io.openliberty.spacerover.game.models.GameScore;
 import io.openliberty.spacerover.game.models.Constants;
 import io.openliberty.spacerover.game.websocket.client.WebsocketClientEndpoint;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -53,15 +46,6 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	private static final String WEBSOCKET_PROTOCOL = "ws://";
 	private static final Logger LOGGER = Logger.getLogger(GameServer.class.getName());
 	private Game currentGame = new Game();
-	/* statistics kept for metrics */
-	private long aggregateDamage = 0;
-	private long numberOfGamesPlayed = 0;
-	private long totalScorePoints = 0;
-	private long totalGameTimeInSeconds = 0;
-	private long numberOfClassicGamesPlayed = 0;
-	private long numberOfPlanetHopGamesPlayed = 0;
-	private long numberOfGuidedGamesPlayed = 0;
-	private long numberOfSuddenDeathGamesPlayed = 0;
 	private int percentageBatteryLeft = 100;
 	private float batteryVoltage = 0;
 
@@ -69,17 +53,8 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 	GameServerStateMachine stateMachine = new GameServerStateMachine();
 
 	Session guiSession = null;
-	Session gestureSession = null;
 	WebsocketClientEndpoint roverClient = null;
 	WebsocketClientEndpoint boardClient = null;
-
-	@Inject
-	@ConfigProperty(name = "io.openliberty.leaderboard.hostname", defaultValue = "leaderboard")
-	String leaderboardHost;
-
-	@Inject
-	@ConfigProperty(name = "io.openliberty.leaderboard.port", defaultValue = "9080")
-	String leaderboardPort;
 
 	@Inject
 	@ConfigProperty(name = "io.openliberty.spacerover.ip", defaultValue = "192.168.0.110")
@@ -104,8 +79,8 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		String welcomeText = "Welcome space explorer!";
 		session.getAsyncRemote().sendText(welcomeText);
 		LOGGER.log(Level.WARNING,
-				"roverIP = {0}, roverPort = {1}, gameboardIP = {2}, gameboardPort = {3}, leaderboardHost = {4}, leaderboardPort = {5}",
-				new Object[] { roverIP, roverPort, gameboardIP, gameboardPort, leaderboardHost, leaderboardPort });
+				"roverIP = {0}, roverPort = {1}, gameboardIP = {2}, gameboardPort = {3}",
+				new Object[] { roverIP, roverPort, gameboardIP, gameboardPort });
 	}
 
 	@OnClose
@@ -126,10 +101,6 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		GameSession detectedSession = GameSession.UNKNOWN;
 		if (this.guiSession != null && sessionID.equals(guiSession.getId())) {
 			detectedSession = GameSession.GUI;
-
-		} else if (this.gestureSession != null && sessionID.equals(gestureSession.getId())) {
-			detectedSession = GameSession.GESTURE;
-
 		}
 		return detectedSession;
 	}
@@ -154,27 +125,11 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		int gameMode = Integer.parseInt(properties[1]);
 		LOGGER.log(Level.INFO, "Start Game received for player ID: {0}, GameMode: {1}",
 				new Object[] { playerId, gameMode });
-		if (gameMode == Integer.parseInt(Constants.INIT_GAME_CLASSIC)) {
+		if (gameMode == Integer.parseInt(Constants.INIT_GAME_FREE_ROAM)) {
 			this.currentGame = new Game();
-			registerGameEventManager();
-		} else if (gameMode == Integer.parseInt(Constants.INIT_GAME_HOP)) {
-			this.currentGame = new SpaceHop();
-			registerSpaceHopEventManager();
-		} else if (gameMode == Integer.parseInt(Constants.INIT_GAME_GUIDED)) {
-			this.currentGame = new GuidedGame();
-			registerGameEventManager();
-		} else if (gameMode == Integer.parseInt(Constants.INIT_GAME_SUDDEN_DEATH)) {
-			this.currentGame = new SuddenDeathGame();
 			registerGameEventManager();
 		}
 		this.currentGame.startGameSession(playerId);
-	}
-
-	private void registerSpaceHopEventManager() {
-		this.registerGameEventManager();
-		this.currentGame.getEventManager().subscribe(GameEvent.FIVE_SECONDS_LEFT, this);
-		this.currentGame.getEventManager().subscribe(GameEvent.PLANET_CHANGED, this);
-
 	}
 
 	private void registerGameEventManager() {
@@ -182,7 +137,6 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		this.currentGame.getEventManager().subscribe(GameEvent.HP_SUN, this);
 		this.currentGame.getEventManager().subscribe(GameEvent.SCORE, this);
 		this.currentGame.getEventManager().subscribe(GameEvent.GAME_OVER, this);
-
 	}
 
 	@OnError
@@ -199,13 +153,6 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		} else if (eventType == GameEvent.GAME_OVER) {
 			LOGGER.log(Level.WARNING, "Ending game from event type {0}", eventType);
 			endGameFromServer(false);
-		} else if (eventType == GameEvent.FIVE_SECONDS_LEFT) {
-			this.boardClient.sendMessage("blinkColour" + Constants.SOCKET_MESSAGE_DATA_DELIMITER
-					+ this.currentGame.getCurrentPlanetColour());
-			this.sendTextToGuiSocket("planetChange");
-		} else if (eventType == GameEvent.PLANET_CHANGED) {
-			this.boardClient.sendMessage(
-					"setColour" + Constants.SOCKET_MESSAGE_DATA_DELIMITER + this.currentGame.getCurrentPlanetColour());
 		} else {
 			String msg = eventType.toString().toLowerCase() + Constants.SOCKET_MESSAGE_DATA_DELIMITER + value;
 			if (eventType == GameEvent.HP_SUN) {
@@ -222,34 +169,8 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			this.setErrorStateAndSendError("Game ended unexpectedly");
 		} else {
 			LOGGER.log(Level.INFO, "Ending game from server side. {0}", this.currentGame);
-			GameScore leaderboardEntry = this.currentGame.getGameLeaderboardStat();
-			this.aggregateDamage += this.currentGame.getDamageTaken();
-			this.totalScorePoints += leaderboardEntry.getScore();
-			this.totalGameTimeInSeconds += leaderboardEntry.getTime();
-			this.getLeaderboard().updateLeaderboard(leaderboardEntry);
-			this.incrementGamesPlayed(this.currentGame.getGameMode());
 			this.sendTextToGuiSocket(Constants.END_GAME);
 		}
-	}
-
-	private void incrementGamesPlayed(String gameMode) {
-		switch (gameMode) {
-			case Constants.INIT_GAME_CLASSIC:
-				this.numberOfClassicGamesPlayed++;
-				break;
-			case Constants.INIT_GAME_GUIDED:
-				this.numberOfGuidedGamesPlayed++;
-				break;
-			case Constants.INIT_GAME_SUDDEN_DEATH:
-				this.numberOfSuddenDeathGamesPlayed++;
-				break;
-			case Constants.INIT_GAME_HOP:
-				this.numberOfPlanetHopGamesPlayed++;
-				break;
-			default:
-				throw new IllegalStateException("Invalid Game mode Played: " + gameMode);
-		}
-		this.numberOfGamesPlayed++;
 	}
 
 	@Override
@@ -266,9 +187,6 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			switch (msgID) {
 				case Constants.CONNECT_GUI:
 					this.guiSession = session;
-					break;
-				case Constants.CONNECT_GESTURE:
-					this.gestureSession = session;
 					break;
 				case Constants.ROVER_ACK:
 					parseBatteryMeasurements(parsedMsg);
@@ -301,21 +219,8 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 				case Constants.STOP:
 					this.sendRoverDirection(msgID);
 					break;
-				case Constants.COLOUR_BLUE:
-				case Constants.COLOUR_GREEN:
-				case Constants.COLOUR_PURPLE:
-				case Constants.COLOUR_YELLOW:
-					updateBoardAndGame(msgID);
-					break;
 				case Constants.GAME_HEALTH_TEST:
 					session.getAsyncRemote().sendText(Constants.GAME_HEALTH_ACK);
-					break;
-				case Constants.COLOUR_RED:
-					if (parsedMsg.length > 1 && Constants.SUN_RFID_IDENTIFIERS.contains(parsedMsg[1])) {
-						LOGGER.log(Level.WARNING, "Detected sun damage");
-						msgID = Constants.COLOUR_RED_SUN;
-					}
-					updateBoardAndGame(msgID);
 					break;
 				default:
 					LOGGER.log(Level.INFO, "Unknown Message received <{0}>", msgID);
@@ -344,14 +249,9 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		}
 	}
 
-	private void updateBoardAndGame(String msgID) {
-		this.sendBoardColour(msgID);
-		this.currentGame.processColour(msgID);
-	}
-
 	private synchronized void connectGamePieces() {
 		if (this.stateMachine.isReadyToConnectGamePieces()) {
-			testLeaderboard();
+			this.stateMachine.attachLeaderboard();
 		}
 		if (this.stateMachine.isReadyToConnectRover() && !this.stateMachine.hasErrorOccurred()) {
 			connectRover();
@@ -361,19 +261,6 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 			this.sendTextToGuiSocket(Constants.SERVER_READY);
 		} else if (this.stateMachine.hasErrorOccurred()) {
 			this.endGameFromServer(true);
-		}
-	}
-
-	private void connectBoard() {
-		disconnectBoard();
-		String boardConnectionString = WEBSOCKET_PROTOCOL + gameboardIP + COLON + gameboardPort;
-		this.stateMachine.attachGameBoard();
-		this.boardClient = new WebsocketClientEndpoint(this, boardConnectionString, Constants.BOARD_SOCKET_NAME);
-		try {
-			this.boardClient.connect();
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, "Failed to connect to board", e);
-			this.setErrorStateAndSendError("Failed to connect to board.");
 		}
 	}
 
@@ -390,8 +277,17 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		}
 	}
 
-	private void sendBoardColour(String colour) {
-		this.boardClient.sendMessage(colour);
+	private void connectBoard() {
+		disconnectBoard();
+		String boardConnectionString = WEBSOCKET_PROTOCOL + gameboardIP + COLON + gameboardPort;
+		this.stateMachine.attachGameBoard();
+		this.boardClient = new WebsocketClientEndpoint(this, boardConnectionString, Constants.BOARD_SOCKET_NAME);
+		try {
+			this.boardClient.connect();
+		} catch (IOException e) {
+			LOGGER.log(Level.SEVERE, "Failed to connect to board", e);
+			this.setErrorStateAndSendError("Failed to connect to board.");
+		}
 	}
 
 	private synchronized void disconnectRover() {
@@ -431,19 +327,6 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 		}
 	}
 
-	private GameLeaderboard getLeaderboard() {
-		return new GameLeaderboard(this.leaderboardHost, Integer.parseInt(leaderboardPort));
-	}
-
-	private void testLeaderboard() {
-		GameLeaderboard board = getLeaderboard();
-		if (board.testLeaderboard()) {
-			this.stateMachine.attachLeaderboard();
-		} else {
-			setErrorStateAndSendError("Failed to connect to leaderboard");
-		}
-	}
-
 	private void setErrorStateAndSendError(String errMsg) {
 		LOGGER.log(Level.SEVERE, "setErrorStateAndSendError called: {0}", errMsg);
 		this.stateMachine.setErrorState();
@@ -480,67 +363,16 @@ public class GameServer implements GameEventListener, io.openliberty.spacerover.
 				LOGGER.log(Level.WARNING, "failure during reInit", ioe);
 			}
 		}
-		if (this.gestureSession != null) {
-			try {
-				this.gestureSession.close();
-				LOGGER.log(Level.WARNING, "Disconnected gesture  session from server side");
-
-			} catch (IOException ioe) {
-				LOGGER.log(Level.WARNING, "failure during reInit", ioe);
-			}
-		}
 		disconnectRover();
 		disconnectBoard();
 		this.stateMachine = new GameServerStateMachine(state);
 		this.currentGame = new Game();
 	}
 
-	@Gauge(unit = MetricUnits.NONE, name = "totalDamage", absolute = true, description = "The aggregate amount of damage taken since server start.")
-	public long getDamage() {
-		return this.aggregateDamage;
-	}
-
-	@Gauge(unit = MetricUnits.NONE, name = "totalScore", absolute = true, description = "The aggregate of all score values since server start.")
-	public long getScore() {
-		return this.totalScorePoints;
-	}
-
-	@Gauge(unit = MetricUnits.SECONDS, name = "timeInGame", absolute = true, description = "The total amount of time the game has been played in seconds since server start.")
-	public long getPlayTime() {
-		return this.totalGameTimeInSeconds;
-	}
-
-	@Gauge(unit = MetricUnits.NONE, name = "totalNumberOfGames", absolute = true, description = "The total number of games played since server start.")
-	public long getNumberOfGamesCompleted() {
-		return this.numberOfGamesPlayed;
-	}
-
-	@Gauge(unit = MetricUnits.NONE, name = "numberOfClassicGamesPlayed", absolute = true, description = "The aggregate amount of classic games played.")
-	public long getCountClassicGamesPlayed() {
-		return this.numberOfClassicGamesPlayed;
-	}
-
-	@Gauge(unit = MetricUnits.NONE, name = "numberOfPlanetHopGamesPlayed", absolute = true, description = "The aggregate amount of planet hop games played.")
-	public long getCountSpaceHopGamesPlayed() {
-		return this.numberOfPlanetHopGamesPlayed;
-	}
-
-	@Gauge(unit = MetricUnits.NONE, name = "numberOfGuidedGamesPlayed", absolute = true, description = "The aggregate amount of guided games played.")
-	public long getCountGuidedGamesPlayed() {
-		return this.numberOfGuidedGamesPlayed;
-	}
-
-	@Gauge(unit = MetricUnits.NONE, name = "numberOfSuddenDeathGamesPlayed", absolute = true, description = "The aggregate amount of sudden death games played.")
-	public long getCountSuddenDeathGamesPlayed() {
-		return this.numberOfSuddenDeathGamesPlayed;
-	}
-
-	@Gauge(unit = MetricUnits.PERCENT, name = "pctBatteryLevel", absolute = true, description = "Space rover battery level percentage.")
 	public long getBatteryPercentage() {
 		return this.percentageBatteryLeft;
 	}
 
-	@Gauge(unit = MetricUnits.NONE, name = "voltageBattery", absolute = true, description = "Space rover battery voltage reading.")
 	public float getBatteryVoltage() {
 		return this.batteryVoltage;
 	}

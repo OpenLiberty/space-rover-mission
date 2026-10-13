@@ -1,0 +1,10 @@
+{
+  "name": "Forward And Spin Left",
+  "description": "Drive forward slightly then spin one full counterclockwise rotation.",
+  "steps": [
+    { "command": "F", "durationMs": 180 },
+    { "command": "S", "durationMs": 0 },
+    { "command": "L", "durationMs": 2880 },
+    { "command": "S", "durationMs": 0 }
+  ]
+}

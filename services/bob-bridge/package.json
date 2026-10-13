@@ -1,0 +1,13 @@
+{
+  "name": "bob-bridge",
+  "version": "1.0.0",
+  "description": "Sidecar that calls the Bob CLI to generate rover CommandScript JSON on demand.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  }
+}
